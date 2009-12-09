@@ -45,6 +45,10 @@ ifneq ($(PWG2resonances_INCLUDE),)
   ALICEINC += -I../$(PWG2resonances_INCLUDE)
 endif
 
+ifneq ($(ALITRAIN_INCLUDE),)
+  ALICEINC += -I$(ALITRAIN_INCLUDE)
+endif
+
 # only if no par file was loaded before
 # # ifeq ($(ALICEINC),-I.)
   ifneq ($(ALICE_ROOT),)

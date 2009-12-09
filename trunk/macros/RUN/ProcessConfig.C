@@ -5,6 +5,7 @@ Bool_t RunOnProof(TString macro, Long64_t numberOfEvents, Long64_t skipEvents)
 
   fgMode = "proof";
 
+  fgDontRun = "";
 
   fgPARSEnableOnly="";
   fgPARSEnableOnly="alitrain_2009-11-29_1122";
@@ -98,6 +99,9 @@ Bool_t RunLocaly(TString macro, Long64_t numberOfEvents, Long64_t skipEvents)
 {
 
   fgMode = "local";
+  
+  fgDontRun = "";
+      
   fgUseLocalLibs = kTRUE;
   fgAlirootLibPath = "$ALICE_ROOT/lib/tgt_$ALICE_TARGET";
   fgAlirootLibPath = "$ALIMV/$ALICE_TARGET/lib";
@@ -178,6 +182,8 @@ Bool_t RunOnAliEn(TString macro, Long64_t numberOfEvents, Long64_t skipEvents, I
 
   fgMode = "alien";
 
+  fgDontRun = "";
+  
   fgAlienShouldRun = kTRUE;
   fgAlienShoudlCopy = kTRUE;
 

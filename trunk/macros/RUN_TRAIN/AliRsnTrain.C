@@ -17,32 +17,35 @@ AliAnalysisManager *AliRsnTrain(Int_t debugAnalysisMgr = 0) {
   SetCorrectHandlersRsn(useKine ,useAod);
 
   // train Task
-//   gROOT->LoadMacro("AddAnalysisTrainProcess.C");
-//   AddAnalysisTrainProcess(100);
+  gROOT->LoadMacro("AddAnalysisTrainProcess.C");
+  AddAnalysisTrainProcess(100);
 
-  // ESDMC filter
-  gROOT->LoadMacro("AddESDMCFilter.C");
-//     AddESDMCFilter();
-
-  // RSN Test
-  gROOT->LoadMacro("AddRsnAnalysisSETest.C");
-//     AddRsnAnalysisSETest();
-
-  // RSN SE
-  gROOT->LoadMacro("AddRsnAnalysisSE.C");
-  AddRsnAnalysisSE();
-
-  // RSN SE MC
-  gROOT->LoadMacro("AddRsnAnalysisSE_MC.C");
-//   AddRsnAnalysisSE_MC();
-
-  // RSN ParticleInfo
-  gROOT->LoadMacro("AddRsnParticleInfo.C");
-//     AddRsnParticleInfo();
-
-  // RSN OUT
-  gROOT->LoadMacro("AddRsnOutPut.C");
-//   AddRsnOutPut();
+  
+  gROOT->LoadMacro("AliTrainMV.C");
+  AliTrainMV();
+//   // ESDMC filter
+// //   gROOT->LoadMacro("AddESDMCFilter.C");
+// //     AddESDMCFilter();
+// 
+//   // RSN Test
+//   gROOT->LoadMacro("AddRsnAnalysisSETest.C");
+// //     AddRsnAnalysisSETest();
+// 
+//   // RSN SE
+//   gROOT->LoadMacro("AddRsnAnalysisSE.C");
+//   AddRsnAnalysisSE();
+// 
+//   // RSN SE MC
+//   gROOT->LoadMacro("AddRsnAnalysisSE_MC.C");
+// //   AddRsnAnalysisSE_MC();
+// 
+//   // RSN ParticleInfo
+//   gROOT->LoadMacro("AddRsnParticleInfo.C");
+// //     AddRsnParticleInfo();
+// 
+//   // RSN OUT
+//   gROOT->LoadMacro("AddRsnOutPut.C");
+// //   AddRsnOutPut();
 
   // Custom Task
 //   gProof->Load("AliAnalysisTaskCustom.cxx++");

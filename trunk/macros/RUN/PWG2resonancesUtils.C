@@ -347,6 +347,7 @@ Bool_t AliRsnUtils::SetInputData
 
 //________________________________________________________________________
 Bool_t AliRsnUtils::Run(TString macro, Long64_t numEvents, Long64_t numEventsSkip) {
+  
 // runs job
   if (fCurrentType == AliRsnUtils::kAlien) {
     Bool_t returnBool = CreateRunAliEnFile(macro);
@@ -929,7 +930,7 @@ static TString fgMacro, fgPostMacro, fgInputFileName, fgTreeName;
 static TString fgAlirootLibPath;
 static TString fgPort, fgUser, fgReset, fgRootVersionInProof, fgCollName;
 static TString fgProjectDir, fgOutputDir, fgExtraInputFiles, fgProjectDirSE;
-static TString fgPostMacroArgs;
+static TString fgPostMacroArgs,fgDontRun;
 static Int_t fgDataType, fgAlienSplit;
 static Long64_t fgNumOfEvents, fgNumOfEventsSkip;
 static Bool_t fgAlienShouldRun = kFALSE, fgAlienShoudlCopy = kFALSE, fgUseLocalLibs = kFALSE, fgDoMixing = kFALSE;
@@ -966,6 +967,11 @@ Bool_t runLocal() {
     return kFALSE;
   }
 
+  if (!fgDontRun.IsNull()) { 
+    utils->PrintWarningString("Skipping utils->Run() because fgDontRun is not empty ...");
+    return kTRUE;
+  }
+  
   // Running Macro
   utils->Run(fgMacro.Data(), fgNumOfEvents, fgNumOfEventsSkip);
 
@@ -998,6 +1004,12 @@ Bool_t runProof() {
     utils->PrintErrorString("fgMacro is null");
     return kFALSE;
   }
+  
+  if (!fgDontRun.IsNull()) { 
+    utils->PrintWarningString("Skipping utils->Run() because fgDontRun is not empty ...");
+    return kTRUE;
+  }
+  
   utils->Run(fgMacro.Data(), fgNumOfEvents, fgNumOfEventsSkip);
   return returnBool;
 }
@@ -1044,7 +1056,10 @@ Bool_t runAlien() {
     utils->AddFilesToAlien(fgExtraInputFiles);
   }
 
-
+  if (!fgDontRun.IsNull()) { 
+    utils->PrintWarningString("Skipping utils->Run() because fgDontRun is not empty ...");
+    return kTRUE;
+  }
 
   //run AliEn job (if shouldRun is set to kTRUE, if not it will just copy files
   //if shouldCopy is set to kTRUE)

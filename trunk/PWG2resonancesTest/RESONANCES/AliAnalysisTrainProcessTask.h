@@ -9,10 +9,10 @@
 //
 #ifndef ALIANALYSISTRAINPROCESSTASK_H
 #define ALIANALYSISTRAINPROCESSTASK_H
-#include <TMonaLisaWriter.h>
 #include "AliAnalysisTaskSE.h"
 class TList;
 class TH1I;
+class TMonaLisaWriter;
 class AliAnalysisTrainProcessTask : public AliAnalysisTaskSE
 {
 

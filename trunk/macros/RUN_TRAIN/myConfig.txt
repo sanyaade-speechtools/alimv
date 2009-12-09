@@ -1,0 +1,12 @@
+# PWG2 wagons
+0|PWG2protons|PWG2spectra|$ALICE_ROOT/PWG2/SPECTRA/macros/AddTaskProtons.C
+1|PWG2checkcascade|PWG2spectra|$ALICE_ROOT/PWG2/SPECTRA/macros/AddTaskCheckCascade.C
+1|PWG2checkv0|PWG2spectra|$ALICE_ROOT/PWG2/SPECTRA/macros/AddTaskCheckV0.C
+1|PWG2strange|PWG2spectra|$ALICE_ROOT/PWG2/SPECTRA/macros/AddTaskStrange.C
+1|PWG2perfcascade|PWG2spectra|$ALICE_ROOT/PWG2/SPECTRA/macros/AddTaskCheckPerformanceCascade.C
+#1|PWG2femto|PWG2AOD;PWG2femtoscopy;PWG2femtoscopyUser|$ALICE_ROOT/PWG2/FEMTOSCOPY/macros/AddTaskFemto.C|gSystem->ExpandPathName("$ALICE_ROOT/PWG2/FEMTOSCOPY/macros/Train/Train3/ConfigFemtoAnalysis.C")
+#1|PWG2femto|PWG2AOD;PWG2femtoscopy;PWG2femtoscopyUser|AddTaskFemto.C|"$ALICE_ROOT/PWG2/FEMTOSCOPY/macros/Train/Train3/ConfigFemtoAnalysis.C"
+0|PWG2resonances|PWG2resonances|$ALICE_ROOT/PWG2/RESONANCES/macros/train/AddAnalysisTaskRsn.C
+
+# MV wagons
+1|PWG2resonances|PWG2resonances|AddAnalysisTaskRsn.C|kTRUE
