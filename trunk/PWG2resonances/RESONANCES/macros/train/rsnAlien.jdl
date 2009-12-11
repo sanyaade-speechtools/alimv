@@ -1,0 +1,37 @@
+#
+# RSN analysis JDL.
+#
+# Arguments:
+# -- $1 = XML collection without extension,
+#         which determines the name of output dir
+#
+
+Executable="aliroot";
+Arguments="-b -q rsnAlien.C >& rsn.log";
+Validationcommand="/alice/cern.ch/user/p/pulvir/pdc09/validation.sh";
+
+TTL="40000";
+
+Split="se";
+SplitMaxInputFileNumber="30";
+
+Packages={
+  "APISCONFIG::V2.4",
+  "VO_ALICE@ROOT::v5-23-02",
+  "VO_ALICE@AliRoot::v4-17-00"
+};
+
+InputFile={
+  "LF:/alice/cern.ch/user/p/pulvir/common/CreateChainFromXML.C",
+  "LF:/alice/cern.ch/user/p/pulvir/common/LoadParsLocal.C",
+  "LF:/alice/cern.ch/user/p/pulvir/pdc09/rsnAlien.C",
+  "LF:/alice/cern.ch/user/p/pulvir/pdc09/AddAnalysisTaskRsn.C",
+  "LF:/alice/cern.ch/user/p/pulvir/pdc09/PWG2resonances.par"
+};
+
+InputDataList="wn.xml";
+InputDataListFormat="xml-single";
+InputDataCollection="LF:/alice/cern.ch/user/p/pulvir/pdc09/xml/$1.xml,nodownload";
+
+OutputDir="/alice/cern.ch/user/p/pulvir/pdc09/out_esd/$1/#alien_counter%03i#";
+OutputArchive={"rsn.zip:rsn.*@ALICE::Catania::dpm"};
