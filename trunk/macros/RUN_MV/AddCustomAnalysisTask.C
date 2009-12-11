@@ -1,5 +1,7 @@
 void AddCustomAnalysisTask(AliLog::EType_t type=AliLog::kInfo)
 {
+  
+  gROOT->ProcessLine(Form(".include %s/include",gSystem->ExpandPathName("/home/mvala/ALICE/alitrain")));
 
   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
 

@@ -1,8 +1,7 @@
 #!/bin/bash
 cd ../
 # PARS="SKAF_ALIROOT STEERBase ESD AOD ANALYSIS ANALYSISalice ANALYSISTest CORRFW PWG2resonances PWG2resonancesTest PWG2resonancesGui"
-# PARS="PWG2resonances PWG2resonancesMV PWG2resonancesTEST"
-PARS="PWG2resonancesTest"
+PARS="PWG2resonances PWG2resonancesTest"
 # PARS=""
 # rm -Rf pars
 # mkdir pars

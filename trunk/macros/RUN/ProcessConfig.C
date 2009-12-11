@@ -15,14 +15,15 @@ Bool_t RunOnProof(TString macro, Long64_t numberOfEvents, Long64_t skipEvents)
   fgPARSEnableOnly="alitrain_latest";
   fgPARSEnableOnly="alitrain_v4-18-12-AN";
   fgPARSEnableOnly="alitrain_v4-18-13-AN";
+  fgPARSEnableOnlyPars="STEERBase:ESD:AOD:ANALYSIS:ANALYSISalice:CORRFW";
   
   fgUseLocalLibs = kTRUE;
   fgAlirootLibPath = "$ALICE_ROOT/lib/tgt_$ALICE_TARGET";
   fgAlirootLibPath = "$ALIMV/$ALIMV_TARGET/lib";
   fgAlirootLibPath = "/home/mvala/WORK/SVN/alitrain/5.25.05/linuxx8664gcc/lib";
   fgLIBS = "STEERBase:ESD:AOD:ANALYSIS:ANALYSISalice:CORRFW";
-  fgLIBS += ":PWG2spectra:PWG2AOD:PWG2femtoscopy:PWG2femtoscopyUser";
-  fgLIBS += ":PWG2resonances";
+//   fgLIBS += ":PWG2spectra:PWG2AOD:PWG2femtoscopy:PWG2femtoscopyUser";
+//   fgLIBS += ":PWG2resonances";
       
   fgPARS = "";
 //   // adds standard ANALYSIS parfiles
@@ -32,11 +33,11 @@ Bool_t RunOnProof(TString macro, Long64_t numberOfEvents, Long64_t skipEvents)
 //   fgPARS += ":PWG2resonances";
 //   fgPARS += ":PWG2resonancesTest";
 
-  fgPARS = "PWG2resonancesTest";
+  fgPARS = "PWG2resonances:PWG2resonancesTest";
   
   fgPARSClean = "";
 // fgPARSClean = "PWG2resonancesTest";
-//   fgPARSClean = "all";
+  fgPARSClean = "all";
 
 
 

@@ -216,6 +216,11 @@ Bool_t AliRsnUtils::Connect() {
     fIsConnected = kTRUE;
     break;
   case kProof:
+    
+    if (!fgPARSEnableOnlyPars.IsNull()) {
+//       gProof->Exec(Form("gSystem->Setenv\(\"MYPARS\", \"%s\"\)",fgPARSEnableOnlyPars.Data()),kTRUE);
+      TProof::AddEnvVar("MYPARS", fgPARSEnableOnlyPars.Data());
+    }
     PrintInfoString(Form("Running Proof at %s...", fConnectInfo[0].Data()));
     fIsConnected = ConnectProof();
     if (!IsConnected()) {
@@ -225,6 +230,10 @@ Bool_t AliRsnUtils::Connect() {
       PrintInfoString(Form("Using PROOF_ForceLocal ...", (Int_t)1));
       gProof->SetParameter("PROOF_ForceLocal", (Int_t)1);
     }
+//     if (!fgPARSEnableOnlyPars.IsNull()) {
+//       gProof->Exec(Form("gSystem->Setenv\(\"MYPARS\", \"%s\"\)",fgPARSEnableOnlyPars.Data()),kTRUE);
+// //       gProof->AddEnvVar("MYPARS", fgPARSEnableOnlyPars.Data());
+//     }
 //     gROOT->LoadMacro("EnableAliRoot.C");
 //     Bool_t alirootOK = EnableAliRoot();
 //     if(!alirootOK) return kFALSE;
@@ -925,7 +934,7 @@ TString AliRsnUtils::GetTagTypeFromTreeName(TString treeName) {
 
 // EXTRA MACROS
 
-static TString fgMode, fgProofToConnect, fgLIBS, fgPARS, fgPARSEnableOnly, fgPARSClean;
+static TString fgMode, fgProofToConnect, fgLIBS, fgPARS, fgPARSEnableOnly,fgPARSEnableOnlyPars, fgPARSClean;
 static TString fgMacro, fgPostMacro, fgInputFileName, fgTreeName;
 static TString fgAlirootLibPath;
 static TString fgPort, fgUser, fgReset, fgRootVersionInProof, fgCollName;

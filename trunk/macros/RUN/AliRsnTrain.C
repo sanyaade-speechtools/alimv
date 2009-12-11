@@ -32,8 +32,8 @@ AliAnalysisManager *AliRsnTrain(Int_t debugAnalysisMgr = 0) {
 // //     AddRsnAnalysisSETest();
 // 
 //   // RSN SE
-//   gROOT->LoadMacro("AddRsnAnalysisSE.C");
-//   AddRsnAnalysisSE();
+  gROOT->LoadMacro("AddRsnAnalysisSE.C");
+  AddRsnAnalysisSE();
 // 
 //   // RSN SE MC
 //   gROOT->LoadMacro("AddRsnAnalysisSE_MC.C");

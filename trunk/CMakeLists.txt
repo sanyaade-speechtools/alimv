@@ -28,4 +28,5 @@ set(ALIMV_LIBRARY_PROPERTIES ${ALIMV_LIBRARY_PROPERTIES}
     SUFFIX ".so"
 )
 
+add_subdirectory(PWG2resonances)
 add_subdirectory(PWG2resonancesTest)
