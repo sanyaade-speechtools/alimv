@@ -5,13 +5,25 @@ Bool_t RunOnProof(TString macro, Long64_t numberOfEvents, Long64_t skipEvents)
 
   fgMode = "proof";
 
-  fgDontRun = "";
+//   fgDontRun = "a";
+//   fgPROOFForceLocal = kTRUE;
 
+//   fgRootVersionInProof = "v5-25-02";
+  
   fgPARSEnableOnly="";
   fgPARSEnableOnly="alitrain_2009-11-29_1122";
   fgPARSEnableOnly="alitrain_latest";
   fgPARSEnableOnly="alitrain_v4-18-12-AN";
+  fgPARSEnableOnly="alitrain_v4-18-13-AN";
   
+  fgUseLocalLibs = kTRUE;
+  fgAlirootLibPath = "$ALICE_ROOT/lib/tgt_$ALICE_TARGET";
+  fgAlirootLibPath = "$ALIMV/$ALIMV_TARGET/lib";
+  fgAlirootLibPath = "/home/mvala/WORK/SVN/alitrain/5.25.05/linuxx8664gcc/lib";
+  fgLIBS = "STEERBase:ESD:AOD:ANALYSIS:ANALYSISalice:CORRFW";
+  fgLIBS += ":PWG2spectra:PWG2AOD:PWG2femtoscopy:PWG2femtoscopyUser";
+  fgLIBS += ":PWG2resonances";
+      
   fgPARS = "";
 //   // adds standard ANALYSIS parfiles
 //   fgPARS = "STEERBase:ESD:AOD:ANALYSIS:ANALYSISalice:CORRFW";
@@ -26,7 +38,7 @@ Bool_t RunOnProof(TString macro, Long64_t numberOfEvents, Long64_t skipEvents)
 // fgPARSClean = "PWG2resonancesTest";
 //   fgPARSClean = "all";
 
-  fgPROOFForceLocal = kTRUE;
+
 
   fgUser = gSystem->ExpandPathName("$USER");
 //   fgUser = "aliceskaf";
@@ -56,8 +68,9 @@ Bool_t RunOnProof(TString macro, Long64_t numberOfEvents, Long64_t skipEvents)
 //   fgInputFileName = "/COMMON/COMMON/test#esdTree";
   fgInputFileName = "/COMMON/COMMON/LHC09a4_80xxx_SE#esdTree";
   
-  fgInputFileName = "/COMMON/COMMON/LHC09a4_80xxx#esdTree";
-  fgInputFileName = "/COMMON/COMMON/LHC09a4_81xxx#esdTree";
+//   fgInputFileName = "/COMMON/COMMON/LHC09a4_80xxx#esdTree";
+//   fgInputFileName = "/COMMON/COMMON/LHC09a4_81xxx#esdTree";
+  fgInputFileName = "/COMMON/COMMON/LHC09d9_137001#esdTree";
 
 //   fgInputFileName = "/COMMON/COMMON/LHC09a4_81xxx#esdTree";
 //   fgInputFileName = "/COMMON/COMMON/test#esdTree";
@@ -101,7 +114,7 @@ Bool_t RunLocaly(TString macro, Long64_t numberOfEvents, Long64_t skipEvents)
   fgMode = "local";
   
   fgDontRun = "";
-      
+
   fgUseLocalLibs = kTRUE;
   fgAlirootLibPath = "$ALICE_ROOT/lib/tgt_$ALICE_TARGET";
   fgAlirootLibPath = "$ALIMV/$ALICE_TARGET/lib";

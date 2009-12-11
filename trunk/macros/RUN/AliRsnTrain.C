@@ -21,8 +21,8 @@ AliAnalysisManager *AliRsnTrain(Int_t debugAnalysisMgr = 0) {
   AddAnalysisTrainProcess(100);
 
   
-  gROOT->LoadMacro("AliTrainMV.C");
-  AliTrainMV();
+//   gROOT->LoadMacro("AliTrainMV.C");
+//   AliTrainMV();
 //   // ESDMC filter
 // //   gROOT->LoadMacro("AddESDMCFilter.C");
 // //     AddESDMCFilter();

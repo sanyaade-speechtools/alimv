@@ -987,6 +987,10 @@ Bool_t runProof() {
 
   utils->CleanPackages(fgPARSClean);
 
+  // Loading pars
+  returnBool = runLocalLibs(fgLIBS.Data(), fgAlirootLibPath.Data());
+  if (!returnBool) return kFALSE;
+  
   // Loading pars with enable Only
   returnBool = utils->LoadPars(fgPARSEnableOnly.Data(),kFALSE);
   if (!returnBool) return kFALSE;
@@ -1086,12 +1090,12 @@ Bool_t runLocalLibs(TString pars, TString pathToAliRoot = "" /*"$ALICE_ROOT/lib/
     str = (TObjString *) array->At(i);
     strr = str->GetString();
     if (pathToAliRoot.IsNull()) {
-      Info("", Form("Loading %s ...", Form("lib%s", strr.Data())));
-      gSystem->Load(Form("lib%s", strr.Data()));
+      Info("", Form("Loading localy %s ...", Form("lib%s.so", strr.Data())));
+      gSystem->Load(Form("lib%s.so", strr.Data()));
     }
     else {
-      Info("", Form("Loading %s ...", Form("%s/lib%s", gSystem->ExpandPathName(Form("%s", pathToAliRoot.Data())), strr.Data())));
-      gSystem->Load(Form("%s/lib%s", gSystem->ExpandPathName(Form("%s", pathToAliRoot.Data())), strr.Data()));
+      Info("", Form("Loading localy %s ...", Form("%s/lib%s.so", gSystem->ExpandPathName(Form("%s", pathToAliRoot.Data())), strr.Data())));
+      gSystem->Load(Form("%s/lib%s.so", gSystem->ExpandPathName(Form("%s", pathToAliRoot.Data())), strr.Data()));
     }
 
   }
