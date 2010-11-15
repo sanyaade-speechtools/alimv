@@ -1,2 +1,0 @@
-root:////cern/data/ESD/001/root_archive.zip#AliESDs.root
-root:////cern/data/ESD/012/root_archive.zip#AliESDs.root
