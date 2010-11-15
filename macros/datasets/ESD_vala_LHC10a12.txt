@@ -1,0 +1,5 @@
+/cern/data/ESD/alice/sim/LHC10a12/104157/998/root_archive.zip#AliESDs.root
+/cern/data/ESD/alice/sim/LHC10a12/104157/995/root_archive.zip#AliESDs.root
+/cern/data/ESD/alice/sim/LHC10a12/104157/990/root_archive.zip#AliESDs.root
+/cern/data/ESD/alice/sim/LHC10a12/104157/989/root_archive.zip#AliESDs.root
+/cern/data/ESD/alice/sim/LHC10a12/104157/988/root_archive.zip#AliESDs.root
