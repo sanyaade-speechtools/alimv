@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Wed May 14 16:10:21 CEST 2008
+onejar.license.required=false
+manifest.classpath=lib/xom-1.1.jar
+manifest.removesigners=true
+onejar.checkbox=true
+jarname=NewRuleChecker.jar
+manifest.mergeall=true
+manifest.mainclass=eu.fbk.checkRules.AliceRuleChecker
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<po|NewRuleChecker>~.project;<po|NewRuleChecker>~.classpath;<jar|xom-1.1.jar>
+includes=

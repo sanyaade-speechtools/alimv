@@ -1,0 +1,3 @@
+/cern/data/ESD_REC_POINT/alice/sim/LHC10f8f/130844/001/root_archive.zip#AliESDs.root
+/cern/data/ESD_REC_POINT/alice/sim/LHC10f8f/130844/002/root_archive.zip#AliESDs.root
+/cern/data/ESD_REC_POINT/alice/sim/LHC10f8f/130844/003/root_archive.zip#AliESDs.root
