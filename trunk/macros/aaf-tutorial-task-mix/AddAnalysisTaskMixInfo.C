@@ -1,15 +1,12 @@
 #include <AliAnalysisManager.h> //|
 #include <AliLog.h> //|
 #include "AliAnalysisTaskMixInfo.h" //|
-
 void AddAnalysisTaskMixInfo(TString format="esd",Bool_t useMC = kFALSE,TString opts="")
 {
   // create manager
   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
   if (!mgr) return;
   
-//   mgr->SetDebugLevel(10);
-
 	// create our task
   AliAnalysisTaskMixInfo *task = new AliAnalysisTaskMixInfo("AliAnalysisTaskMixInfo");
 //   task->SetMixingDebug(AliLog::kDebug);
@@ -25,19 +22,8 @@ void AddAnalysisTaskMixInfo(TString format="esd",Bool_t useMC = kFALSE,TString o
 //       myclasses+=":AliMixInputHandlerInfo";
   if (!myclasses.IsNull()) task->SetLogType(AliLog::kDebug+debugLevel,myclasses.Data());
 
-//   AliMixManager *mixMgr = task->GetMixManager();
-//   mixMgr->SetMixNumber(10);
-//   AliMixMixerSimple *mixer = new AliMixMixerSimple();
-//   mixer->SetUsePostProcess(kFALSE);
-//   mixMgr->SetMixer(mixer);
-
-// uncomment this to use MC
-//   task->UseMC(useMC);
-  
   // create mix output container
   AliAnalysisDataContainer *outputMix = mgr->CreateContainer("cMixInfoList", TList::Class(), AliAnalysisManager::kOutputContainer, Form("MixInfo%s.root",opts.Data()));
-//   output1->SetSpecialOutput();
-//   mgr->SetSpecialOutputLocation("root://localhost//dev/shm/alice/xrd/data/");
   
   // add our task to the manager
   mgr->AddTask(task);
