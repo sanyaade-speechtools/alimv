@@ -6,10 +6,10 @@
 
 #include "AliMCEventHandler.h"
 #include "AliMixInputEventHandler.h"
+#include "AliMixInfo.h"
+#include "AliMixEventPool.h"
 
 #include "AliAnalysisTaskCustomMix.h"
-#include <AliMixInfo.h>
-#include <AliMixEventPool.h>
 
 ClassImp(AliAnalysisTaskCustomMix)
 
