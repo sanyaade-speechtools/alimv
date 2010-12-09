@@ -1,0 +1,12 @@
+#summary Install all macros from AliMV
+
+= Installation =
+{{{
+cd ~
+svn checkout http://alimv.googlecode.com/svn/trunk/ alimv
+cd alimv
+mkdir build
+cd build
+cmake ../
+make install
+}}}
