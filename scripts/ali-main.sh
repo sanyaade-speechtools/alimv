@@ -12,15 +12,18 @@ fi
 
 MY_MV_NUM_FORMATED=`printf "%04.0f" $MY_MV_NUM`
 export MY_WORK_DIR="/tmp/alimv/test_$MY_MV_NUM_FORMATED"
+
+
 export MY_SOURCE_DIR="/home/mvala/ALICE/alimv"
 if [ ! -z $ALIMV ];then
   export MY_SOURCE_DIR="$ALIMV"
 fi
+
 export MY_ROOT_DEFAULT_OPTIONS=""
 # export MY_ROOT_DEFAULT_OPTIONS="-q"
 export MY_ANALYSIS_SOURCE="proof"
 export MY_ANALYSIS_SOURCE="grid"
-# export MY_ANALYSIS_SOURCE="local"
+export MY_ANALYSIS_SOURCE="local"
 export MY_ANALYSIS_MODE="test"
 # export MY_ANALYSIS_MODE="full"
 
