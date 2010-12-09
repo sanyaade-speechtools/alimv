@@ -4,7 +4,7 @@ Int_t SETUP() {
 
   // Set the include paths
   gROOT->ProcessLine(Form(".include %s/EventMixing",gSystem->pwd()));
-
+  
   // Set our location, so that other packages can find us
   gSystem->Setenv("EventMixing_INCLUDE", Form("%s/EventMixing",gSystem->pwd()));
 
