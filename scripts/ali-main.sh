@@ -37,6 +37,15 @@ export MY_VALGRIND=""
 # custom parfiles
 export MY_PARFILES="ANALYSISaliceMV EventMixing RESONANCESMV TASKSMV"
 
+MY_TASKS="AliAnalysisTaskCustomMix AliAnalysisTaskEvil"
+
+for MY_TASK in $MY_TASKS; do
+	rm -f $MY_ANALYSIS_SOURCE/macros/aaf-tutorial-task-mix/$MY_TASK.cxx
+	ln -s $MY_ANALYSIS_SOURCE/TASKSMV/$MY_TASK.cxx $MY_ANALYSIS_SOURCE/macros/aaf-tasks/$MY_TASK.cxx
+	rm -f $MY_ANALYSIS_SOURCE/macros/aaf-tutorial-task-mix/$MY_TASK.h
+	ln -s $MY_ANALYSIS_SOURCE/TASKSMV/$MY_TASK.h $MY_ANALYSIS_SOURCE/macros/aaf-tasks/$MY_TASK.h
+done
+
 # recreating work dir
 rm -Rf $MY_WORK_DIR &>/dev/null
 mkdir -p $MY_WORK_DIR
