@@ -3,10 +3,14 @@
 = Installation =
 {{{
 cd ~
+rm -Rf alimv
 svn checkout http://alimv.googlecode.com/svn/trunk/ alimv
 cd alimv
+export ALIMV=`pwd`
 mkdir build
 cd build
 cmake ../
 make install
+cd ../
+scripts/ali-main.sh
 }}}
