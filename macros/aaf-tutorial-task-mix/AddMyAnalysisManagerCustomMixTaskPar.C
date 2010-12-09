@@ -1,15 +1,13 @@
-#include <TString.h>
-#include <TROOT.h>
-#include <TProof.h>
-#include "AliAnalysisManager.h"
-#include "AliAnalysisAlien.h"
-#include "AliESDInputHandler.h"
-#include "AliMCEventHandler.h"
-#include "AliMixInputEventHandler.h"
-#include "AliMixEventPool.h"
-#include "AliMixEventCutObj.h"
-
-
+#include <TString.h>//|
+#include <TROOT.h>//|
+#include <TProof.h>//|
+#include "AliAnalysisManager.h"//|
+#include "AliAnalysisAlien.h"//|
+#include "AliESDInputHandler.h"//|
+#include "AliMCEventHandler.h"//|
+#include "AliMixInputEventHandler.h"//|
+#include "AliMixEventPool.h"//|
+#include "AliMixEventCutObj.h" //|
 void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TString analysisMode = "test", TString opts = "")
 {
 
@@ -50,7 +48,7 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
     mgr->SetInputEventHandler(inputHandler);
 
     Int_t bufferSize = 1;
-    Int_t mixNum = 10;
+    Int_t mixNum = 2;
     AliMixInputEventHandler *mixHandler = new AliMixInputEventHandler(bufferSize,mixNum);
     mixHandler->SetInputHandlerForMixing(dynamic_cast<AliMultiInputEventHandler*> (mgr->GetInputEventHandler()));
     AliMixEventPool *evPool = new AliMixEventPool();

@@ -6,7 +6,8 @@ function CopyFilesFromManagerMacro() {
 
 	MGR_FILENAME=`find $MY_SOURCE_DIR/macros/ -name "$1"`
 	echo "Copying $MGR_FILENAME to $MY_WORK_DIR ..."
-	cp -f $MGR_FILENAME $MY_WORK_DIR/
+# 	cp -f $MGR_FILENAME $MY_WORK_DIR/
+cat $MGR_FILENAME | grep -v "//|" > $MY_WORK_DIR/`basename $MGR_FILENAME`
 	
 
 	# copy all files which are in needed by gROOT->LoadMacro("...")
@@ -16,7 +17,7 @@ function CopyFilesFromManagerMacro() {
 		MY_TMP_FILE_TO_COPY=`find $MY_SOURCE_DIR/macros/ -name "$MY_TMP_FILE_TO_COPY"`
 		if [ ! -e $MY_WORK_DIR/`basename $MY_TMP_FILE_TO_COPY` ];then
 			echo "Copying $MY_TMP_FILE_TO_COPY to $MY_WORK_DIR ..."
-			cp -f $MY_TMP_FILE_TO_COPY $MY_WORK_DIR/
+			cat $MY_TMP_FILE_TO_COPY | grep -v "//|" > $MY_WORK_DIR/`basename $MY_TMP_FILE_TO_COPY`
 		fi
 
     MY_TMP_FILE_TO_COPY_TMP=`echo $MY_TMP_FILE_TO_COPY | awk -F '.cxx' '{print $1}'`

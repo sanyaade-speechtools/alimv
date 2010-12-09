@@ -1,0 +1,48 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+
+[CMake]
+BuildDirs=/home/mvala/WORK/SVN/alimv/build
+CMakeDir=/usr/share/cmake/Modules
+Current CMake Binary=file:///usr/bin/cmake
+CurrentBuildDir=file:///home/mvala/WORK/SVN/alimv/build
+CurrentBuildType=Debug
+CurrentInstallDir=
+Extra Arguments=
+ProjectRootRelative=./
+
+[Launch]
+Launch Configurations=Launch Configuration 0,Launch Configuration 1
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=ali-main
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=--noclose --workdir /tmp/ -e /home/mvala/ALICE/alimv/scripts/ali-main.sh
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\n\x00a\x00l\x00i\x00m\x00v)
+Dependency Action=Install
+EnvironmentGroup=default
+Executable=konsole
+Working Directory=
+isExecutable=true
+
+[Launch][Launch Configuration 1]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=ali-show-mix-info
+Type=Native Application
+
+[Launch][Launch Configuration 1][Data]
+Arguments=--noclose --workdir /tmp/ -e /home/mvala/ALICE/alimv/scripts/ali-show-mix-info.sh
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\n\x00a\x00l\x00i\x00m\x00v)
+Dependency Action=Install
+EnvironmentGroup=default
+Executable=konsole
+Working Directory=
+isExecutable=true
+
+[Project]
+VersionControlSupport=kdevsubversion
