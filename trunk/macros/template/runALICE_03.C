@@ -5,15 +5,17 @@
 
 Int_t LoadLibsBase() {
   Int_t num=0;
-  if (gSystem->Load("libTree.so")) {num++; return num;}
-  if (gSystem->Load("libGeom.so")) {num++; return num;}
-  if (gSystem->Load("libVMC.so")) {num++; return num;}
-  if (gSystem->Load("libPhysics.so")) {num++; return num;}
-  if (gSystem->Load("libSTEERBase.so")) {num++; return num;}
-  if (gSystem->Load("libESD.so")) {num++; return num;}
-  if (gSystem->Load("libAOD.so")) {num++; return num;}
-  if (gSystem->Load("libANALYSIS.so")) {num++; return num;}
-  if (gSystem->Load("libANALYSISalice.so")) {num++; return num;}
+  if (gSystem->Load("libTree.so")<0) {num++; return num;}
+  if (gSystem->Load("libGeom.so")<0) {num++; return num;}
+  if (gSystem->Load("libVMC.so")<0) {num++; return num;}
+  if (gSystem->Load("libPhysics.so")<0) {num++; return num;}
+  if (gSystem->Load("libSTEERBase.so")<0) {num++; return num;}
+  if (gSystem->Load("libESD.so")<0) {num++; return num;}
+  if (gSystem->Load("libAOD.so")<0) {num++; return num;}
+  if (gSystem->Load("libANALYSIS.so")<0) {num++; return num;}
+  if (gSystem->Load("libANALYSISalice.so")<0) {num++; return num;}
+  
+  gSystem->AddIncludePath(Form("-I\"%s/include\"", gSystem->Getenv("ALICE_ROOT")));
   gROOT->ProcessLine(Form(".include %s/include",gSystem->ExpandPathName("$ALICE_ROOT")));
   return 0;
 }

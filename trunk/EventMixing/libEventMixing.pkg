@@ -1,0 +1,16 @@
+#-*- Mode: Makefile -*-
+
+SRCS = \
+EventMixing/AliMixInfo.cxx \
+EventMixing/AliMixInputEventHandler.cxx \
+EventMixing/AliMixInputHandlerInfo.cxx \
+EventMixing/AliMixEventPool.cxx \
+EventMixing/AliMixEventCutObj.cxx \
+EventMixing/AliAnalysisTaskMixInfo.cxx\
+
+
+HDRS:= $(SRCS:.cxx=.h) 
+
+DHDR= EventMixingLinkDef.h
+
+EXPORT:=$(SRCS:.cxx=.h)

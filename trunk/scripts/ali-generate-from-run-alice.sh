@@ -18,7 +18,9 @@ function CopyFilesFromManagerMacro() {
 			echo "Copying $MY_TMP_FILE_TO_COPY to $MY_WORK_DIR ..."
 			cp -f $MY_TMP_FILE_TO_COPY $MY_WORK_DIR/
 		fi
-		if [ `echo $MY_TMP_FILE_TO_COPY | awk -F '.cxx' '{print $1}'` != "$MY_TMP_FILE_TO_COPY" ];then
+
+    MY_TMP_FILE_TO_COPY_TMP=`echo $MY_TMP_FILE_TO_COPY | awk -F '.cxx' '{print $1}'`
+		if [ "$MY_TMP_FILE_TO_COPY_TMP" != "$MY_TMP_FILE_TO_COPY" ];then
 			if [ ! -e $MY_WORK_DIR/`basename ${MY_TMP_FILE_TO_COPY/cxx/h}` ];then
 				echo "Copying ${MY_TMP_FILE_TO_COPY/cxx/h} to $MY_WORK_DIR ..."
 				cp -f ${MY_TMP_FILE_TO_COPY/cxx/h} $MY_WORK_DIR/	
