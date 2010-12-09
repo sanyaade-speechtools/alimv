@@ -1,0 +1,11 @@
+#-*- Mode: Makefile -*-
+
+SRCS = \
+AliRsnAnalysisTaskMulti.cxx
+
+
+HDRS:= $(SRCS:.cxx=.h) 
+
+DHDR= RESONANCESMVLinkDef.h
+
+EXPORT:=$(SRCS:.cxx=.h)

@@ -1,8 +1,8 @@
 #include <AliAnalysisManager.h> //|
 #include <AliLog.h> //|
-#include "AliAnalysisTaskCustomMix.h" //|
+#include "AliAnalysisTaskMixInfo.h" //|
 
-void AddAnalysisTaskCustomMix(TString format="esd",Bool_t useMC = kFALSE,TString opts="")
+void AddAnalysisTaskMixInfo(TString format="esd",Bool_t useMC = kFALSE,TString opts="")
 {
   // create manager
   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
@@ -11,16 +11,18 @@ void AddAnalysisTaskCustomMix(TString format="esd",Bool_t useMC = kFALSE,TString
 //   mgr->SetDebugLevel(10);
 
 	// create our task
-  AliAnalysisTaskCustomMix *task = new AliAnalysisTaskCustomMix("AliAnalysisTaskCustomMix");
+  AliAnalysisTaskMixInfo *task = new AliAnalysisTaskMixInfo("AliAnalysisTaskMixInfo");
 //   task->SetMixingDebug(AliLog::kDebug);
   
   Int_t debugLevel = 0;
   TString myclasses="";
-//   myclasses+=":AliAnalysisTaskCustomMix";
-//   myclasses+=":AliMixInputEventHandler";
-//   myclasses+=":AliMultiInputEventHandler";
-//   myclasses+=":AliMixEventPool";
-//   myclasses+=":AliMixInputHandlerInfo";
+    myclasses+=":AliAnalysisTaskMixInfo";
+      myclasses+=":AliAnalysisTaskCustomMix";
+//       myclasses+=":AliMixInputEventHandler";
+//       myclasses+=":AliMultiInputEventHandler";
+//       myclasses+=":AliMixEventPool";
+//         myclasses+=":AliMixEventCutObj";
+//       myclasses+=":AliMixInputHandlerInfo";
   if (!myclasses.IsNull()) task->SetLogType(AliLog::kDebug+debugLevel,myclasses.Data());
 
 //   AliMixManager *mixMgr = task->GetMixManager();
@@ -33,7 +35,7 @@ void AddAnalysisTaskCustomMix(TString format="esd",Bool_t useMC = kFALSE,TString
 //   task->UseMC(useMC);
   
   // create mix output container
-  AliAnalysisDataContainer *outputMix = mgr->CreateContainer("cMixOutput", TList::Class(), AliAnalysisManager::kOutputContainer, Form("MixOutput%s.root",opts.Data()));
+  AliAnalysisDataContainer *outputMix = mgr->CreateContainer("cMixInfoList", TList::Class(), AliAnalysisManager::kOutputContainer, Form("MixInfo%s.root",opts.Data()));
 //   output1->SetSpecialOutput();
 //   mgr->SetSpecialOutputLocation("root://localhost//dev/shm/alice/xrd/data/");
   

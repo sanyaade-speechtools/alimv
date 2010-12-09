@@ -1,0 +1,16 @@
+# -*- mode: cmake -*-
+
+set(SRCS
+  EventMixing/AliMixInfo.cxx
+  EventMixing/AliMixInputHandlerInfo.cxx
+	EventMixing/AliMixEventCutObj.cxx
+	EventMixing/AliMixEventPool.cxx
+  EventMixing/AliMixInputEventHandler.cxx
+	EventMixing/AliAnalysisTaskMixInfo.cxx
+)
+
+# fill list of header files from list of source files
+# by exchanging the file extension
+String(REPLACE ".cxx" ".h" HDRS "${SRCS}")
+
+AddLibrary(EventMixing "${SRCS}" "${HDRS}")

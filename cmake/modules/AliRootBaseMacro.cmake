@@ -50,7 +50,7 @@ Function (AddExecutable BIN SRCS LIBS)
 
   Add_Executable(${BIN} ${SRCS})
   Target_Link_Libraries(${BIN} ${ROOT_LIBRARIES} ${LIBS})
-  Install(TARGETS ${BIN} DESTINATION ${ALIMV_INSTALL_DIR}/bin)
+  Install(TARGETS ${BIN} DESTINATION ${ALI_MIX_PATH}/bin/tgt_${ALICE_TARGET})
 
   If(ALICE_STATIC_BUILD)
     Add_Executable(${BIN}_a ${SRCS})
@@ -62,7 +62,7 @@ Function (AddExecutable BIN SRCS LIBS)
       Set(_ar_libs ${_ar_libs} ${_lib}_a)
     EndForeach(_lib ${LIBS})
     Target_Link_Libraries(${BIN}_a ${ROOT_LIBRARIES} ${_ar_libs})
-    Install(TARGETS ${BIN}_a DESTINATION ${ALIMV_INSTALL_DIR}/bin)
+    Install(TARGETS ${BIN}_a DESTINATION ${ALI_MIX_PATH}/bin/tgt_${ALICE_TARGET})
   EndIf(ALICE_STATIC_BUILD)
 
 #   CheckViols(${BIN} "${SRCS}")

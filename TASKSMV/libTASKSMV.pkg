@@ -1,0 +1,12 @@
+#-*- Mode: Makefile -*-
+
+SRCS = \
+AliAnalysisTaskEvil.cxx \
+AliAnalysisTaskCustomMix.cxx \
+
+
+HDRS:= $(SRCS:.cxx=.h) 
+
+DHDR= TASKSMVLinkDef.h
+
+EXPORT:=$(SRCS:.cxx=.h)

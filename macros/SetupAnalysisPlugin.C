@@ -9,7 +9,7 @@ AliAnalysisGrid* SetupAnalysisPlugin(TString analysisMode) {
   plugin->SetRunMode(analysisMode.Data());  // VERY IMPORTANT - DECRIBED BELOW
 
   // seutp aliroot version
-  plugin->SetAliROOTVersion("v4-21-05-AN");
+  plugin->SetAliROOTVersion("v4-21-09-AN");
 
   // adds Proof setting 
   MySetupAnalysisPluginProof(plugin);
@@ -21,25 +21,29 @@ AliAnalysisGrid* SetupAnalysisPlugin(TString analysisMode) {
 }
 
 void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin) {
-//     plugin->SetProofCluster("alice-caf");
+    plugin->SetProofCluster("alice-caf.cern.ch");
 //     plugin->SetProofCluster("alicaf@lxbsq1410.cern.ch:21001");
-    plugin->SetProofCluster("skaf.saske.sk");
+//     plugin->SetProofCluster("skaf.saske.sk");
 //   plugin->SetProofCluster("skaf-test.saske.sk");
 //   plugin->SetProofCluster("pod@localhost:21001");
 
 // Dataset to be used
-//     plugin->SetProofDataSet("/alice/sim/LHC10a12_104316#esdTree");
+    plugin->SetProofDataSet("/alice/sim/LHC10h9_000137366#esdTree");
 //       plugin->SetProofDataSet("/alice/sim/LHC10a12_104157#esdTree");
-      plugin->SetProofDataSet("/alice/sim/LHC10g2d_130844#esdTree");
+//       plugin->SetProofDataSet("/alice/sim/LHC10g2d_130844#esdTree");
+//       plugin->SetProofDataSet("/alice/data/LHC10b_000117222_p2");
+//     plugin->SetProofDataSet("/alice/data/LHC10h_000137161_p1_plusplusplus");
       
 //     plugin->SetProofDataSet("ds.txt");
-//     plugin->SetProofDataSet("LHC10b.txt");
+//     plugin->SetProofDataSet("mysim.txt");
+    plugin->SetProofDataSet("LHC10b.txt");
 //     plugin->SetProofDataSet("/default/alicaf/LHC10a20_140500");
 
 
     // May need to reset proof. Supported modes: 0-no reset, 1-soft, 2-hard
-    plugin->SetProofReset(0);
+  plugin->SetProofReset(0);
 // May limit the number of workers per slave. If used with SetNproofWorkers, SetParallel(nproofworkers) will be called after connection
+//   plugin->SetNproofWorkers(1);
 //    plugin->SetNproofWorkersPerSlave(1);
 // May request connection to alien upon connection to grid
 //     plugin->SetProofConnectGrid(kTRUE);
@@ -51,7 +55,7 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin) {
     plugin->SetAliRootMode("default"); // Loads AF libs by default
 //     plugin->SetAliRootMode("ALIROOT"); // Loads AF libs by default
 // May request ClearPackages (individual ClearPackage not supported)
-    plugin->SetClearPackages(kFALSE);
+    plugin->SetClearPackages();
 // Plugin test mode works only providing a file containing test file locations
     plugin->SetFileForTestMode("ESD_vala_LHC10a12.txt");
    //++++++++++++++ end PROOF ++++++++++++++++
@@ -65,12 +69,14 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
 //    plugin->SetAliROOTVersion("v4-20-13-AN");
    // Method 1: Create automatically XML collections using alien 'find' command.
 // Define production directory LFN
-//    plugin->SetGridDataDir("/alice/sim/LHC10a6");
-   plugin->SetGridDataDir("/alice/data/2010/LHC10b");
+   plugin->SetGridDataDir("/alice/sim/LHC10e6");
+   
+//    plugin->SetGridDataDir("/alice/data/2010/LHC10b");
 // Set data search pattern
-//   plugin->SetDataPattern("*ESDs.root");  // simulated, tags not used
-  plugin->SetDataPattern("*ESDs/pass2/*ESDs.root"); // real data check reco pass and data base directory
-  plugin->SetRunPrefix("000");   // real data
+  plugin->SetDataPattern("*ESDs.root");  // simulated, tags not used
+//   plugin->SetDataPattern("*ESDs/pass2/*ESDs.root"); // real data check reco pass and data base directory
+//   plugin->SetRunPrefix("000");   // real data
+  
 //    plugin->SetDataPattern("*tag.root");  // Use ESD tags (same applies for AOD's)
 // ...then add run numbers to be considered
 //    plugin->AddRunNumber(125020);    // simulated
@@ -78,6 +84,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
 //   TString runs = "117222:117220:117120:117118:117116:117112:117099";
 //   runs += ":117092:117063:117060:117059:117053:117052:117050";
   TString runs = "117222";
+  runs = "117054";
   TObjArray* array = runs.Tokenize ( ":" );
   TObjString *str;
   TString strr,strr2_1,strr2_2;
@@ -123,7 +130,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
    plugin->SetAnalysisMacro("AnalysisTest.C");
 // Optionally set maximum number of input files/subjob (default 100, put 0 to ignore). The optimum for an analysis
 // is correlated with the run time - count few hours TTL per job, not minutes !
-   plugin->SetSplitMaxInputFileNumber(100);
+   plugin->SetSplitMaxInputFileNumber(50);
 // Optionally set number of failed jobs that will trigger killing waiting sub-jobs.
    plugin->SetMaxInitFailed(5);
 // Optionally resubmit threshold.
@@ -133,10 +140,12 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
 // Optionally set input format (default xml-single)
    plugin->SetInputFormat("xml-single");
 // Optionally modify the name of the generated JDL (default analysis.jdl)
-   plugin->SetJDLName("TaskRsn.jdl");
+   plugin->SetJDLName("TaskMix.jdl");
 // Optionally modify job price (default 1)
    plugin->SetPrice(1);
 // Optionally modify split mode (default 'se')
    plugin->SetSplitMode("se");
+// set number of files to test
+   plugin->SetNtestFiles(2);
 
 }

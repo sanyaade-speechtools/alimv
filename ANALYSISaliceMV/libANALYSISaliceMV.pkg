@@ -1,0 +1,11 @@
+#-*- Mode: Makefile -*-
+
+SRCS = \
+AliMultiInputEventHandler.cxx \
+AliAnalysisTaskMulti.cxx
+
+HDRS:= $(SRCS:.cxx=.h) 
+
+DHDR= ANALYSISaliceMVLinkDef.h
+
+EXPORT:=$(SRCS:.cxx=.h)
