@@ -4,8 +4,8 @@
 Download alimv-mix-0.0.1.tar.gz from [http://code.google.com/p/alimv/downloads/list here].
 
 {{{
-tar xfz alimv-mix-1.0.1.tar.gz
-cd alimv-mix-1.0.1
+tar xfz alimv-mix-0.0.1.tar.gz
+cd alimv-mix-0.0.1
 
 // run on proof full mode (it will run on proof cluster)
 root runALICE.C
