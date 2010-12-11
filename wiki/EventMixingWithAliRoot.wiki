@@ -8,4 +8,4 @@ Event mixing intro (add some text todo)
 ~~Not ready yet~~ 
   * when stable version will be available in aliroot TAG (soon)
 == Using parfiles (latest development) ==
-  # [InstallAliMVMacros Install all macros]
+  # [HowToInstallMixing  Test mixing]
