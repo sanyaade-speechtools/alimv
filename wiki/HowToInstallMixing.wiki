@@ -1,8 +1,8 @@
 #summary Install all macros from AliMV
 
-= Installation =
+= Download =
 Download alimv-mix-0.0.1.tar.gz from [http://code.google.com/p/alimv/downloads/list here].
-
+= Unpack and run with AliEn plugin arguments =
 {{{
 tar xfz alimv-mix-0.0.1.tar.gz
 cd alimv-mix-0.0.1
