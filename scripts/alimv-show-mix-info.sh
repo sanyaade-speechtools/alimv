@@ -1,6 +1,9 @@
 #!/bin/bash
+export MY_SOURCE_DIR="/home/mvala/ALICE/alimv/"
+if [ ! -z $ALIMV ];then
+  export MY_SOURCE_DIR="$ALIMV"
+fi
 
-export ALIMV="/home/mvala/ALICE/alimv/"
 if [ ! `which root-config` ]; then
 	echo "root-config not found !!!"
 	exit 1
@@ -18,6 +21,6 @@ fi
 MY_MV_NUM_FORMATED=`printf "%04.0f" $MY_MV_NUM`
 export MY_WORK_DIR="/tmp/alimv/$MY_MV_NUM_FORMATED"
 
-$ALIMV/bin/tgt_`root-config --arch`/alimv $ALIMV/macros/mixinfo/ShowMixInfo.C\(\"$MY_WORK_DIR/MixInfo.root\"\)
+$MY_SOURCE_DIR/bin/tgt_`root-config --arch`/alimv $MY_SOURCE_DIR/macros/mixinfo/ShowMixInfo.C\(\"$MY_WORK_DIR/MixInfo.root\"\)
 
 unset MY_WORK_DIR ALIMV
