@@ -25,10 +25,14 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin) {
 //     plugin->SetProofCluster("alicaf@lxbsq1410.cern.ch:21001");
 //     plugin->SetProofCluster("skaf.saske.sk");
 //   plugin->SetProofCluster("skaf-test.saske.sk");
+//       plugin->SetProofCluster("kiaf.sdfarm.kr");
 //   plugin->SetProofCluster("pod@localhost:21001");
 
 // Dataset to be used
-    plugin->SetProofDataSet("/alice/sim/LHC10h9_000137366#esdTree");
+    
+    plugin->SetProofDataSet("/alice/data/LHC10h_000137366_p1#esdTree");
+//     plugin->SetProofDataSet("/alice/data/LHC10b_000115401_p2#esdTree");
+//     plugin->SetProofDataSet("/alice/sim/LHC10h9_000137366#esdTree");
 //       plugin->SetProofDataSet("/alice/sim/LHC10a12_104157#esdTree");
 //       plugin->SetProofDataSet("/alice/sim/LHC10g2d_130844#esdTree");
 //       plugin->SetProofDataSet("/alice/data/LHC10b_000117222_p2");
@@ -36,7 +40,7 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin) {
       
 //     plugin->SetProofDataSet("ds.txt");
 //     plugin->SetProofDataSet("mysim.txt");
-    plugin->SetProofDataSet("LHC10b.txt");
+//     plugin->SetProofDataSet("LHC10b.txt");
 //     plugin->SetProofDataSet("/default/alicaf/LHC10a20_140500");
 
 
@@ -104,7 +108,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
 //   plugin->AddDataFile("/alice/data/2008/LHC08c/000057657/raw/Run57657.Merged.RAW.tag.root");
 
 // Define alien work directory where all files will be copied. Relative to alien $HOME.
-   plugin->SetGridWorkingDir("work");
+   plugin->SetGridWorkingDir("work/rsnTest/001");
 // Declare alien output directory. Relative to working directory.
    plugin->SetGridOutputDir("output"); // In this case will be $HOME/work/output
 // Declare the analysis source files names separated by blancs. To be compiled runtime
@@ -130,7 +134,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
    plugin->SetAnalysisMacro("AnalysisTest.C");
 // Optionally set maximum number of input files/subjob (default 100, put 0 to ignore). The optimum for an analysis
 // is correlated with the run time - count few hours TTL per job, not minutes !
-   plugin->SetSplitMaxInputFileNumber(50);
+   plugin->SetSplitMaxInputFileNumber(10);
 // Optionally set number of failed jobs that will trigger killing waiting sub-jobs.
    plugin->SetMaxInitFailed(5);
 // Optionally resubmit threshold.

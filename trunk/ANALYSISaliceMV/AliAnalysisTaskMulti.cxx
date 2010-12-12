@@ -17,7 +17,9 @@ AliAnalysisTaskMulti::AliAnalysisTaskMulti(const char *name):
     fCurrentEntryMain(0),
     fCurrentEntryMix(0),
     fCurrentBinIndex(-1),
-    fNumberMixed(0)
+    fNumberMixed(0),
+    fMultiInputHandler(0),
+    fMCEventHandler(0)
 {
     // Default constructor
 }
@@ -28,7 +30,9 @@ AliAnalysisTaskMulti::AliAnalysisTaskMulti(const AliAnalysisTaskMulti &obj):
     fCurrentEntryMain(obj.fCurrentEntryMain),
     fCurrentEntryMix(obj.fCurrentEntryMix),
     fCurrentBinIndex(obj.fCurrentBinIndex),
-    fNumberMixed(obj.fNumberMixed)
+    fNumberMixed(obj.fNumberMixed),
+    fMultiInputHandler(obj.fMultiInputHandler),
+    fMCEventHandler(obj.fMCEventHandler)
 {
 }
 
@@ -48,23 +52,11 @@ void AliAnalysisTaskMulti::ConnectInputData(Option_t* /*option*/)
 //
 //  ESD
 //
-    fInputHandler = (AliInputEventHandler *)((AliAnalysisManager::GetAnalysisManager())->GetInputEventHandler());
-    AliMultiInputEventHandler *multiH = dynamic_cast<AliMultiInputEventHandler *>(fInputHandler);
-    AliInputEventHandler *inputHandler=0;
-    if(multiH) {
-        inputHandler = fInputHandler;
-        fInputHandler = dynamic_cast<AliInputEventHandler *>(multiH->InputEventHandler(0));
-    }
-//
-//  Monte Carlo
-//
-    AliMCEventHandler *mcH = 0;
-    if(multiH) {
-        mcH = dynamic_cast<AliMCEventHandler *>(multiH->InputEventHandler(1));
-    } else {
-        mcH = (AliMCEventHandler *)((AliAnalysisManager::GetAnalysisManager())->GetMCtruthEventHandler());
-    }
-    if(mcH) fMCEvent = mcH->MCEvent();
+    
+    
+    // connect input handlers (multi input handler is handled)
+    ConnectMultiHandler();
+
     if(fInputHandler) {
         if((fInputHandler->GetTree())->GetBranch("ESDfriend."))
             fESDfriend = ((AliESDInputHandler *)fInputHandler)->GetESDfriend();
@@ -75,7 +67,9 @@ void AliAnalysisTaskMulti::ConnectInputData(Option_t* /*option*/)
         AliError("No Input Event Handler connected") ;
         return ;
     }
-    if(inputHandler) fInputHandler = inputHandler;
+    
+    // disconnect multi handler
+    DisconnectMultiHandler();
 }
 
 
@@ -83,13 +77,10 @@ void AliAnalysisTaskMulti::Exec(Option_t *option)
 {
 //
 // Exec analysis of one event
-    fInputHandler = (AliInputEventHandler *)((AliAnalysisManager::GetAnalysisManager())->GetInputEventHandler());
-    AliMultiInputEventHandler *multiH = dynamic_cast<AliMultiInputEventHandler *>(fInputHandler);
-    AliInputEventHandler *inputHandler=0;
-    if(multiH) {
-        inputHandler = fInputHandler;
-        fInputHandler = dynamic_cast<AliInputEventHandler *>(multiH->InputEventHandler(0));
-    }
+
+    // connect input handler
+    ConnectMultiHandler();
+    
     if(fDebug >= 10)
         printf("Task is active %5d\n", IsActive());
     if(fDebug > 1) AliInfo("AliAnalysisTaskMulti::Exec() \n");
@@ -248,24 +239,20 @@ void AliAnalysisTaskMulti::Exec(Option_t *option)
 // Call the user analysis
 //     AliMCEventHandler*    mcH = 0;
 //     mcH = (AliMCEventHandler*) ((AliAnalysisManager::GetAnalysisManager())->GetMCtruthEventHandler());
-    AliMCEventHandler *mcH = 0;
-    if(multiH) {
-        mcH = dynamic_cast<AliMCEventHandler *>(multiH->InputEventHandler(1));
-    } else {
-        mcH = (AliMCEventHandler *)((AliAnalysisManager::GetAnalysisManager())->GetMCtruthEventHandler());
-    }
-    if(mcH) fMCEvent = mcH->MCEvent();
-    if(!mcH) {
+
+
+    if(!fMCEventHandler) {
         if(isSelected)
             UserExec(option);
     } else {
-        if(isSelected && (mcH->InitOk()))
+      if(isSelected && (fMCEventHandler->InitOk()))
             UserExec(option);
     }
 // Added protection in case the derived task is not an AOD producer.
     AliAnalysisDataSlot *out0 = GetOutputSlot(0);
     if(out0 && out0->IsConnected()) PostData(0, fTreeA);
-    if(inputHandler) fInputHandler = inputHandler;
+    
+    DisconnectMultiHandler();
 }
 
 void AliAnalysisTaskMulti::UserExecMix(Option_t *option)
@@ -273,3 +260,19 @@ void AliAnalysisTaskMulti::UserExecMix(Option_t *option)
     AliDebug(AliLog::kDebug+5,Form("<- %s",option));
     AliDebug(AliLog::kDebug+5,"->");
 }
+
+void AliAnalysisTaskMulti::ConnectMultiHandler()
+{
+  fInputHandler = (AliInputEventHandler *)((AliAnalysisManager::GetAnalysisManager())->GetInputEventHandler());
+  fMultiInputHandler = dynamic_cast<AliMultiInputEventHandler *>(fInputHandler);
+  if(fMultiInputHandler) {
+    fMultiInputHandler = (AliMultiInputEventHandler*)fInputHandler;
+    fInputHandler = dynamic_cast<AliInputEventHandler *>(fMultiInputHandler->GetFirstInputEventHandler());
+  }
+  if(fMCEventHandler) fMCEvent = fMCEventHandler->MCEvent();
+}
+void AliAnalysisTaskMulti::DisconnectMultiHandler()
+{
+  if(fMultiInputHandler) fInputHandler = fMultiInputHandler;
+}
+

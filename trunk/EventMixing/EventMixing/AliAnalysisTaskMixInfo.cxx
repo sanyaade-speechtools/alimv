@@ -99,8 +99,8 @@ void AliAnalysisTaskMixInfo::UserExec(Option_t *)
 void AliAnalysisTaskMixInfo::UserExecMix(Option_t *)
 {
     if(fMixInfo) fMixInfo->FillHistogram(AliMixInfo::kMixedEvents,CurrentBinIndex());
-    if(CurrentEntryMix()<0) AliError("Mix entru is -1 and it should not happen !!!!!")
-        AliDebug(AliLog::kDebug,Form("Mixing %lld %d [%lld,%lld] %d",CurrentEntry(),NumberMixed(),CurrentEntryMain(),CurrentEntryMix(),CurrentBinIndex()));
+    if(CurrentEntryMix()<0) { AliError("Mix entru is -1 and it should not happen !!!!!"); return ;}
+    AliDebug(AliLog::kDebug,Form("Mixing %lld %d [%lld,%lld] %d",CurrentEntry(),NumberMixed(),CurrentEntryMain(),CurrentEntryMix(),CurrentBinIndex()));
     // Post output data.
     PostData(1, fOutputList);
 }

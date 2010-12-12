@@ -40,6 +40,9 @@ cat $MGR_FILENAME | grep -v "//|" > $MY_WORK_DIR/`basename $MGR_FILENAME`
 		fi
 	done 
 
+	echo "Copying all rsn config files ..."
+	cp -f $MY_SOURCE_DIR/macros/aaf-rsn/Config* $MY_WORK_DIR/
+	cp -f $MY_SOURCE_DIR/macros/aaf-rsn/Quality* $MY_WORK_DIR/
 }
 
 # function GenerateManagerMacro() {

@@ -8,6 +8,8 @@
 
 #include "AliAnalysisTaskSE.h"
 
+class AliMultiInputEventHandler;
+class AliMCEventHandler;
 class AliAnalysisTaskMulti : public AliAnalysisTaskSE
 {
  public:
@@ -41,6 +43,12 @@ protected:
   Long64_t fCurrentEntryMix;
   Int_t    fCurrentBinIndex;
   Int_t    fNumberMixed;
+  
+  AliMultiInputEventHandler *fMultiInputHandler;
+  AliMCEventHandler *fMCEventHandler;
+  
+  void ConnectMultiHandler();
+  void DisconnectMultiHandler();
     
     ClassDef(AliAnalysisTaskMulti, 1); // Analysis task for standard jet analysis
 };

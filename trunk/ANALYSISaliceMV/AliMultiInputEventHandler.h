@@ -13,7 +13,7 @@
 #include <TObjArray.h>
 
 #include "AliInputEventHandler.h"
-#include <AliMCEventHandler.h>
+#include "AliMCEventHandler.h"
 
 class AliMultiInputEventHandler : public AliInputEventHandler
 {
