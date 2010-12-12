@@ -67,7 +67,7 @@ cat $MY_SOURCE_DIR/macros/template/runALICE_01.C > runALICE.C
 cat $MY_SOURCE_DIR/macros/template/runALICE_02.C | grep -v '//' >> runALICE.C
 cat $MY_SOURCE_DIR/macros/template/runALICE_03.C >> runALICE.C
 
-$MY_SOURCE_DIR/scripts/ali-generate-from-run-alice.sh $MY_WORK_DIR/runALICE.C
+$MY_SOURCE_DIR/scripts/alimv-generate-from-run-alice.sh $MY_WORK_DIR/runALICE.C
 
 cp $MY_SOURCE_DIR/macros/datasets/* . &>/dev/null
 
