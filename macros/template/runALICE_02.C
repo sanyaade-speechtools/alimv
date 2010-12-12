@@ -20,6 +20,8 @@ Int_t runALICE(TString analysisSource="proof",TString analysisMode="test") { //
 //   
 //   RunAnalysisManager("AddMyAnalysisManagerEvilTask",analysisSource.Data(),analysisMode.Data(),"");
   
+//     RunAnalysisManager("AddMyAnalysisManagerRsnCustomTask",analysisSource.Data(),analysisMode.Data(),"");
+  
 // 	for (Int_t i=0;i<2;i++)
 //     RunAnalysisManager("AddMyAnalysisManagerEvilTask",analysisSource.Data(),analysisMode.Data(),Form("%d",i));
 //

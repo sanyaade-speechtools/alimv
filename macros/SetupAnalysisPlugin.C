@@ -59,7 +59,7 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin) {
     plugin->SetAliRootMode("default"); // Loads AF libs by default
 //     plugin->SetAliRootMode("ALIROOT"); // Loads AF libs by default
 // May request ClearPackages (individual ClearPackage not supported)
-    plugin->SetClearPackages();
+//     plugin->SetClearPackages();
 // Plugin test mode works only providing a file containing test file locations
     plugin->SetFileForTestMode("ESD_vala_LHC10a12.txt");
    //++++++++++++++ end PROOF ++++++++++++++++
