@@ -80,8 +80,9 @@ void AliAnalysisTaskCustomMix::UserExecMix(Option_t *)
 {
     // Main loop
     // Called for each event
-    if(CurrentEntryMix()<0) AliError("Mix entru is -1 and it should not happen !!!!!")
-        AliDebug(AliLog::kDebug,Form("Mixing %lld %d [%lld,%lld] %d",CurrentEntry(),NumberMixed(),CurrentEntryMain(),CurrentEntryMix(),CurrentBinIndex()));
+    if(CurrentEntryMix()<0) { AliError("Mix entru is -1 and it should not happen !!!!!"); return ;}
+    
+    AliDebug(AliLog::kDebug,Form("Mixing %lld %d [%lld,%lld] %d",CurrentEntry(),NumberMixed(),CurrentEntryMain(),CurrentEntryMix(),CurrentBinIndex()));
     AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
     AliMultiInputEventHandler *inEvHMain = dynamic_cast<AliMultiInputEventHandler *>(mgr->GetInputEventHandler());
     if(inEvHMain) {

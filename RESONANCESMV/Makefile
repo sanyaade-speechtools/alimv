@@ -53,11 +53,15 @@ ifneq ($(EventMixing_INCLUDE),)
   ALICEINC += -I$(EventMixing_INCLUDE)
 endif
 
+
+ifneq ($(ALICE_ROOT),)
+  ALICEINC += -I$(ALICE_ROOT)//PWG2/RESONANCES
+endif
 # only if no par file was loaded before
 # # ifeq ($(ALICEINC),-I.)
-  ifneq ($(ALICE_ROOT),)
-    ALICEINC += -I$(ALICE_ROOT)/include
-  endif
+ifneq ($(ALICE_ROOT),)
+  ALICEINC += -I$(ALICE_ROOT)/include
+endif
 # # endif
 
 # for building of PWG0dep.par

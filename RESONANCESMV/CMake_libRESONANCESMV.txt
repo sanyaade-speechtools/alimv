@@ -1,7 +1,8 @@
 # -*- mode: cmake -*-
 
 set(SRCS
-AliRsnAnalysisTaskMulti.cxx
+AliRsnVAnalysisTaskMulti.cxx
+AliRsnAnalysisMulti.cxx
 )
 
 # fill list of header files from list of source files

@@ -11,7 +11,7 @@ else
 fi
 
 MY_MV_NUM_FORMATED=`printf "%04.0f" $MY_MV_NUM`
-export MY_WORK_DIR="/tmp/alimv/test_$MY_MV_NUM_FORMATED"
+export MY_WORK_DIR="/tmp/alimv/$MY_MV_NUM_FORMATED"
 
 
 export MY_SOURCE_DIR="/home/mvala/ALICE/alimv"
@@ -22,8 +22,8 @@ fi
 export MY_ROOT_DEFAULT_OPTIONS=""
 # export MY_ROOT_DEFAULT_OPTIONS="-q"
 export MY_ANALYSIS_SOURCE="proof"
-export MY_ANALYSIS_SOURCE="grid"
-export MY_ANALYSIS_SOURCE="local"
+# export MY_ANALYSIS_SOURCE="grid"
+# export MY_ANALYSIS_SOURCE="local"
 export MY_ANALYSIS_MODE="test"
 # export MY_ANALYSIS_MODE="full"
 
@@ -35,19 +35,19 @@ export MY_VALGRIND=""
 # export MY_VALGRIND="$MY_VALGRIND --show-reachable=yes  "
 
 # custom parfiles
-export MY_PARFILES="ANALYSISaliceMV EventMixing RESONANCESMV TASKSMV"
+export MY_PARFILES="ANALYSISaliceMV EventMixing PWG2resonances RESONANCESMV TASKSMV"
 
 MY_TASKS="AliAnalysisTaskCustomMix AliAnalysisTaskEvil"
 
 for MY_TASK in $MY_TASKS; do
-	rm -f $MY_ANALYSIS_SOURCE/macros/aaf-tutorial-task-mix/$MY_TASK.cxx
-	ln -s $MY_ANALYSIS_SOURCE/TASKSMV/$MY_TASK.cxx $MY_ANALYSIS_SOURCE/macros/aaf-tasks/$MY_TASK.cxx
-	rm -f $MY_ANALYSIS_SOURCE/macros/aaf-tutorial-task-mix/$MY_TASK.h
-	ln -s $MY_ANALYSIS_SOURCE/TASKSMV/$MY_TASK.h $MY_ANALYSIS_SOURCE/macros/aaf-tasks/$MY_TASK.h
+	rm -f $MY_SOURCE_DIR/macros/aaf-tasks/$MY_TASK.cxx
+	ln -s $MY_SOURCE_DIR/TASKSMV/$MY_TASK.cxx $MY_SOURCE_DIR/macros/aaf-tasks/$MY_TASK.cxx
+	rm -f $MY_SOURCE_DIR/macros/aaf-tasks/$MY_TASK.h
+	ln -s $MY_SOURCE_DIR/TASKSMV/$MY_TASK.h $MY_SOURCE_DIR/macros/aaf-tasks/$MY_TASK.h
 done
 
 # recreating work dir
-rm -Rf $MY_WORK_DIR &>/dev/null
+rm -Rf $MY_WORK_DIR
 mkdir -p $MY_WORK_DIR
 
 echo "Deleting backup files ..."

@@ -1,7 +1,8 @@
 #-*- Mode: Makefile -*-
 
 SRCS = \
-AliRsnAnalysisTaskMulti.cxx
+AliRsnVAnalysisTaskMulti.cxx \
+AliRsnAnalysisMulti.cxx
 
 
 HDRS:= $(SRCS:.cxx=.h) 

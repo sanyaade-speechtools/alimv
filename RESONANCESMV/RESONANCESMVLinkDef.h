@@ -1,5 +1,6 @@
 #ifdef __CINT__
 
-#pragma link C++ class AliRsnAnalysisTaskMulti+;
+#pragma link C++ class AliRsnVAnalysisTaskMulti+;
+#pragma link C++ class AliRsnAnalysisMulti+;
 
 #endif

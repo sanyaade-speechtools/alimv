@@ -13,11 +13,11 @@ Int_t runALICE(TString analysisSource="proof",TString analysisMode="test") { //
 //
 //   RunAnalysisManager("AddMyAnalysisManagerCustomTask",analysisSource.Data(),analysisMode.Data(),"");
   //
-//   fNEvents = 4e2;
+//   fNEvents = 1e6;
 //   fNEventsSkip = 350;
 //   RunAnalysisManager("AddMyAnalysisManagerCustomMixTask",analysisSource.Data(),analysisMode.Data(),"");
   RunAnalysisManager("AddMyAnalysisManagerCustomMixTaskPar",analysisSource.Data(),analysisMode.Data(),"");
-  
+//   
 //   RunAnalysisManager("AddMyAnalysisManagerEvilTask",analysisSource.Data(),analysisMode.Data(),"");
   
 // 	for (Int_t i=0;i<2;i++)

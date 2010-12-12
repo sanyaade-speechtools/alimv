@@ -11,7 +11,7 @@ void AddAnalysisTaskMixInfo(TString format="esd",Bool_t useMC = kFALSE,TString o
   AliAnalysisTaskMixInfo *task = new AliAnalysisTaskMixInfo("AliAnalysisTaskMixInfo");
 //   task->SetMixingDebug(AliLog::kDebug);
   
-  Int_t debugLevel = 0;
+  Int_t debugLevel = 1;
   TString myclasses="";
     myclasses+=":AliAnalysisTaskMixInfo";
       myclasses+=":AliAnalysisTaskCustomMix";
@@ -20,6 +20,9 @@ void AddAnalysisTaskMixInfo(TString format="esd",Bool_t useMC = kFALSE,TString o
 //       myclasses+=":AliMixEventPool";
 //         myclasses+=":AliMixEventCutObj";
 //       myclasses+=":AliMixInputHandlerInfo";
+//       myclasses+=":AliRsnAnalysisMulti";
+//       myclasses+=":AliRsnPair";
+      
   if (!myclasses.IsNull()) task->SetLogType(AliLog::kDebug+debugLevel,myclasses.Data());
 
   // create mix output container
