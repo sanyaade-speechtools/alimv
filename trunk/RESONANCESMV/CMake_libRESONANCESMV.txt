@@ -3,6 +3,9 @@
 set(SRCS
 AliRsnVAnalysisTaskMulti.cxx
 AliRsnAnalysisMulti.cxx
+AliRsnVCustomObj.cxx
+AliRsnCustomTrackInfo.cxx
+AliRsnCustomTask.cxx
 )
 
 # fill list of header files from list of source files

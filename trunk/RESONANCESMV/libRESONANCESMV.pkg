@@ -2,7 +2,10 @@
 
 SRCS = \
 AliRsnVAnalysisTaskMulti.cxx \
-AliRsnAnalysisMulti.cxx
+AliRsnAnalysisMulti.cxx \
+AliRsnVCustomObj.cxx \
+AliRsnCustomTrackInfo.cxx \
+AliRsnCustomTask.cxx
 
 
 HDRS:= $(SRCS:.cxx=.h) 

@@ -41,10 +41,10 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
 //     analysisPlugin->SetAliRootMode("ALIROOT"); // Loads AF libs by default
     // sets additional settings to plubin
     analysisPlugin->SetAnalysisSource("AliAnalysisTaskCustomMix.cxx+");
-    analysisPlugin->SetAdditionalLibs("libCORRFW.so ANALYSISaliceMV.par EventMixing.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
+//     analysisPlugin->SetAdditionalLibs("libCORRFW.so ANALYSISaliceMV.par EventMixing.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
     
 //     analysisPlugin->SetAdditionalLibs("libCORRFW.so libPWG2resonances.so ANALYSISaliceMV.par EventMixing.par RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
-//     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so PWG2resonances.par ANALYSISaliceMV.par EventMixing.par RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
+    analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so PWG2resonances.par ANALYSISaliceMV.par EventMixing.par RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
     
     // sets plugin to manager
     mgr->SetGridHandler(analysisPlugin);
@@ -76,16 +76,16 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
     // adds event pool (comment it and u will have default mixing)
     mixHandler->SetEventPool(evPool);
 
-    inputHandler->AddInputEventHandler(mixHandler);
+//     inputHandler->AddInputEventHandler(mixHandler);
 
-//     // adds mixing info task
-    gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
-    AddAnalysisTaskMixInfo(format, useMC, opts);
-// 
-// 
-//     // add our taks
-    gROOT->LoadMacro("AddAnalysisTaskCustomMix.C");
-    AddAnalysisTaskCustomMix(format, useMC, opts);
+// //     // adds mixing info task
+//     gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
+//     AddAnalysisTaskMixInfo(format, useMC, opts);
+// // 
+// // 
+// //     // add our taks
+//     gROOT->LoadMacro("AddAnalysisTaskCustomMix.C");
+//     AddAnalysisTaskCustomMix(format, useMC, opts);
 
 		// add our taks
 //     gROOT->LoadMacro("AddRsnTask.C");
@@ -94,4 +94,6 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
 //     gROOT->LoadMacro("AddRsnTaskMix.C");
 //     AddRsnTaskMix(format, useMC, opts);
 		
+		gROOT->LoadMacro("AddRsnCustomTask.C");
+    AddRsnCustomTask(format, useMC, opts);
 }
