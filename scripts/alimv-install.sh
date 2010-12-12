@@ -15,5 +15,7 @@ make -j5 install
 
 cd ../
 
+echo ""
 echo "You can start by running :"
-echo "\t $MY_SOURCE_DIR/scripts/alimv-main.sh"
+echo "  $MY_SOURCE_DIR/scripts/alimv-main.sh"
+echo ""
