@@ -1,9 +1,9 @@
-#include <TError.h>//
-#include <TROOT.h>//
-#include <TString.h>//
-void RunAnalysisManager(TString,TString,TString.TString);//
+#include <TError.h>//|
+#include <TROOT.h>//|
+#include <TString.h>//|
+void RunAnalysisManager(TString,TString,TString.TString);//|
 //
-Int_t runALICE(TString analysisSource="proof",TString analysisMode="test") { //
+Int_t runALICE(TString analysisSource="proof",TString analysisMode="test") { //|
 //
 //
   fNEvents = 1*1e9;
@@ -13,7 +13,7 @@ Int_t runALICE(TString analysisSource="proof",TString analysisMode="test") { //
 //
 //   RunAnalysisManager("AddMyAnalysisManagerCustomTask",analysisSource.Data(),analysisMode.Data(),"");
   //
-//   fNEvents = 1e6;
+//   fNEvents = 1e5;
 //   fNEventsSkip = 350;
 //   RunAnalysisManager("AddMyAnalysisManagerCustomMixTask",analysisSource.Data(),analysisMode.Data(),"");
   RunAnalysisManager("AddMyAnalysisManagerCustomMixTaskPar",analysisSource.Data(),analysisMode.Data(),"");

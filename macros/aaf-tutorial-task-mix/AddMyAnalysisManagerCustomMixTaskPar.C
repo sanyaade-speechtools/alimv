@@ -24,7 +24,7 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
 
     gSystem->Load("libXMLParser.so");
     // load par files localy
-//     gROOT->ProcessLine(".x $(ALICE_ROOT)/macros/loadlibs.C");
+    if (!analysisSource.CompareTo("local") || analysisSource.CompareTo("grid")) gROOT->ProcessLine(".x $(ALICE_ROOT)/macros/loadlibs.C");
     gSystem->Load("libANALYSIS.so");
     gSystem->Load("libANALYSISalice.so");
     gSystem->Load("libCORRFW.so");
@@ -38,7 +38,7 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
     gROOT->LoadMacro("AliAnalysisTaskCustomMix.cxx++g");
 
     
-//     analysisPlugin->SetAliRootMode("ALIROOT"); // Loads AF libs by default
+    analysisPlugin->SetAliRootMode("ALIROOT"); // Loads AF libs by default
     // sets additional settings to plubin
     analysisPlugin->SetAnalysisSource("AliAnalysisTaskCustomMix.cxx+");
 //     analysisPlugin->SetAdditionalLibs("libCORRFW.so ANALYSISaliceMV.par EventMixing.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
@@ -61,7 +61,7 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
       inputHandler->AddInputEventHandler(mcInputHandler);
     }
     mgr->SetInputEventHandler(inputHandler);
-
+    
     Int_t bufferSize = 1;
     Int_t mixNum = 5;
     AliMixInputEventHandler *mixHandler = new AliMixInputEventHandler(bufferSize,mixNum);
@@ -76,23 +76,20 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
     // adds event pool (comment it and u will have default mixing)
     mixHandler->SetEventPool(evPool);
 
-//     inputHandler->AddInputEventHandler(mixHandler);
+//     add mixing handler (uncomment to turn on Mixnig)
+    inputHandler->AddInputEventHandler(mixHandler);
 
 // //     // adds mixing info task
-//     gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
-//     AddAnalysisTaskMixInfo(format, useMC, opts);
-// // 
-// // 
+    gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
+    AddAnalysisTaskMixInfo(format, useMC, opts);
 // //     // add our taks
 //     gROOT->LoadMacro("AddAnalysisTaskCustomMix.C");
 //     AddAnalysisTaskCustomMix(format, useMC, opts);
 
 		// add our taks
-//     gROOT->LoadMacro("AddRsnTask.C");
-//     AddRsnTask(format, useMC, opts);
-    
-//     gROOT->LoadMacro("AddRsnTaskMix.C");
-//     AddRsnTaskMix(format, useMC, opts);
+    gROOT->LoadMacro("AddRsnTask.C");
+    AddRsnTask(format, useMC, opts);
+    AddRsnTask(format, useMC, Form("%s mix",opts));
 		
 		gROOT->LoadMacro("AddRsnCustomTask.C");
     AddRsnCustomTask(format, useMC, opts);
