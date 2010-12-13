@@ -15,9 +15,8 @@
 AliAnalysisTask* AddRsnTask(TString format="esd",Bool_t useMC = kFALSE,TString opts="")
 {
 	
-	const char *dataLabel="7TeV_pass2_data_ESD";
-	const char *configMacro = "ConfigRsnMulti.C";
-// 	const char *configMacro = "ConfigTaskRsnTest_SimpleMix.C";
+	TString configMacro = "ConfigRsnSimple.C";
+  TString suffix;
 	// retrieve analysis manager
   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
   if (!mgr) mgr = new AliAnalysisManager("RSN train");
@@ -26,11 +25,15 @@ AliAnalysisTask* AddRsnTask(TString format="esd",Bool_t useMC = kFALSE,TString o
   AliRsnAnalysisMulti *task = new AliRsnAnalysisMulti("RsnAnalysis");
   task->SetZeroEventPercentWarning(100.0);
 //   task->SelectCollisionCandidates();
-//   task->SetMixing();
+  if (opts.Contains("mix")) {
+    task->SetMixing();
+    suffix = "_mix";
+  }
   
   // load and execute configuration macro
   gROOT->LoadMacro(configMacro);
-  if (!ConfigRsnMulti(task,"data","")) return kFALSE;
+	configMacro.ReplaceAll(".C","");
+  if (!gROOT->ProcessLine(Form("%s((AliRsnAnalysisManager*)0x%lx)",configMacro.Data(),(ULong_t)task->GetAnalysisManager()))) return kFALSE;
 
   // add the task to manager
   mgr->AddTask(task);
@@ -43,11 +46,10 @@ AliAnalysisTask* AddRsnTask(TString format="esd",Bool_t useMC = kFALSE,TString o
   sprintf(commonPath, "%s", AliAnalysisManager::GetCommonFileName());
 
   // create containers for output
-  AliAnalysisDataContainer *outputInfo = mgr->CreateContainer("RsnInfo", TList::Class(), AliAnalysisManager::kOutputContainer, commonPath);
-  AliAnalysisDataContainer *outputHist = mgr->CreateContainer("RsnHist", TList::Class(), AliAnalysisManager::kOutputContainer, commonPath);
+  AliAnalysisDataContainer *outputInfo = mgr->CreateContainer(Form("RsnInfo%s",suffix.Data()), TList::Class(), AliAnalysisManager::kOutputContainer, commonPath);
+  AliAnalysisDataContainer *outputHist = mgr->CreateContainer(Form("RsnHist%s",suffix.Data()), TList::Class(), AliAnalysisManager::kOutputContainer, commonPath);
   mgr->ConnectOutput(task, 1, outputInfo);
   mgr->ConnectOutput(task, 2, outputHist);
 
 	return task;
 }
-
