@@ -11,9 +11,9 @@ class TH3D;
 class TString;
 class AliESDEvent;
 class AliAODEvent;
-#include "AliAnalysisTaskSE.h"
+#include "AliAnalysisTaskMulti.h"
 
-class AliAnalysisTaskEvil : public AliAnalysisTaskSE {
+class AliAnalysisTaskEvil : public AliAnalysisTaskMulti {
  public:
   AliAnalysisTaskEvil(const char *name="<default name>");
   virtual ~AliAnalysisTaskEvil();

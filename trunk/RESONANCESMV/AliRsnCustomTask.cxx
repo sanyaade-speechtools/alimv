@@ -18,7 +18,7 @@ ClassImp(AliRsnCustomTask)
 //_____________________________________________________________________________
 AliRsnCustomTask::AliRsnCustomTask(const char *name, Bool_t useKine) :
   AliRsnVAnalysisTaskMulti(name, useKine),
-  fOutList()
+  fOutList(0)
 {
 //
 // Default constructor.
@@ -80,6 +80,7 @@ void AliRsnCustomTask::RsnUserExec(Option_t*)
 // Recovers the input event and processes it with all included pair objects,
 // using 'reconstructed' or 'MonteCarlo' functions depending on MC-only flag.
 //
+
 	if (IsMixing()) return;
   
   AliRsnVCustomObj *inObj=0;
