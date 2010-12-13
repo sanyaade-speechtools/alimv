@@ -1,5 +1,6 @@
 #!/bin/bash
 
+MY_ALIMV_TMP_DIR="/tmp/alimv"
 MY_MV_FILE="/tmp/.alimvid"
 MY_MV_NUM="1"
 if [ ! -e $MY_MV_FILE ];then
@@ -11,7 +12,10 @@ else
 fi
 
 MY_MV_NUM_FORMATED=`printf "%04.0f" $MY_MV_NUM`
-export MY_WORK_DIR="/tmp/alimv/$MY_MV_NUM_FORMATED"
+
+export MY_WORK_DIR="$MY_ALIMV_TMP_DIR/$MY_MV_NUM_FORMATED"
+rm -f $MY_ALIMV_TMP_DIR/last
+ln -s $MY_WORK_DIR $MY_ALIMV_TMP_DIR/last
 
 
 export MY_SOURCE_DIR="/home/mvala/ALICE/alimv"
@@ -22,10 +26,10 @@ fi
 export MY_ROOT_DEFAULT_OPTIONS=""
 # export MY_ROOT_DEFAULT_OPTIONS="-q"
 export MY_ANALYSIS_SOURCE="proof"
-# export MY_ANALYSIS_SOURCE="grid"
+export MY_ANALYSIS_SOURCE="grid"
 # export MY_ANALYSIS_SOURCE="local"
 export MY_ANALYSIS_MODE="test"
-# export MY_ANALYSIS_MODE="full"
+export MY_ANALYSIS_MODE="full"
 
 # Valgrind options
 export MY_VALGRIND=""
@@ -56,7 +60,6 @@ for i in `find $MY_SOURCE_DIR/ -name "*~"`; do rm -f $i ;done
 rm -Rf $MY_SOURCE_DIR/pars &> /dev/null
 mkdir -p $MY_SOURCE_DIR/pars &> /dev/null
 for MY_PAR in $MY_PARFILES ; do
-	echo "Creating $MY_PAR.par ..."
 	$MY_SOURCE_DIR/test/scripts/MakeParFiles.sh $MY_SOURCE_DIR $MY_PAR
 done
 

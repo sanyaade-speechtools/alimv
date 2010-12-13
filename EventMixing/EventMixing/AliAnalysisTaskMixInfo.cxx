@@ -80,16 +80,17 @@ void AliAnalysisTaskMixInfo::UserExec(Option_t *)
 //       fCurrentEntryTmp = fCurrentEntry;
     AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
     AliMultiInputEventHandler *inEvHMain = dynamic_cast<AliMultiInputEventHandler *>(mgr->GetInputEventHandler());
-    AliMixInputEventHandler *mixEH = dynamic_cast<AliMixInputEventHandler *>(inEvHMain->GetFirstMultiInputHandler());
-    if(fMixInfo) {
-        if(mixEH->BufferSize()>1) {
-            if(mixEH->NumberMixedTimes()>=mixEH->BufferSize())
-                fMixInfo->FillHistogram(AliMixInfo::kMainEvents,CurrentBinIndex());
-        } else {
-            fMixInfo->FillHistogram(AliMixInfo::kMainEvents,CurrentBinIndex());
-        }
+    if (inEvHMain) {
+      AliMixInputEventHandler *mixEH = dynamic_cast<AliMixInputEventHandler *>(inEvHMain->GetFirstMultiInputHandler());
+      if(fMixInfo) {
+          if(mixEH->BufferSize()>1) {
+              if(mixEH->NumberMixedTimes()>=mixEH->BufferSize())
+                  fMixInfo->FillHistogram(AliMixInfo::kMainEvents,CurrentBinIndex());
+          } else {
+              fMixInfo->FillHistogram(AliMixInfo::kMainEvents,CurrentBinIndex());
+          }
+      }
     }
-//     }
     if(CurrentEntryMix()>=0)
         AliDebug(AliLog::kDebug+1,Form("Main %lld %d [%lld,%lld] %d",CurrentEntry(), NumberMixed(),CurrentEntryMain(),CurrentEntryMix(),NumberMixed()));
     // Post output data.

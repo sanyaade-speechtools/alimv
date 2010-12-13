@@ -3,7 +3,9 @@
 
 ClassImp(AliRsnCustomTrackInfo)
 
-AliRsnCustomTrackInfo::AliRsnCustomTrackInfo(const char* name, const char* title): AliRsnVCustomObj(name, title)
+AliRsnCustomTrackInfo::AliRsnCustomTrackInfo(const char* name, const char* title): AliRsnVCustomObj(name, title),
+fCharge(0),
+fCutSet(0)
 {
 
   for(Int_t i=0;i<kNumTypes;i++) {
@@ -53,6 +55,8 @@ void AliRsnCustomTrackInfo::UserExecCustom(AliRsnEvent* ev1, AliRsnEvent* ev2)
     if (!ev1->ConvertAbsoluteIndex(iTrack, index0, type0)) continue;
     ev1->SetDaughter(daughter0, index0, type0);
 
+    if (fCharge && daughter0.Charge() != fCharge) continue;
+    
     if (fCutSet && !fCutSet->IsSelected(&daughter0)) continue;
     // TODO correct it
 //     d = (AliRsnDaughter) ev1->GetDaughter(iTrack);

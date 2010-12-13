@@ -23,6 +23,8 @@ public:
     
     void SetParamaterHistogram(EType type,Int_t nBins,Double_t min,Double_t max);
     void SetCutSet(AliRsnCutSet *cutSet) { fCutSet = cutSet;}
+    void SetCharge(Short_t ch) { fCharge = ch; }
+    
 private:
     
   Bool_t      fUseParameter[kNumTypes];     //  flag if parameter is used
@@ -30,6 +32,8 @@ private:
   Int_t       fParameterBins[kNumTypes];    //  nBins
   Double_t    fParameterMin[kNumTypes];     //  min
   Double_t    fParameterMax[kNumTypes];     //  max
+  
+  Short_t     fCharge;
   
   AliRsnCutSet *fCutSet;                    //  cut set
   
