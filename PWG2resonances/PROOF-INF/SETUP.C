@@ -1,6 +1,6 @@
 void SETUP() {
 
-  gSystem->SetDynamicPath(Form(".:%s",gSystem->GetDynamicPath()));
+  gSystem->SetDynamicPath(Form("%s:%s", gSystem->pwd(),gSystem->GetDynamicPath()));
   CheckLoadLibrary("libPWG2resonances");
 
   // Set the include paths

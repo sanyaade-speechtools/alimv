@@ -1,13 +1,14 @@
 #-*- Mode: Makefile -*-
 
 SRCS = \
-EventMixing/AliMixInfo.cxx \
-EventMixing/AliMixInputEventHandler.cxx \
-EventMixing/AliMixInputHandlerInfo.cxx \
-EventMixing/AliMixEventPool.cxx \
 EventMixing/AliMixEventCutObj.cxx \
-EventMixing/AliAnalysisTaskMixInfo.cxx\
-
+EventMixing/AliMixEventPool.cxx \
+EventMixing/AliMultiInputEventHandler.cxx \
+EventMixing/AliMixInfo.cxx \
+EventMixing/AliMixInputHandlerInfo.cxx \
+EventMixing/AliMixInputEventHandler.cxx \
+EventMixing/AliAnalysisTaskMixInfo.cxx \
+EventMixing/AliAnalysisTaskMulti.cxx
 
 HDRS:= $(SRCS:.cxx=.h) 
 

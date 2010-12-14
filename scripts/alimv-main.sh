@@ -23,13 +23,13 @@ if [ ! -z $ALIMV ];then
   export MY_SOURCE_DIR="$ALIMV"
 fi
 
-export MY_ROOT_DEFAULT_OPTIONS=""
+export MY_ROOT_DEFAULT_OPTIONS="-l "
 # export MY_ROOT_DEFAULT_OPTIONS="-q"
 export MY_ANALYSIS_SOURCE="proof"
 export MY_ANALYSIS_SOURCE="grid"
 # export MY_ANALYSIS_SOURCE="local"
 export MY_ANALYSIS_MODE="test"
-export MY_ANALYSIS_MODE="full"
+# export MY_ANALYSIS_MODE="full"
 
 # Valgrind options
 export MY_VALGRIND=""
@@ -73,9 +73,10 @@ cat $MY_SOURCE_DIR/macros/template/runALICE_03.C >> runALICE.C
 $MY_SOURCE_DIR/scripts/alimv-generate-from-run-alice.sh $MY_WORK_DIR/runALICE.C
 
 cp $MY_SOURCE_DIR/macros/datasets/* . &>/dev/null
-
+cp $MY_SOURCE_DIR/pars/* . &>/dev/null
 echo "Running ROOT ..."
-$MY_VALGRIND root.exe $MY_ROOT_DEFAULT_OPTIONS runALICE.C\(\"$MY_ANALYSIS_SOURCE\",\"$MY_ANALYSIS_MODE\"\)
+# $MY_VALGRIND root.exe $MY_ROOT_DEFAULT_OPTIONS runALICE.C\(\"$MY_ANALYSIS_SOURCE\",\"$MY_ANALYSIS_MODE\"\)
+$MY_VALGRIND aliroot $MY_ROOT_DEFAULT_OPTIONS runALICE.C\(\"$MY_ANALYSIS_SOURCE\",\"$MY_ANALYSIS_MODE\"\)
 pwd
 ls -al *.root
 

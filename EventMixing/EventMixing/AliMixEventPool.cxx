@@ -35,7 +35,9 @@ AliMixEventPool::AliMixEventPool(const char *name, const char *title) : TNamed(n
 AliMixEventPool::AliMixEventPool(const AliMixEventPool &obj) : TNamed(obj),
     fListOfEntryList(obj.fListOfEntryList),
     fListOfEventCuts(obj.fListOfEventCuts),
-    fBinNumber(obj.fBinNumber)
+    fBinNumber(obj.fBinNumber),
+    fBufferSize(obj.fBufferSize),
+    fMixNumber(obj.fMixNumber)
 {
     //
     // Copy constructor
@@ -43,6 +45,25 @@ AliMixEventPool::AliMixEventPool(const AliMixEventPool &obj) : TNamed(obj),
     AliDebug(AliLog::kDebug + 5, "<-");
     AliDebug(AliLog::kDebug + 5, "->");
 }
+
+//_________________________________________________________________________________________________
+AliMixEventPool& AliMixEventPool::operator=(const AliMixEventPool& obj)
+{
+  //
+  // Assigned operator
+  //
+  if (&obj != this) {
+    TNamed::operator=(obj);
+    fListOfEntryList = obj.fListOfEntryList;
+    fListOfEventCuts = obj.fListOfEventCuts;
+    fBinNumber = obj.fBinNumber;
+    fBufferSize = obj.fBufferSize;
+    fMixNumber = obj.fMixNumber;
+  }
+  return *this;
+}
+
+
 //_________________________________________________________________________________________________
 AliMixEventPool::~AliMixEventPool()
 {
@@ -215,9 +236,12 @@ void AliMixEventPool::SearchIndexRecursive(Int_t num, Int_t *i, Int_t *d, Int_t 
     AliDebug(AliLog::kDebug+5,"->");
 }
 
+//_________________________________________________________________________________________________
 void AliMixEventPool::SetCutValuesFromBinIndex(Int_t index)
 {
-
+  //
+  // Sets cut value from bin index
+  //
     Int_t numCuts = fListOfEventCuts.GetEntriesFast();
     Int_t *lenght = new Int_t[numCuts];
     Int_t *indexes = new Int_t[numCuts];

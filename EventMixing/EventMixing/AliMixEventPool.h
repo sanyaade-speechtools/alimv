@@ -22,6 +22,7 @@ class AliMixEventPool : public TNamed
 public:
     AliMixEventPool(const char *name="mixEventPool", const char *title="Mix event pool");
     AliMixEventPool(const AliMixEventPool &obj);
+    AliMixEventPool &operator= (const AliMixEventPool& obj);
     virtual ~AliMixEventPool();
 
     // prints object info
@@ -44,10 +45,10 @@ public:
     TObjArray  *GetListOfEventCuts() { return &fListOfEventCuts; }
 
     void        SetCutValuesFromBinIndex(Int_t index);
-    void        SetBufferSize(Int_t buffer) {fBufferSize=buffer;}
-    void        SetMixNumber(Int_t numMix) {        fMixNumber=numMix;}
+    void        SetBufferSize(Int_t buffer) { fBufferSize=buffer; }
+    void        SetMixNumber(Int_t numMix) { fMixNumber=numMix; }
     
-    Int_t       GetBufferSize() { return fBufferSize;}
+    Int_t       GetBufferSize() { return fBufferSize; }
     Int_t       GetMixNumber() { return fMixNumber; }
 
 private:
@@ -57,9 +58,7 @@ private:
 
     Int_t       fBinNumber;             // bin number
     Int_t       fBufferSize;            // buffer size
-    Int_t       fMixNumber;              // mixing number
-
-    AliMixEventPool &operator= (const AliMixEventPool &) { return *this; }
+    Int_t       fMixNumber;             // mixing number
 
     ClassDef(AliMixEventPool, 1)
 };

@@ -1,12 +1,14 @@
 # -*- mode: cmake -*-
 
 set(SRCS
+  EventMixing/AliMixEventCutObj.cxx
+  EventMixing/AliMixEventPool.cxx
+  EventMixing/AliMultiInputEventHandler.cxx
   EventMixing/AliMixInfo.cxx
   EventMixing/AliMixInputHandlerInfo.cxx
-	EventMixing/AliMixEventCutObj.cxx
-	EventMixing/AliMixEventPool.cxx
   EventMixing/AliMixInputEventHandler.cxx
-	EventMixing/AliAnalysisTaskMixInfo.cxx
+  EventMixing/AliAnalysisTaskMixInfo.cxx
+  EventMixing/AliAnalysisTaskMulti.cxx
 )
 
 # fill list of header files from list of source files

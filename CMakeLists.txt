@@ -13,7 +13,8 @@ find_package(AliRoot REQUIRED)
 
 include(AliRootBaseMacro)
 
-set(PARS_TO_CREATE ANALYSISaliceMV PWG2resonances EventMixing RESONANCESMV TASKSMV)
+# ANALYSISaliceMV 
+set(PARS_TO_CREATE PWG2resonances EventMixing RESONANCESMV TASKSMV)
 
 foreach (MYPAR ${PARS_TO_CREATE})
   add_subdirectory(${MYPAR})

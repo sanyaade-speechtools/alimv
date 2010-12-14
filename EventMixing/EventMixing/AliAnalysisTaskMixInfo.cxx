@@ -20,30 +20,27 @@ AliAnalysisTaskMixInfo::AliAnalysisTaskMixInfo(const char *name)
       fMixInfo(0),
       fCurrentEntryTmp(-1)
 {
+    //
     // Constructor
+    //
     DefineOutput(1, TList::Class());
 }
 
 //________________________________________________________________________
 AliAnalysisTaskMixInfo::~AliAnalysisTaskMixInfo()
 {
+  //
     // Destructor
+    //
     if(fOutputList && !AliAnalysisManager::GetAnalysisManager()->IsProofMode()) delete fOutputList;
 }
-
-void AliAnalysisTaskMixInfo::LocalInit()
-{
-//     SetDebugForAllClasses();
-    AliAnalysisTask::LocalInit();
-}
-
 
 //________________________________________________________________________
 void AliAnalysisTaskMixInfo::UserCreateOutputObjects()
 {
     // Create histograms
     // Called once
-//     AliLog::SetGlobalLogLevel(AliLog::kInfo);
+
     SetDebugForAllClasses();
     fOutputList = new TList();
     fOutputList->SetOwner(kTRUE);
@@ -68,8 +65,6 @@ void AliAnalysisTaskMixInfo::UserCreateOutputObjects()
     // Post output data.
     PostData(1, fOutputList);
 }
-
-
 
 //________________________________________________________________________
 void AliAnalysisTaskMixInfo::UserExec(Option_t *)
@@ -97,8 +92,10 @@ void AliAnalysisTaskMixInfo::UserExec(Option_t *)
     PostData(1, fOutputList);
 }
 
+//________________________________________________________________________
 void AliAnalysisTaskMixInfo::UserExecMix(Option_t *)
 {
+  // UserExecMix
     if(fMixInfo) fMixInfo->FillHistogram(AliMixInfo::kMixedEvents,CurrentBinIndex());
     if(CurrentEntryMix()<0) { AliError("Mix entru is -1 and it should not happen !!!!!"); return ;}
     AliDebug(AliLog::kDebug,Form("Mixing %lld %d [%lld,%lld] %d",CurrentEntry(),NumberMixed(),CurrentEntryMain(),CurrentEntryMix(),CurrentBinIndex()));
@@ -106,8 +103,10 @@ void AliAnalysisTaskMixInfo::UserExecMix(Option_t *)
     PostData(1, fOutputList);
 }
 
+//________________________________________________________________________
 void AliAnalysisTaskMixInfo::FinishTaskOutput()
 {
+  // FinishTaskOutput
     if(fMixInfo) fMixInfo->Print();
 }
 
@@ -166,6 +165,9 @@ void AliAnalysisTaskMixInfo::SetDebugForAllClasses()
 
 void AliAnalysisTaskMixInfo::InitMixInfo()
 {
+  //
+  // Init mixing info
+  //
     AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
     AliMultiInputEventHandler *inEvHMain = dynamic_cast<AliMultiInputEventHandler *>(mgr->GetInputEventHandler());
     if(inEvHMain) {

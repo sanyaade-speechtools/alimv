@@ -21,13 +21,14 @@ AliAnalysisTask* AddRsnTask(TString format="esd",Bool_t useMC = kFALSE,TString o
   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
   if (!mgr) mgr = new AliAnalysisManager("RSN train");
 	
+  
+  if (opts.Contains("mix")) {suffix = "_mix"; }
   // initialize task with all available slots, even if not all of them will be used:
-  AliRsnAnalysisMulti *task = new AliRsnAnalysisMulti("RsnAnalysis");
+  AliRsnAnalysisMulti *task = new AliRsnAnalysisMulti(Form("RsnAnalysis%s",suffix.Data()));
   task->SetZeroEventPercentWarning(100.0);
 //   task->SelectCollisionCandidates();
   if (opts.Contains("mix")) {
     task->SetMixing();
-    suffix = "_mix";
   }
   
   // load and execute configuration macro

@@ -53,18 +53,20 @@ AliMixInfo::AliMixInfo(const AliMixInfo &obj) :
     AliDebug(AliLog::kDebug + 5, "<-");
     AliDebug(AliLog::kDebug + 5, "->");
 }
-
+//_________________________________________________________________________________________________
 AliMixInfo::~AliMixInfo()
 {
-    Reset();
+  //
+  // Destructor
+  //
 }
 
-void AliMixInfo::Reset()
-{
-}
-
+//_________________________________________________________________________________________________
 void AliMixInfo::CreateHistogram(AliMixInfo::EInfoHistorgramType type, Int_t nbins, Int_t min, Int_t max)
 {
+  //
+  // Create mix info histograms
+  //
     if (!fHistogramList) {
         fHistogramList = new TList;
         fHistogramList->SetOwner(kTRUE);
@@ -75,8 +77,12 @@ void AliMixInfo::CreateHistogram(AliMixInfo::EInfoHistorgramType type, Int_t nbi
     fHistogramList->Add(hist);
 }
 
+//_________________________________________________________________________________________________
 void AliMixInfo::FillHistogram(AliMixInfo::EInfoHistorgramType type, Int_t value)
 {
+  //
+  // Create mix info histograms
+  //
     if (type == kMixedEvents && value < 0) return;
     if (!fHistogramList) {
         AliError("fHistogramList is null");
@@ -91,7 +97,7 @@ void AliMixInfo::FillHistogram(AliMixInfo::EInfoHistorgramType type, Int_t value
     }
 }
 
-
+//_________________________________________________________________________________________________
 const char *AliMixInfo::GetNameHistogramByType(Int_t index) const
 {
     //
@@ -106,6 +112,7 @@ const char *AliMixInfo::GetNameHistogramByType(Int_t index) const
     return "";
 }
 
+//_________________________________________________________________________________________________
 const char *AliMixInfo::GetTitleHistogramByType(Int_t index) const
 {
     //
@@ -120,8 +127,12 @@ const char *AliMixInfo::GetTitleHistogramByType(Int_t index) const
     return "";
 }
 
+//_________________________________________________________________________________________________
 void AliMixInfo::Print(Option_t *option) const
 {
+  //
+  // Print Mix info
+  //
     if (!fHistogramList) return;
     if (option)
         AliInfo(Form("Name %s with option is %s",GetName(),option));
@@ -135,9 +146,12 @@ void AliMixInfo::Print(Option_t *option) const
         }
     }
 }
-
+//_________________________________________________________________________________________________
 void AliMixInfo::Draw(Option_t *option)
 {
+  //
+  // Drwas mixi info canvas
+  //
     if (!fHistogramList) return;
 
     // creating main canvas
@@ -214,9 +228,12 @@ void AliMixInfo::Draw(Option_t *option)
     cMain->cd(2)->AddExec("dynamic",Form("AliMixInfo::DynamicExec((AliMixInfo*)0x%lx)",(ULong_t)this));
 }
 
+//_________________________________________________________________________________________________
 void AliMixInfo::DynamicExec(AliMixInfo *mixInfo)
 {
-//     infolist->Print();
+  //
+  // Function which is run when user move mouse over mix info
+  //
 
     TObject *select = gPad->GetSelected();
     if (!select) return;
@@ -370,10 +387,12 @@ void AliMixInfo::DynamicExec(AliMixInfo *mixInfo)
     gPad->SetUniqueID ( binX  );
 }
 
-
-
+//_________________________________________________________________________________________________
 Long64_t AliMixInfo::Merge(TCollection *list)
 {
+  //
+  // Merge function
+  //
     if (!list) return 0;
     TIter nxfc(list);
     AliMixInfo *mi = 0;
@@ -396,13 +415,19 @@ Long64_t AliMixInfo::Merge(TCollection *list)
 
 TH1I *AliMixInfo::GetHistogramByType(Int_t index) const
 {
+  //
+  // GetHistogramByType
+  //
     return (TH1I *) fHistogramList->FindObject(GetNameHistogramByType(index));
 }
 
-
+//_________________________________________________________________________________________________
 void AliMixInfo::Add(AliMixInfo *mi)
 {
-    // adds AliMixInfo
+  //
+  // adds AliMixInfo
+  //
+  
     if (!mi) return;
     if (!fHistogramList) return;
     TH1I *hMain = GetHistogramByType(kMainEvents);
@@ -419,8 +444,12 @@ void AliMixInfo::Add(AliMixInfo *mi)
     hMix->Add(mi->GetHistogramByType(kMixedEvents));
 }
 
+//_________________________________________________________________________________________________
 void AliMixInfo::SetEventPool(AliMixEventPool *evPool)
 {
+  //
+  // Sets event pool
+  //
     if (!evPool) return;
 
     if (!fHistogramList) return;
@@ -428,8 +457,12 @@ void AliMixInfo::SetEventPool(AliMixEventPool *evPool)
     fHistogramList->Add(evPool);
 }
 
+//_________________________________________________________________________________________________
 AliMixEventPool *AliMixInfo::GetEventPool(const char *name)
 {
+  //
+  // Gets event pool
+  //
     if (!fHistogramList) return 0;
 
     return (AliMixEventPool *) fHistogramList->FindObject(name);

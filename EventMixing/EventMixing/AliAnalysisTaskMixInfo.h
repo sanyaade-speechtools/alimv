@@ -16,7 +16,6 @@ public:
     AliAnalysisTaskMixInfo(const char *name="<default name>");
     virtual ~AliAnalysisTaskMixInfo();
 
-    virtual void    LocalInit();
     virtual void    UserCreateOutputObjects();
     virtual void    UserExec(Option_t *option);
     virtual void    Terminate(Option_t *);

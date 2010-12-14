@@ -1,6 +1,6 @@
 Int_t SETUP() {
 
-  gSystem->SetDynamicPath(Form(".:%s", gSystem->GetDynamicPath()));
+  gSystem->SetDynamicPath(Form("%s:%s", gSystem->pwd(),gSystem->GetDynamicPath()));
 
   // Set the include paths
   gROOT->ProcessLine(Form(".include %s/EventMixing",gSystem->pwd()));
