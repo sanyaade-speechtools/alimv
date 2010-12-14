@@ -17,7 +17,7 @@
 #include "AliAnalysisManager.h"
 #include "AliInputEventHandler.h"
 
-#include "AliMixEventPool.h"
+// #include "AliMixEventPool.h"
 #include "AliMixInputEventHandler.h"
 #include "AliMixInputHandlerInfo.h"
 
@@ -26,26 +26,25 @@
 #include <TSystem.h>
 
 ClassImp(AliMixInputEventHandler)
-//_____________________________________________________________________________
-AliMixInputEventHandler::AliMixInputEventHandler(const Int_t size,const Int_t mixNum) :
-    AliMultiInputEventHandler(size),
-    fMixTrees(),
-    fTreeMap(size>0?size:1),
-    fMixIntupHandlerInfoTmp(0),
-    fEntryCounter(0),
-    fEventPool(0),
-    fNumberMixed(0),
-    fMixNumber(mixNum),
-    fUseDefautProcess(kFALSE),
-    fUsePreMixEvents(kTRUE)
+
+AliMixInputEventHandler::AliMixInputEventHandler(const Int_t size, const Int_t mixNum): AliMultiInputEventHandler(size),
+fMixTrees(),
+fTreeMap(size>0?size:1),
+fMixIntupHandlerInfoTmp(0),
+fEntryCounter(0),
+fEventPool(0),
+fNumberMixed(0),
+fMixNumber(mixNum),
+fUseDefautProcess(kFALSE),
+fUsePreMixEvents(kTRUE)
 {
-//
-// Default constructor.
-//
-    AliDebug(AliLog::kDebug + 10, "<-");
-    fMixTrees.SetOwner(kTRUE);
-    SetMixNumber(mixNum);
-    AliDebug(AliLog::kDebug + 10, "->");
+  //
+  // Default constructor.
+  //
+  AliDebug(AliLog::kDebug + 10, "<-");
+  fMixTrees.SetOwner(kTRUE);
+  SetMixNumber(mixNum);
+  AliDebug(AliLog::kDebug + 10, "->");
 }
 
 //_____________________________________________________________________________
@@ -176,7 +175,7 @@ Bool_t AliMixInputEventHandler::BeginEvent(Long64_t entry)
 Bool_t AliMixInputEventHandler::GetEntry()
 {
     //
-    // Sets correct events to every mix events
+    // All mixed events are set
     //
     AliDebug(AliLog::kDebug + 5, Form("<-"));
     // if no event pool MixStd
@@ -193,11 +192,11 @@ Bool_t AliMixInputEventHandler::GetEntry()
     return kTRUE;
 }
 
-
+//_____________________________________________________________________________
 Bool_t AliMixInputEventHandler::MixStd()
 {
     //
-    // Sets correct events to every mix events
+    // Mix std - No event pool
     //
     AliDebug(AliLog::kDebug + 5, Form("<-"));
     AliDebug(AliLog::kDebug +1, "Mix method");
@@ -251,10 +250,11 @@ Bool_t AliMixInputEventHandler::MixStd()
     return kTRUE;
 }
 
+//_____________________________________________________________________________
 Bool_t AliMixInputEventHandler::MixBuffer()
 {
     //
-    // Sets correct events to every mix events
+    // Mix in event buffer
     //
     AliDebug(AliLog::kDebug + 5, Form("<-"));
     AliDebug(AliLog::kDebug +1, "Mix method");
@@ -337,10 +337,11 @@ Bool_t AliMixInputEventHandler::MixBuffer()
     return kTRUE;
 }
 
+//_____________________________________________________________________________
 Bool_t AliMixInputEventHandler::MixEventsMoreTimesWithOneEvent()
 {
     //
-    // Sets correct events to every mix events
+    // Mix in history with one event in buffer
     //
     AliDebug(AliLog::kDebug + 5, "<-");
     AliDebug(AliLog::kDebug +1, "Mix method");
@@ -421,8 +422,12 @@ Bool_t AliMixInputEventHandler::MixEventsMoreTimesWithOneEvent()
     return kTRUE;
 }
 
+//_____________________________________________________________________________
 Bool_t AliMixInputEventHandler::MixEventsMoreTimesWithBuffer()
 {
+  //
+  // Mix more events in buffer with mixing with history
+  //
     AliWarning("Not implemented");
     return kFALSE;
 }
@@ -440,14 +445,22 @@ Bool_t AliMixInputEventHandler::FinishEvent()
     return kTRUE;
 }
 
-void AliMixInputEventHandler::AddInputEventHandler(const AliVEventHandler *const)
+//_____________________________________________________________________________
+void AliMixInputEventHandler::AddInputEventHandler(AliVEventHandler*)
 {
+  //
+  // AddInputEventHandler will not be used
+  //
     AliWarning("Function AddInputEventHandler is disabled for AliMixEventInputHandler !!!");
     AliWarning("Use AliMixEventInputHandler::SetInputHandlerForMixing instead. Exiting ...");
 }
 
+//_____________________________________________________________________________
 void AliMixInputEventHandler::UserExecMixAllTasks(Long64_t entryCounter,Int_t idEntryList, Long64_t entryMainReal, Long64_t entryMixReal, Int_t numMixed)
 {
+  //
+  // Execute all task and sets mixing parameters
+  //
     AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
     AliAnalysisTaskMulti *mixTask = 0;
     TObjArrayIter next(mgr->GetTasks());
@@ -464,8 +477,12 @@ void AliMixInputEventHandler::UserExecMixAllTasks(Long64_t entryCounter,Int_t id
     }
 }
 
+//_____________________________________________________________________________
 void AliMixInputEventHandler::SetMixNumber(const Int_t mixNum)
 {
+  //
+  // Sets mix number
+  //
     if(fMixNumber>1&&fBufferSize>1) {
         AliWarning("Sleeping 10 sec to show Warning Message ...")
         AliWarning("=========================================================================================");
@@ -487,4 +504,3 @@ void AliMixInputEventHandler::SetMixNumber(const Int_t mixNum)
     }
     fMixNumber = mixNum;
 }
-

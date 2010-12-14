@@ -28,11 +28,12 @@ AliMixEventCutObj::AliMixEventCutObj(EEPAxis_t type, Float_t min, Float_t max, F
     fNoMore(kFALSE)
 {
     //
-    // Default constructor.
+    // Default constructor
     //
-    AliDebug(AliLog::kDebug + 2, "<-");
-    AliDebug(AliLog::kDebug + 2, "->");
+    AliDebug(AliLog::kDebug + 5, "<-");
+    AliDebug(AliLog::kDebug + 5, "->");
 }
+
 //_________________________________________________________________________________________________
 AliMixEventCutObj::AliMixEventCutObj(const AliMixEventCutObj &obj) : TObject(obj),
     fCutType(obj.fCutType),
@@ -44,20 +45,42 @@ AliMixEventCutObj::AliMixEventCutObj(const AliMixEventCutObj &obj) : TObject(obj
     fNoMore(obj.fNoMore)
 {
     //
-    // Copy constructor.
+    // Copy constructor
     //
+    AliDebug(AliLog::kDebug + 5, "<-");
+    AliDebug(AliLog::kDebug + 5, "->");
 }
+
+//_________________________________________________________________________________________________
+AliMixEventCutObj& AliMixEventCutObj::operator=(const AliMixEventCutObj& obj)
+{
+  //
+  // Assigned operator
+  //
+  if (&obj != this) {
+    TObject::operator=(obj);
+    fCutType = obj.fCutType;
+    fCutMin = obj.fCutMin;
+    fCutMax = obj.fCutMax;
+    fCutStep = obj.fCutStep;
+    fCutSmallVal = obj.fCutSmallVal;
+    fCurrentVal = obj.fCurrentVal;
+    fNoMore = obj.fNoMore;
+  }
+  return *this;
+}
+
 
 //_________________________________________________________________________________________________
 void AliMixEventCutObj::Reset()
 {
     //
-    // Reset cut.
+    // Reset cut
     //
-    AliDebug(AliLog::kDebug + 2, "<-");
+    AliDebug(AliLog::kDebug + 5, "<-");
     fCurrentVal = fCutMin - fCutStep;
     fNoMore = kFALSE;
-    AliDebug(AliLog::kDebug + 2, "->");
+    AliDebug(AliLog::kDebug + 5, "->");
 }
 //_________________________________________________________________________________________________
 Bool_t AliMixEventCutObj::HasMore() const
@@ -189,9 +212,11 @@ const char *AliMixEventCutObj::GetNameOfCut(Int_t index) const
     return "";
 }
 
+//_________________________________________________________________________________________________
 void AliMixEventCutObj::SetCurrentValueToIndex(Int_t index)
 {
+  //
+  // Sets current value to index
+  //
     for(Int_t i=0; i<index; i++) AddStep();
 }
-
-

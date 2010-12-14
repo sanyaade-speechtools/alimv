@@ -18,8 +18,8 @@ AliAnalysisTask* AddRsnCustomTask(TString format="esd",Bool_t useMC = kFALSE,TSt
 	// -- tracks --> PID
 	AliRsnCutManager *cutMgr = new AliRsnCutManager("tmpCutManager");
   RsnCurrentCuts(cutMgr);
-  RsnCurrentCuts(cutMgr);
-  RsnCurrentCuts(cutMgr);
+//   RsnCurrentCuts(cutMgr);
+//   RsnCurrentCuts(cutMgr);
   
   AliRsnCustomTrackInfo *trackInfoPos = new AliRsnCustomTrackInfo("pos","Positive Tracks");
   trackInfoPos->SetParamaterHistogram(AliRsnCustomTrackInfo::kPt,1000,0.0,10.0);

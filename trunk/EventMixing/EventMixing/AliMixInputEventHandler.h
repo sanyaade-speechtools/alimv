@@ -12,11 +12,11 @@
 
 #include <TObjArray.h>
 #include <TArrayI.h>
-
+#include "AliMixEventPool.h"
 #include "AliMultiInputEventHandler.h"
 
 class TChain;
-class AliMixEventPool;
+// class AliMixEventPool;
 class AliMixInputHandlerInfo;
 class AliInputEventHandler;
 class AliMixInputEventHandler : public AliMultiInputEventHandler
@@ -24,6 +24,7 @@ class AliMixInputEventHandler : public AliMultiInputEventHandler
 
 public:
     AliMixInputEventHandler(const Int_t size=1,const Int_t mixNum=1);
+//     AliMixInputEventHandler(const AliMixInputEventHandler &handler);
     virtual ~AliMixInputEventHandler() {;};
 
     // From the interface
@@ -36,10 +37,10 @@ public:
     virtual Bool_t  FinishEvent();
 
     // removing default impementation
-    virtual void            AddInputEventHandler(const AliVEventHandler *const /*inHandler*/);
+    virtual void            AddInputEventHandler(AliVEventHandler */*inHandler*/);
 
     void                    SetInputHandlerForMixing(const AliInputEventHandler *const inHandler);
-    void                    SetEventPool(AliMixEventPool *const evPool) {fEventPool = evPool;}
+    void                    SetEventPool(AliMixEventPool *evPool) {fEventPool = evPool;}
 
     AliInputEventHandler   *InputEventHandler(const Int_t index);
     AliMixEventPool        *GetEventPool() const { return fEventPool;}
@@ -75,9 +76,9 @@ private:
 
     void                    UserExecMixAllTasks(Long64_t entryCounter, Int_t idEntryList, Long64_t entryMainReal, Long64_t entryMixReal, Int_t numMixed);
 
-    AliMixInputEventHandler(const AliMixInputEventHandler &handler);
+    AliMixInputEventHandler(const AliMixInputEventHandler& handler);
     AliMixInputEventHandler &operator=(const AliMixInputEventHandler &handler);
-
+  
     ClassDef(AliMixInputEventHandler, 1)
 };
 

@@ -71,3 +71,4 @@ for MY_TMP_MGR_FUNCTION in $MGR_FUNCTION ; do
 done
 
 ls -al $MY_WORK_DIR
+echo "Output dir is : $MY_WORK_DIR"

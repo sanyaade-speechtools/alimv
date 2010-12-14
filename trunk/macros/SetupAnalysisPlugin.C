@@ -71,7 +71,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
    plugin->SetAPIVersion("V1.1x");
    plugin->SetROOTVersion("v5-27-06b");
 //    plugin->SetAliROOTVersion("v4-20-13-AN");
-   plugin->SetExecutableCommand("aliroot -b -q");
+//    plugin->SetExecutableCommand("aliroot -b -q");
    
    
    // Method 1: Create automatically XML collections using alien 'find' command.

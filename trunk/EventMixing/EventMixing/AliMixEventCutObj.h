@@ -22,6 +22,7 @@ public:
 
     AliMixEventCutObj(EEPAxis_t type=kMultiplicity,Float_t min=0,Float_t max=0, Float_t step=0);
     AliMixEventCutObj(const AliMixEventCutObj &obj);
+    AliMixEventCutObj &operator=(const AliMixEventCutObj &obj);
     virtual ~AliMixEventCutObj() {;}
 
     virtual void Print(const Option_t *) const;
@@ -53,8 +54,6 @@ private:
 
     Float_t     fCurrentVal;    // current value
     Bool_t      fNoMore;        // flag for no more bins
-
-    AliMixEventCutObj &operator=(const AliMixEventCutObj &) { return *this;}
 
     ClassDef(AliMixEventCutObj, 1)
 };

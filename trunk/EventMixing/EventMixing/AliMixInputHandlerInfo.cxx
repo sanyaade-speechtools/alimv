@@ -63,22 +63,12 @@ void AliMixInputHandlerInfo::AddChain(TChain *chain)
     AliDebug(AliLog::kDebug + 5, "->");
 }
 
-// //_____________________________________________________________________________
-// void AliMixInputHandlerInfo::AddTreeToChain(TTree *tree)
-// {
-//     //
-//     // Adds tree to chain
-//     //
-//     AliDebug(AliLog::kDebug + 5, Form("%s %lld", tree->GetCurrentFile()->GetName(), tree->GetEntries()));
-//     GetChain();
-//     fChain->AddFile(tree->GetCurrentFile()->GetName());
-//     fChainEntriesArray.Set(fChain->GetListOfFiles()->GetEntries());
-//     AliDebug(AliLog::kDebug + 3, Form("Adding %lld to id %d", tree->GetEntries(), fChain->GetListOfFiles()->GetEntries() - 1));
-//     fChainEntriesArray.AddAt((Int_t)tree->GetEntries(), (Int_t)fChain->GetListOfFiles()->GetEntries() - 1);
-// }
-
+//_____________________________________________________________________________
 void AliMixInputHandlerInfo::AddTreeToChain(const char *path)
 {
+  //
+  // Adds tree in to chain
+  //
     AliDebug(AliLog::kDebug + 5, Form("<- %s", path));
     GetChain();
     fChain->AddFile(path);
@@ -93,8 +83,6 @@ void AliMixInputHandlerInfo::AddTreeToChain(const char *path)
     fChainEntriesArray.AddAt((Int_t)fChain->GetTree()->GetEntries(), (Int_t)lastIndex - 1);
     AliDebug(AliLog::kDebug + 5, Form("-> %s", path));
 }
-
-
 
 //_____________________________________________________________________________
 TChainElement *AliMixInputHandlerInfo::GetEntryInTree(Long64_t &entry)
@@ -182,8 +170,12 @@ void AliMixInputHandlerInfo::PrepareEntry(TChainElement *te, Long64_t entry, Ali
     AliDebug(AliLog::kDebug + 5, "->");
 }
 
+//_____________________________________________________________________________
 Long64_t AliMixInputHandlerInfo::GetEntries()
 {
+  //
+  // Returns number of entries
+  //
     if(fChain) return fChain->GetEntries();
     return -1;
 }

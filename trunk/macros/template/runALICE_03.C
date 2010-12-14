@@ -5,18 +5,51 @@
 
 Int_t LoadLibsBase() {
   Int_t num=0;
-  if (gSystem->Load("libTree.so")<0) {num++; return num;}
-  if (gSystem->Load("libGeom.so")<0) {num++; return num;}
-  if (gSystem->Load("libVMC.so")<0) {num++; return num;}
-  if (gSystem->Load("libPhysics.so")<0) {num++; return num;}
-  if (gSystem->Load("libSTEERBase.so")<0) {num++; return num;}
-  if (gSystem->Load("libESD.so")<0) {num++; return num;}
-  if (gSystem->Load("libAOD.so")<0) {num++; return num;}
+//   if (gSystem->Load("libTree.so")<0) {num++; return num;}
+//   if (gSystem->Load("libGeom.so")<0) {num++; return num;}
+//   if (gSystem->Load("libVMC.so")<0) {num++; return num;}
+//   if (gSystem->Load("libPhysics.so")<0) {num++; return num;}
+//   if (gSystem->Load("libSTEERBase.so")<0) {num++; return num;}
+//   if (gSystem->Load("libESD.so")<0) {num++; return num;}
+//   if (gSystem->Load("libAOD.so")<0) {num++; return num;}
   if (gSystem->Load("libANALYSIS.so")<0) {num++; return num;}
   if (gSystem->Load("libANALYSISalice.so")<0) {num++; return num;}
   
+  
+  
+//   gROOT->ProcessLine(".x $(ALICE_ROOT)/macros/loadlibs.C");
   gSystem->AddIncludePath(Form("-I\"%s/include\"", gSystem->Getenv("ALICE_ROOT")));
   gROOT->ProcessLine(Form(".include %s/include",gSystem->ExpandPathName("$ALICE_ROOT")));
+  
+// // //   gSystem->AddIncludePath(Form("-I\"%s/ANALYSIS/EventMixing\"", gSystem->Getenv("ALICE_ROOT")));
+// // //   gROOT->ProcessLine(Form(".include %s/ANALYSIS/EventMixing",gSystem->ExpandPathName("$ALICE_ROOT")));
+//   gSystem->Load("libANALYSIS.so");
+//   gSystem->Load("libANALYSISalice.so");
+//   AliAnalysisAlien::SetupPar("EventMixing");
+// //   gSystem->Load("libEventMixing.so");
+//   
+//   AliMultiInputEventHandler *inputHandler = new AliMultiInputEventHandler();
+//   Info("", "Creating esdInputHandler ...");
+//   AliESDInputHandler *esdInputHandler = new AliESDInputHandler();
+//   inputHandler->AddInputEventHandler(esdInputHandler);
+//   
+//   Int_t bufferSize = 1;
+//   Int_t mixNum = 5;
+//   AliMixInputEventHandler *mixHandler = new AliMixInputEventHandler(bufferSize,mixNum);
+//   AliMixEventPool *evPool = new AliMixEventPool();
+//   
+//   AliMixEventCutObj *multi = new AliMixEventCutObj(AliMixEventCutObj::kMultiplicity, 1, 101, 10);
+//   AliMixEventCutObj *zvertex = new AliMixEventCutObj(AliMixEventCutObj::kZVertex, -5, 5, 1);
+//   
+//   evPool->AddCut(new AliMixEventCutObj(*multi));
+//   evPool->AddCut(new AliMixEventCutObj(*zvertex));
+//   
+//   // adds event pool (comment it and u will have default mixing)
+//   mixHandler->SetEventPool(evPool);
+//   //     return ;
+//   //     add mixing handler (uncomment to turn on Mixnig)
+//   inputHandler->AddInputEventHandler(mixHandler);
+  
   return 0;
 }
 
