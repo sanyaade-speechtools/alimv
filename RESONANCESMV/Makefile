@@ -61,6 +61,7 @@ endif
 # # ifeq ($(ALICEINC),-I.)
 ifneq ($(ALICE_ROOT),)
   ALICEINC += -I$(ALICE_ROOT)/include
+  ALICEINC += -I$(ALICE_ROOT)/include/EventMixing
 endif
 # # endif
 

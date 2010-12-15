@@ -17,41 +17,40 @@ class AliMixEventPool;
 class TH1I;
 class TList;
 class TCollection;
-class AliMixInfo : public TNamed
-{
+class AliMixInfo : public TNamed {
 public:
-    enum EInfoHistorgramType { kMainEvents=0, kMixedEvents=1,kNumTypes };
+   enum EInfoHistorgramType { kMainEvents = 0, kMixedEvents = 1, kNumTypes };
 
-    AliMixInfo(const char *name="mix", const char *title="MixInfo");
-    AliMixInfo(const AliMixInfo &obj);
-    virtual ~AliMixInfo();
+   AliMixInfo(const char *name = "mix", const char *title = "MixInfo");
+   AliMixInfo(const AliMixInfo &obj);
+   virtual ~AliMixInfo();
 
-    void Reset();
-    void Print(Option_t *option="") const;
-    void Draw(Option_t *option="");
+   void Reset();
+   void Print(Option_t *option = "") const;
+   void Draw(Option_t *option = "");
 
-    void Add(AliMixInfo *mi);
-    Long64_t Merge(TCollection *list);
+   void Add(AliMixInfo *mi);
+   Long64_t Merge(TCollection *list);
 
-    void SetOutputList(TList *list) { fHistogramList = list;}
-    void CreateHistogram(EInfoHistorgramType type, Int_t nbins,Int_t min,Int_t max);
-    void FillHistogram(AliMixInfo::EInfoHistorgramType type, Int_t value);
-    const char *GetNameHistogramByType(Int_t index) const;
-    const char *GetTitleHistogramByType(Int_t index) const;
-    TH1I  *GetHistogramByType(Int_t index) const;
+   void SetOutputList(TList * const list) { fHistogramList = list; }
+   void CreateHistogram(EInfoHistorgramType type, Int_t nbins, Int_t min, Int_t max);
+   void FillHistogram(AliMixInfo::EInfoHistorgramType type, Int_t value);
+   const char *GetNameHistogramByType(Int_t index) const;
+   const char *GetTitleHistogramByType(Int_t index) const;
+   TH1I  *GetHistogramByType(Int_t index) const;
 
-    void    SetEventPool(AliMixEventPool *evPool);
-    AliMixEventPool *GetEventPool(const char *name);
+   void    SetEventPool(AliMixEventPool *evPool);
+   AliMixEventPool *GetEventPool(const char *name);
 
 
-    static void DynamicExec(AliMixInfo* mixInfo);
+   static void DynamicExec(AliMixInfo*const mixInfo);
 private:
 
-    TList     *fHistogramList;
+   TList     *fHistogramList;  //! histogram list
 
-    AliMixInfo &operator=(const AliMixInfo &) { return *this;}
+   AliMixInfo &operator=(const AliMixInfo &) { return *this; }
 
-    ClassDef(AliMixInfo, 1)
+   ClassDef(AliMixInfo, 1)
 
 };
 
