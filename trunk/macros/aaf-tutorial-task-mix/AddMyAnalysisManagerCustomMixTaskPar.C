@@ -39,18 +39,20 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
 		AliAnalysisAlien::SetupPar("RESONANCESMV");
 
     // load our task localy
-    gROOT->LoadMacro("AliAnalysisTaskCustomMix.cxx++g");
+//     gROOT->LoadMacro("AliAnalysisTaskCustomMix.cxx++g");
 
-    
+//     analysisPlugin->AddIncludePath(gSystem->ExpandPathName("$ALICE_ROOT/include/EventMixing"));
     analysisPlugin->SetAliRootMode("ALIROOT"); // Loads AF libs by default
     // sets additional settings to plubin
-    analysisPlugin->SetAnalysisSource("AliAnalysisTaskCustomMix.cxx+");
+//     analysisPlugin->SetAnalysisSource("AliAnalysisTaskCustomMix.cxx+");
 //     analysisPlugin->SetAdditionalLibs("libCORRFW.so ANALYSISaliceMV.par EventMixing.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
     
 //     analysisPlugin->SetAdditionalLibs("libCORRFW.so libPWG2resonances.so ANALYSISaliceMV.par EventMixing.par RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
-    analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so EventMixing.par  PWG2resonances.par RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
+//     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so EventMixing.par  PWG2resonances.par RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
+    analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so EventMixing.par  PWG2resonances.par RESONANCESMV.par");
 //     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so libPWG2resonances.so RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
 //     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so PWG2resonances.par RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
+//     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so PWG2resonances.par RESONANCESMV.par");
     
     // sets plugin to manager
     mgr->SetGridHandler(analysisPlugin);
@@ -79,11 +81,11 @@ void AddMyAnalysisManagerCustomMixTaskPar(TString analysisSource = "proof", TStr
     AliMixEventCutObj *multi = new AliMixEventCutObj(AliMixEventCutObj::kMultiplicity, 1, 101, 10);
     AliMixEventCutObj *zvertex = new AliMixEventCutObj(AliMixEventCutObj::kZVertex, -5, 5, 1);
 
-//     evPool->AddCut(multi);
-//     evPool->AddCut(zvertex);
+    evPool->AddCut(multi);
+    evPool->AddCut(zvertex);
     
-      evPool->AddCut(new AliMixEventCutObj(*multi));
-      evPool->AddCut(new AliMixEventCutObj(*zvertex));
+//       evPool->AddCut(new AliMixEventCutObj(*multi));
+//       evPool->AddCut(new AliMixEventCutObj(*zvertex));
       
 
     // adds event pool (comment it and u will have default mixing)

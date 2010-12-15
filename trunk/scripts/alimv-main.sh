@@ -29,7 +29,7 @@ export MY_ANALYSIS_SOURCE="proof"
 export MY_ANALYSIS_SOURCE="grid"
 # export MY_ANALYSIS_SOURCE="local"
 export MY_ANALYSIS_MODE="test"
-# export MY_ANALYSIS_MODE="full"
+export MY_ANALYSIS_MODE="full"
 
 # Valgrind options
 export MY_VALGRIND=""
