@@ -9,7 +9,7 @@ AliAnalysisGrid* SetupAnalysisPlugin(TString analysisMode) {
   plugin->SetRunMode(analysisMode.Data());  // VERY IMPORTANT - DECRIBED BELOW
 
   // seutp aliroot version
-  plugin->SetAliROOTVersion("v4-21-09-AN");
+  plugin->SetAliROOTVersion("v4-21-11-AN");
 
   // adds Proof setting 
   MySetupAnalysisPluginProof(plugin);
@@ -23,7 +23,7 @@ AliAnalysisGrid* SetupAnalysisPlugin(TString analysisMode) {
 void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin) {
     plugin->SetProofCluster("alice-caf.cern.ch");
 //     plugin->SetProofCluster("alicaf@lxbsq1410.cern.ch:21001");
-    plugin->SetProofCluster("skaf.saske.sk");
+//     plugin->SetProofCluster("skaf.saske.sk");
 //   plugin->SetProofCluster("skaf-test.saske.sk");
 //       plugin->SetProofCluster("kiaf.sdfarm.kr");
 //   plugin->SetProofCluster("pod@localhost:21001");
@@ -110,7 +110,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
 //   plugin->AddDataFile("/alice/data/2008/LHC08c/000057657/raw/Run57657.Merged.RAW.tag.root");
 
 // Define alien work directory where all files will be copied. Relative to alien $HOME.
-   plugin->SetGridWorkingDir("work/rsnTest/002");
+   plugin->SetGridWorkingDir("work/rsnTest/009");
 // Declare alien output directory. Relative to working directory.
    plugin->SetGridOutputDir("output"); // In this case will be $HOME/work/output
 // Declare the analysis source files names separated by blancs. To be compiled runtime
@@ -136,7 +136,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
    plugin->SetAnalysisMacro("AnalysisTest.C");
 // Optionally set maximum number of input files/subjob (default 100, put 0 to ignore). The optimum for an analysis
 // is correlated with the run time - count few hours TTL per job, not minutes !
-   plugin->SetSplitMaxInputFileNumber(20);
+//    plugin->SetSplitMaxInputFileNumber(20);
 // Optionally set number of failed jobs that will trigger killing waiting sub-jobs.
    plugin->SetMaxInitFailed(5);
 // Optionally resubmit threshold.
@@ -150,7 +150,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
 // Optionally modify job price (default 1)
    plugin->SetPrice(1);
 // Optionally modify split mode (default 'se')
-   plugin->SetSplitMode("se");
+//    plugin->SetSplitMode("se");
 // set number of files to test
    plugin->SetNtestFiles(2);
 

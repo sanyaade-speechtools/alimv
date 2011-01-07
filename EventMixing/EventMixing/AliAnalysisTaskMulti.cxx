@@ -10,7 +10,6 @@
 
 #include "AliAnalysisTaskMulti.h"
 #include "AliAnalysisManager.h"
-#include "AliMultiInputEventHandler.h"
 #include "AliMCEventHandler.h"
 #include "AliESDInputHandler.h"
 #include "AliAODHandler.h"
@@ -18,6 +17,7 @@
 #include "AliAnalysisDataSlot.h"
 #include "AliAODMCParticle.h"
 
+#include "AliMultiInputEventHandler.h"
 ClassImp(AliAnalysisTaskMulti)
 
 //_________________________________________________________________________________________________
@@ -59,6 +59,13 @@ AliAnalysisTaskMulti &AliAnalysisTaskMulti::operator=(const AliAnalysisTaskMulti
    // Assignment
    //
    AliAnalysisTaskSE::operator=(other);
+   fCurrentEntry = other.fCurrentEntry;
+   fCurrentEntryMain = other.fCurrentEntryMain;
+   fCurrentEntryMix = other.fCurrentEntryMix;
+   fCurrentBinIndex = other.fCurrentBinIndex;
+   fNumberMixed = other.fNumberMixed;
+   fMultiInputHandler = other.fMultiInputHandler;
+   fMCEventHandler = other.fMCEventHandler;
    return *this;
 }
 

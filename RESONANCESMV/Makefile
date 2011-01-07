@@ -55,7 +55,7 @@ endif
 
 
 ifneq ($(ALICE_ROOT),)
-  ALICEINC += -I$(ALICE_ROOT)//PWG2/RESONANCES
+  ALICEINC += -I$(ALICE_ROOT)/PWG2/RESONANCES
 endif
 # only if no par file was loaded before
 # # ifeq ($(ALICEINC),-I.)

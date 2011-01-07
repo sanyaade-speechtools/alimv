@@ -15,9 +15,25 @@ Int_t runALICE(TString analysisSource="proof",TString analysisMode="test") { //|
   //
 //   fNEvents = 1e5;
 //   fNEventsSkip = 350;
-//   RunAnalysisManager("AddMyAnalysisManagerCustomMixTask",analysisSource.Data(),analysisMode.Data(),"");
-  RunAnalysisManager("AddMyAnalysisManagerCustomMixTaskPar",analysisSource.Data(),analysisMode.Data(),"");
-//   
+  
+  // mix from aliroot
+//   RunAnalysisManager("AddAnalysisManagerMix",analysisSource.Data(),analysisMode.Data(),"");
+  
+  // mix with parfiles
+//   RunAnalysisManager("AddAnalysisManagerMixPar",analysisSource.Data(),analysisMode.Data(),"");
+  
+  // rsn from aliroot
+//   RunAnalysisManager("AddAnalysisManagerMixRsn",analysisSource.Data(),analysisMode.Data(),"");
+  
+  // rsn with parfiles
+  RunAnalysisManager("AddAnalysisManagerMixRsnPar",analysisSource.Data(),analysisMode.Data(),"");
+  
+  // rsn with parfiles Bat
+//     RunAnalysisManager("AddAnalysisManagerMixRsnParBat",analysisSource.Data(),analysisMode.Data(),"");
+  
+  // mix from aliroot
+//   RunAnalysisManager("AddAnalysisManagerMixOld",analysisSource.Data(),analysisMode.Data(),"");
+  
 //   RunAnalysisManager("AddMyAnalysisManagerEvilTask",analysisSource.Data(),analysisMode.Data(),"");
   
 //     RunAnalysisManager("AddMyAnalysisManagerRsnCustomTask",analysisSource.Data(),analysisMode.Data(),"");

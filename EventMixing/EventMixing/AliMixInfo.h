@@ -12,6 +12,7 @@
 #define ALIMIXINFO_H
 
 #include <TNamed.h>
+#include <Rtypes.h>
 
 class AliMixEventPool;
 class TH1I;
@@ -26,11 +27,11 @@ public:
    virtual ~AliMixInfo();
 
    void Reset();
-   void Print(Option_t *option = "") const;
-   void Draw(Option_t *option = "");
+   virtual void Print(Option_t *option = "") const;
+   virtual void Draw(Option_t *option = "");
+   virtual Long64_t Merge(TCollection *list);
 
    void Add(AliMixInfo *mi);
-   Long64_t Merge(TCollection *list);
 
    void SetOutputList(TList * const list) { fHistogramList = list; }
    void CreateHistogram(EInfoHistorgramType type, Int_t nbins, Int_t min, Int_t max);
@@ -46,7 +47,7 @@ public:
    static void DynamicExec(AliMixInfo*const mixInfo);
 private:
 
-   TList     *fHistogramList;  //! histogram list
+   TList     *fHistogramList;  // histogram list
 
    AliMixInfo &operator=(const AliMixInfo &) { return *this; }
 
