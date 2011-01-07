@@ -1,11 +1,27 @@
-#include "AliRsnCustomTrackInfo.h"
+
 #include <TList.h>
+
+#include "AliESDpid.h"
+#include "../TOF/AliTOFT0maker.h"
+#include "../TOF/AliTOFcalib.h"
+#include "AliCDBManager.h"
+
+#include "AliRsnCustomTrackInfo.h"
 
 ClassImp(AliRsnCustomTrackInfo)
 
 AliRsnCustomTrackInfo::AliRsnCustomTrackInfo(const char* name, const char* title): AliRsnVCustomObj(name, title),
 fCharge(0),
-fCutSet(0)
+fCutSet(0),
+fRecalculateTOFPid(kFALSE),
+fESDpid(0x0),
+fTOFmaker(0x0),
+fTOFcalib(0x0),
+fTOFcalibrateESD(kFALSE),
+fTOFcorrectTExp(kFALSE),
+fTOFuseT0(kFALSE),
+fTOFtuneMC(kFALSE),
+fTOFresolution(0.0)
 {
 
   for(Int_t i=0;i<kNumTypes;i++) {
@@ -37,6 +53,19 @@ void AliRsnCustomTrackInfo::SetParamaterHistogram(AliRsnCustomTrackInfo::EType t
 
 void AliRsnCustomTrackInfo::UserCreateOutputCustom(TList* list)
 {
+
+  if (fRecalculateTOFPid) {
+    // setup TPC response
+    if (!fESDpid) fESDpid = new AliESDpid;
+    fESDpid->GetTPCResponse().SetBetheBlochParameters(1.41543 / 50.0, 2.63394E1, 5.0411E-11, 2.12543, 4.88663);
+    //   fESDpid->GetTPCResponse().SetBetheBlochParameters(fTPCpar[0], fTPCpar[1], fTPCpar[2], fTPCpar[3], fTPCpar[4]);
+    
+    // setup TOF maker & calibration
+    if (!fTOFcalib) fTOFcalib = new AliTOFcalib;
+    if (!fTOFmaker) fTOFmaker = new AliTOFT0maker(fESDpid, fTOFcalib);
+    fTOFmaker->SetTimeResolution(fTOFresolution);
+  }
+  
   for(Int_t i=0;i<kNumTypes;i++) {
     if (fUseParameter[i]) {
       fParameter[i] = new TH1D(Form("h%s_%s",GetName(),GetParameterName(i)),Form("%s (%s)",GetTitle(),GetParameterName(i)),fParameterBins[i],fParameterMin[i],fParameterMax[i]);
@@ -47,6 +76,29 @@ void AliRsnCustomTrackInfo::UserCreateOutputCustom(TList* list)
 }
 void AliRsnCustomTrackInfo::UserExecCustom(AliRsnEvent* ev1, AliRsnEvent* ev2)
 {
+  
+  AliESDEvent *esd   = dynamic_cast<AliESDEvent*>(ev1->GetRefESD());
+  
+  if (fRecalculateTOFPid) {
+    // TOF stuff #1: init OCDB
+    Int_t run = esd->GetRunNumber();
+    AliCDBManager *cdb = AliCDBManager::Instance();
+    cdb->SetDefaultStorage("raw://");
+    cdb->SetRun(run);
+    // TOF stuff #2: init calibration
+    fTOFcalib->SetCorrectTExp(fTOFcorrectTExp);
+    fTOFcalib->Init();
+    // TOF stuff #3: calibrate
+    if (fTOFcalibrateESD) fTOFcalib->CalibrateESD(esd);
+    if (fTOFtuneMC) fTOFmaker->TuneForMC(esd);
+    if (fTOFuseT0) 
+    {
+      fTOFmaker->ComputeT0TOF(esd);
+      fTOFmaker->ApplyT0TOF(esd);
+      fESDpid->MakePID(esd, kFALSE, 0.);
+    }
+  }
+  
   AliRsnDaughter daughter0;
   AliRsnDaughter::ERefType type0;
   Int_t index0;

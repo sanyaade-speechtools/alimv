@@ -1,10 +1,13 @@
 #ifndef ALIRSNCUSTOMTRACKINFO_H
 #define ALIRSNCUSTOMTRACKINFO_H
 
-#include "AliRsnVCustomObj.h"
 #include <TH1.h>
-#include <AliRsnCutSet.h>
+#include "AliRsnCutSet.h"
 
+#include "AliRsnVCustomObj.h"
+class AliESDpid;
+class AliTOFT0maker;
+class AliTOFcalib;
 class AliRsnCustomTrackInfo : public AliRsnVCustomObj
 {
 
@@ -25,7 +28,15 @@ public:
     void SetCutSet(AliRsnCutSet *cutSet) { fCutSet = cutSet;}
     void SetCharge(Short_t ch) { fCharge = ch; }
     
-private:
+    void             RecalculateTOFPid(Bool_t yn = kTRUE)  {fRecalculateTOFPid = yn;}
+    void             SetTOFcalibrateESD(Bool_t yn = kTRUE)  {fTOFcalibrateESD = yn;}
+    void             SetTOFcorrectTExp (Bool_t yn = kTRUE)  {fTOFcorrectTExp = yn;}
+    void             SetTOFuseT0       (Bool_t yn = kTRUE)  {fTOFuseT0 = yn;}
+    void             SetTOFtuneMC      (Bool_t yn = kTRUE)  {fTOFtuneMC = yn;}
+    void             SetTOFresolution  (Double_t v = 100.0) {fTOFresolution = v;}
+    
+    
+protected:
     
   Bool_t      fUseParameter[kNumTypes];     //  flag if parameter is used
   TH1D       *fParameter[kNumTypes];        //! histograms
@@ -33,9 +44,19 @@ private:
   Double_t    fParameterMin[kNumTypes];     //  min
   Double_t    fParameterMax[kNumTypes];     //  max
   
-  Short_t     fCharge;
+  Short_t                fCharge;
   
-  AliRsnCutSet *fCutSet;                    //  cut set
+  AliRsnCutSet          *fCutSet;           //  cut set
+  
+  Bool_t                 fRecalculateTOFPid;
+  AliESDpid             *fESDpid;           //! PID manager
+  AliTOFT0maker         *fTOFmaker;         //! TOF time0 computator
+  AliTOFcalib           *fTOFcalib;         //! TOF calibration
+  Bool_t                 fTOFcalibrateESD;  //  TOF settings
+  Bool_t                 fTOFcorrectTExp;   //  TOF settings
+  Bool_t                 fTOFuseT0;         //  TOF settings
+  Bool_t                 fTOFtuneMC;        //  TOF settings
+  Double_t               fTOFresolution;    //  TOF settings
   
   Double_t GetValue(Int_t num, AliRsnDaughter* d);
   Bool_t IsInTypeRange(Int_t num);

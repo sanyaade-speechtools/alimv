@@ -26,8 +26,6 @@
 #include "AliMixEventPool.h"
 #include "AliMixEventCutObj.h"
 
-
-
 ClassImp(AliMixInfo)
 
 //_________________________________________________________________________________________________
@@ -146,7 +144,7 @@ void AliMixInfo::Print(Option_t *option) const
    }
 }
 //_________________________________________________________________________________________________
-void AliMixInfo::Draw(Option_t *option)
+void AliMixInfo::Draw(Option_t* option)
 {
    //
    // Drwas mixi info canvas
@@ -426,6 +424,7 @@ void AliMixInfo::Add(AliMixInfo *mi)
    // adds AliMixInfo
    //
 
+   AliInfo(Form("Adding %p", mi));
    if (!mi) return;
    if (!fHistogramList) return;
    TH1I *hMain = GetHistogramByType(kMainEvents);

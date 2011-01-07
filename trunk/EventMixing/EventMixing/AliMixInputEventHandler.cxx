@@ -14,9 +14,9 @@
 #include <TSystem.h>
 
 #include "AliLog.h"
-
 #include "AliAnalysisManager.h"
 #include "AliInputEventHandler.h"
+
 #include "AliMixEventPool.h"
 #include "AliMixInputEventHandler.h"
 #include "AliMixInputHandlerInfo.h"

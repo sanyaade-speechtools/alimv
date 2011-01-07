@@ -3,6 +3,8 @@
 SRCS = \
 AliAnalysisTaskEvil.cxx \
 AliAnalysisTaskCustomMix.cxx \
+AliAnalysisTaskCustomMixOld.cxx \
+AliRsnCustomTrackInfoBat.cxx \
 
 
 HDRS:= $(SRCS:.cxx=.h) 

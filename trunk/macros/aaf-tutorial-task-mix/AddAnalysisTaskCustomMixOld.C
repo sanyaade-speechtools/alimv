@@ -2,7 +2,7 @@
 #include <AliLog.h> //|
 #include <TASKSMV/AliAnalysisTaskCustomMix.h>//|
 
-void AddAnalysisTaskCustomMix(TString format="esd",Bool_t useMC = kFALSE,TString opts="")
+void AddAnalysisTaskCustomMixOld(TString format="esd",Bool_t useMC = kFALSE,TString opts="")
 {
   // create manager
   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
@@ -11,13 +11,13 @@ void AddAnalysisTaskCustomMix(TString format="esd",Bool_t useMC = kFALSE,TString
 //   mgr->SetDebugLevel(10);
 
 	// create our task
-  AliAnalysisTaskCustomMix *task = new AliAnalysisTaskCustomMix("AliAnalysisTaskCustomMix");
+  AliAnalysisTaskCustomMixOld *task = new AliAnalysisTaskCustomMixOld("AliAnalysisTaskCustomMixOld");
 //   task->SetMixingDebug(AliLog::kDebug);
   
-  Int_t debugLevel = 0;
+  Int_t debugLevel = 5;
   TString myclasses="";
-//   myclasses+=":AliAnalysisTaskCustomMix";
-//   myclasses+=":AliMixInputEventHandler";
+  myclasses+=":AliAnalysisTaskCustomMixOld";
+  myclasses+=":AliMixInputEventHandler";
 //   myclasses+=":AliMultiInputEventHandler";
 //   myclasses+=":AliMixEventPool";
 //   myclasses+=":AliMixInputHandlerInfo";
@@ -33,7 +33,7 @@ void AddAnalysisTaskCustomMix(TString format="esd",Bool_t useMC = kFALSE,TString
 //   task->UseMC(useMC);
   
   // create mix output container
-  AliAnalysisDataContainer *outputMix = mgr->CreateContainer("cMixOutput", TList::Class(), AliAnalysisManager::kOutputContainer, Form("MixOutput%s.root",opts.Data()));
+  AliAnalysisDataContainer *outputMix = mgr->CreateContainer("cMixOutputOld", TList::Class(), AliAnalysisManager::kOutputContainer, Form("MixOutputOld%s.root",opts.Data()));
 //   output1->SetSpecialOutput();
 //   mgr->SetSpecialOutputLocation("root://localhost//dev/shm/alice/xrd/data/");
   

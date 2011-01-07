@@ -5,7 +5,7 @@
 // Class AliAnalysisTaskMulti
 //
 // AliAnalysisTaskMulti is normal SE task with some additional functionality for
-// AliMultiInputEventHandler
+// AliMultiInputEventHandler and extends UserExecMix function for mixing
 //
 // authors:
 //          Martin Vala (martin.vala@cern.ch)
@@ -47,8 +47,8 @@ protected:
    Int_t    fCurrentBinIndex;    //! current bin index
    Int_t    fNumberMixed;        //! number mixed
 
-   AliMultiInputEventHandler *fMultiInputHandler;  //! pinter to multihandler
-   AliMCEventHandler *fMCEventHandler;             //! pinter to MCEventHandler
+   AliMultiInputEventHandler *fMultiInputHandler;  //! pointer to multihandler
+   AliMCEventHandler *fMCEventHandler;             //! pointer to MCEventHandler
 
    void ConnectMultiHandler();
    void DisconnectMultiHandler();
