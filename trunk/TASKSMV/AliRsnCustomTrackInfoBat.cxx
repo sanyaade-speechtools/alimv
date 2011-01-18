@@ -9,7 +9,9 @@
 
 ClassImp(AliRsnCustomTrackInfoBat)
 
-AliRsnCustomTrackInfoBat::AliRsnCustomTrackInfoBat(const char* name, const char* title): AliRsnCustomTrackInfo(name, title)
+AliRsnCustomTrackInfoBat::AliRsnCustomTrackInfoBat(const char* name, const char* title): 
+AliRsnCustomTrackInfo(name, title)/*,
+fMyHist(0)*/
 {
 }
 
@@ -84,6 +86,8 @@ void AliRsnCustomTrackInfoBat::UserExecCustom(AliRsnEvent* ev1, AliRsnEvent* ev2
     for(Int_t iParam=0;iParam<kNumTypes;iParam++) {
       if (fUseParameter[iParam]) fParameter[iParam]->Fill(GetValue(iParam,&daughter0));
     }
+    
+//     fMyHist->Fill();
   }
   
   if (ev2) return;

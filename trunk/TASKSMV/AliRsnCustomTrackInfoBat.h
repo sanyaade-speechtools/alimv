@@ -15,6 +15,7 @@ public:
     virtual void UserExecMixCustom(AliRsnEvent* ev1, AliRsnEvent* ev2);
     
 private:
+//   TH1D *fMyHist;
 
 		ClassDef(AliRsnCustomTrackInfoBat,1)
 };

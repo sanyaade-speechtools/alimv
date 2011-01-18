@@ -13,7 +13,7 @@ Int_t runALICE(TString analysisSource="proof",TString analysisMode="test") { //|
 //
 //   RunAnalysisManager("AddMyAnalysisManagerCustomTask",analysisSource.Data(),analysisMode.Data(),"");
   //
-//   fNEvents = 1e5;
+//   fNEvents = 1e4;
 //   fNEventsSkip = 350;
   
   // mix from aliroot
@@ -28,6 +28,8 @@ Int_t runALICE(TString analysisSource="proof",TString analysisMode="test") { //|
   // rsn with parfiles
   RunAnalysisManager("AddAnalysisManagerMixRsnPar",analysisSource.Data(),analysisMode.Data(),"");
   
+  // rsn with parfiles aod
+//   RunAnalysisManager("AddAnalysisManagerMixRsnParAOD",analysisSource.Data(),analysisMode.Data(),"");
   // rsn with parfiles Bat
 //     RunAnalysisManager("AddAnalysisManagerMixRsnParBat",analysisSource.Data(),analysisMode.Data(),"");
   
