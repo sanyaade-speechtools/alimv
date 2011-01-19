@@ -9,7 +9,7 @@ AliAnalysisGrid* SetupAnalysisPlugin(TString analysisMode) {
   plugin->SetRunMode(analysisMode.Data());  // VERY IMPORTANT - DECRIBED BELOW
 
   // seutp aliroot version
-  plugin->SetAliROOTVersion("v4-21-12-AN");
+  plugin->SetAliROOTVersion("v4-21-11-AN");
 
   // adds Proof setting 
   MySetupAnalysisPluginProof(plugin);
@@ -31,10 +31,10 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin) {
 // Dataset to be used
     
     // aod
-    plugin->SetProofDataSet("/PWG2/mvala/LHC10b_000115401_p2_a017#aodTree");
+//     plugin->SetProofDataSet("/PWG2/mvala/LHC10b_000115401_p2_a017#aodTree");
     
 //     plugin->SetProofDataSet("/alice/data/LHC10h_000137366_p1#esdTree");
-//     plugin->SetProofDataSet("/alice/data/LHC10b_000115401_p2#esdTree");
+    plugin->SetProofDataSet("/alice/data/LHC10b_000115401_p2#esdTree");
 //     plugin->SetProofDataSet("/alice/sim/LHC10h9_000137366#esdTree");
 //       plugin->SetProofDataSet("/alice/sim/LHC10a12_104157#esdTree");
 //       plugin->SetProofDataSet("/alice/sim/LHC10g2d_130844#esdTree");
@@ -53,7 +53,7 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin) {
 //   plugin->SetNproofWorkers(1);
 //    plugin->SetNproofWorkersPerSlave(1);
 // May request connection to alien upon connection to grid
-//     plugin->SetProofConnectGrid(kTRUE);
+    plugin->SetProofConnectGrid(kTRUE);
 
 //    plugin->SetNproofWorkers(5);
 // May use a specific version of root installed in proof
@@ -114,7 +114,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
 //   plugin->AddDataFile("/alice/data/2008/LHC08c/000057657/raw/Run57657.Merged.RAW.tag.root");
 
 // Define alien work directory where all files will be copied. Relative to alien $HOME.
-   plugin->SetGridWorkingDir("work/rsn/001");
+   plugin->SetGridWorkingDir("work/rsn/004");
 // Declare alien output directory. Relative to working directory.
    plugin->SetGridOutputDir("output"); // In this case will be $HOME/work/output
 // Declare the analysis source files names separated by blancs. To be compiled runtime
@@ -140,13 +140,16 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin) {
    plugin->SetAnalysisMacro("AnalysisTest.C");
 // Optionally set maximum number of input files/subjob (default 100, put 0 to ignore). The optimum for an analysis
 // is correlated with the run time - count few hours TTL per job, not minutes !
-   plugin->SetSplitMaxInputFileNumber(1);
+   plugin->SetSplitMaxInputFileNumber(2);
 // Optionally set number of failed jobs that will trigger killing waiting sub-jobs.
    plugin->SetMaxInitFailed(5);
 // Optionally resubmit threshold.
    plugin->SetMasterResubmitThreshold(90);
 // Optionally set time to live (default 30000 sec)
-   plugin->SetTTL(20000);
+//    plugin->SetTTL(20000);
+   // 23h 30m
+   plugin->SetTTL(8460000);
+   
 // Optionally set input format (default xml-single)
    plugin->SetInputFormat("xml-single");
 // Optionally modify the name of the generated JDL (default analysis.jdl)

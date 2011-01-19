@@ -29,7 +29,7 @@ fi
 export MY_ROOT_DEFAULT_OPTIONS=""
 # export MY_ROOT_DEFAULT_OPTIONS="-q"
 export MY_ANALYSIS_SOURCE="proof"
-export MY_ANALYSIS_SOURCE="grid"
+# export MY_ANALYSIS_SOURCE="grid"
 # export MY_ANALYSIS_SOURCE="local"
 export MY_ANALYSIS_MODE="test"
 export MY_ANALYSIS_MODE="full"
