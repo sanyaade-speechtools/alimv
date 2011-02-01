@@ -23,21 +23,21 @@ ClassImp(AliRsnCutDaughterType)
 
 //_________________________________________________________________________________________________
 AliRsnCutDaughterType::AliRsnCutDaughterType() :
-  AliRsnCut(),
-  fRefType(kTypes)
+   AliRsnCut(),
+   fRefType(kTypes)
 {
 //
 // Default constructor.
 //
 
-  SetTargetType(AliRsnTarget::kDaughter);
+   SetTargetType(AliRsnTarget::kDaughter);
 }
 
 //_________________________________________________________________________________________________
 AliRsnCutDaughterType::AliRsnCutDaughterType
 (const char *name, EType type) :
-  AliRsnCut(name, AliRsnCut::kDaughter, 0.0, 0.0),
-  fRefType(type)
+   AliRsnCut(name, AliRsnCut::kDaughter, 0.0, 0.0),
+   fRefType(type)
 {
 //
 // Main constructor.
@@ -51,34 +51,32 @@ Bool_t AliRsnCutDaughterType::IsSelected(TObject *object)
 // Cut checker.
 //
 
-  // coherence check
-  if (!TargetOK(object, AliRsnTarget::kDaughter)) return kFALSE;
-  
-  // check the daughter according to the selected type
-  // in some cases this means to retrieve the track status
-  AliRsnDaughter *daughter = fDaughter;
-  AliVTrack   *track  = dynamic_cast<AliVTrack*>(daughter->GetRef());
-  AliESDtrack *esdT   = dynamic_cast<AliESDtrack*>(daughter->GetRef());
-  ULong_t      status = 0x0;
-  if (track) status = (ULong_t)track->GetStatus();
-  
-  switch (fRefType)
-  {
-    case kTrackTPC:
-      return ((status & AliESDtrack::kTPCin)  != 0);
-    case kTrackITSSA:
-      if (esdT && track)
-      {
-        UChar_t itsCluMap = track->GetITSClusterMap();
-        Int_t   k, nITS   = 0;
-        for(k = 2; k < 6; k++) if(itsCluMap & (1 << k)) ++nITS;
-        if (nITS < 3) return kFALSE;
-      }
-      return ((status & AliESDtrack::kTPCin)  == 0 && (status & AliESDtrack::kITSrefit) != 0 && (status & AliESDtrack::kITSpureSA) == 0 && (status & AliESDtrack::kITSpid) != 0);
-    case kV0:
-      return daughter->IsV0();
-    default:
-      AliError("No good reference type is chosen. Cut skipped");
-      return kTRUE;
-  }
+   // coherence check
+   if (!TargetOK(object, AliRsnTarget::kDaughter)) return kFALSE;
+
+   // check the daughter according to the selected type
+   // in some cases this means to retrieve the track status
+   AliRsnDaughter *daughter = fDaughter;
+   AliVTrack   *track  = dynamic_cast<AliVTrack*>(daughter->GetRef());
+   AliESDtrack *esdT   = dynamic_cast<AliESDtrack*>(daughter->GetRef());
+   ULong_t      status = 0x0;
+   if (track) status = (ULong_t)track->GetStatus();
+
+   switch (fRefType) {
+      case kTrackTPC:
+         return ((status & AliESDtrack::kTPCin)  != 0);
+      case kTrackITSSA:
+         if (esdT && track) {
+            UChar_t itsCluMap = track->GetITSClusterMap();
+            Int_t   k, nITS   = 0;
+            for (k = 2; k < 6; k++) if (itsCluMap & (1 << k)) ++nITS;
+            if (nITS < 3) return kFALSE;
+         }
+         return ((status & AliESDtrack::kTPCin)  == 0 && (status & AliESDtrack::kITSrefit) != 0 && (status & AliESDtrack::kITSpureSA) == 0 && (status & AliESDtrack::kITSpid) != 0);
+      case kV0:
+         return daughter->IsV0();
+      default:
+         AliError("No good reference type is chosen. Cut skipped");
+         return kTRUE;
+   }
 }

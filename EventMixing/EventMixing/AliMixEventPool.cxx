@@ -229,7 +229,7 @@ void AliMixEventPool::SearchIndexRecursive(Int_t num, Int_t *i, Int_t *d, Int_t 
    //
    AliDebug(AliLog::kDebug + 5, "<-");
    if (num > 0) {
-      index += (i[num] - 1) * d[num-1];
+      index += (i[num] - 1) * d[num - 1];
       SearchIndexRecursive(num - 1, i, d, index);
    } else {
       index += i[num];
@@ -269,7 +269,7 @@ void AliMixEventPool::SetCutValuesFromBinIndex(Int_t index)
       timesNum = 1;
       for (j = 0; j < numCuts - i - 1; j++) timesNum *= lenght[j];
       indexNum /= timesNum;
-      indexes[numCuts-i-1] = indexNum + 1;
+      indexes[numCuts - i - 1] = indexNum + 1;
       index -= indexNum * timesNum;
       indexNum = index;
    }
