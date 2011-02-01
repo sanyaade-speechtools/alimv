@@ -3,12 +3,11 @@
 SRCS = \
 EventMixing/AliMixEventCutObj.cxx \
 EventMixing/AliMixEventPool.cxx \
-EventMixing/AliMultiInputEventHandler.cxx \
 EventMixing/AliMixInfo.cxx \
 EventMixing/AliMixInputHandlerInfo.cxx \
 EventMixing/AliMixInputEventHandler.cxx \
 EventMixing/AliAnalysisTaskMixInfo.cxx \
-EventMixing/AliAnalysisTaskMulti.cxx
+
 
 HDRS:= $(SRCS:.cxx=.h) 
 

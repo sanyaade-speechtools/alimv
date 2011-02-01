@@ -49,6 +49,20 @@ public:
    void                    UsePreMixEvents(Bool_t b = kTRUE) { fUsePreMixEvents = b; }
    void                    SetMixNumber(const Int_t mixNum);
 
+   void                    SetCurrentBinIndex(Int_t const index) { fCurrentBinIndex = index; }
+   void                    SetCurrentEntry(Long64_t const entry) { fCurrentEntry = entry ; }
+   void                    SetCurrentEntryMain(Long64_t const entry) { fCurrentEntryMain = entry ; }
+   void                    SetCurrentEntryMix(Long64_t const entry) { fCurrentEntryMix = entry ; }
+   void                    SetNumberMixed(Int_t const index) { fNumberMixed = index; }
+
+   Int_t                   CurrentBinIndex() const { return fCurrentBinIndex; }
+   Long64_t                CurrentEntry() const { return fCurrentEntry; }
+   Long64_t                CurrentEntryMain() const { return fCurrentEntryMain; }
+   Long64_t                CurrentEntryMix() const { return fCurrentEntryMix; }
+   Int_t                   NumberMixed() const { return fNumberMixed; }
+
+
+
 protected:
 
    TObjArray               fMixTrees;              // buffer of input handlers
@@ -63,6 +77,12 @@ private:
 
    Bool_t                  fUseDefautProcess;      // use default process
    Bool_t                  fUsePreMixEvents;       // use pre mixing events
+
+   // mixing info
+   Long64_t fCurrentEntry;       //! current entry number (adds 1 for every event processed on each worker)
+   Long64_t fCurrentEntryMain;   //! current entry in chain of processed files
+   Long64_t fCurrentEntryMix;    //! current mixed entry in chain of processed files
+   Int_t    fCurrentBinIndex;    //! current bin index
 
    virtual Bool_t          MixStd();
    virtual Bool_t          MixBuffer();
