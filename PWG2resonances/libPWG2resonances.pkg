@@ -25,10 +25,10 @@ SRCS= RESONANCES/AliRsnDaughter.cxx \
       RESONANCES/AliRsnPairNtuple.cxx \
       RESONANCES/AliRsnAnalysisManager.cxx \
       RESONANCES/AliRsnVATProcessInfo.cxx \
+      RESONANCES/AliRsnVAnalysisTask.cxx \
       RESONANCES/AliRsnVAnalysisTaskSE.cxx \
-      RESONANCES/AliRsnVAnalysisTaskME.cxx \
+      RESONANCES/AliRsnAnalysisTask.cxx \
       RESONANCES/AliRsnAnalysisSE.cxx \
-      RESONANCES/AliRsnAnalysisME.cxx \
       RESONANCES/AliRsnAnalysisEffSE.cxx \
       RESONANCES/AliRsnTOFT0maker.cxx \
       RESONANCES/AliRsnAnalysisPhi900GeV.cxx \
@@ -36,6 +36,9 @@ SRCS= RESONANCES/AliRsnDaughter.cxx \
       RESONANCES/AliRsnAnalysisPhi7TeVNoPID.cxx \
       RESONANCES/AliRsnMonitorTrack.cxx \
       RESONANCES/AliRsnAnalysisMonitorTask.cxx \
+      RESONANCES/AliRsnAnalysisPhiKK.cxx \
+      RESONANCES/AliRsnAnalysisKStarKpi.cxx \
+
 
 HDRS= $(SRCS:.cxx=.h)
 

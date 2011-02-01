@@ -2,13 +2,12 @@
 
 set(SRCS  RESONANCES/AliRsnDaughter.cxx
       RESONANCES/AliRsnMother.cxx
+      RESONANCES/AliRsnPairDef.cxx
       RESONANCES/AliRsnEvent.cxx
+      RESONANCES/AliRsnTarget.cxx
       RESONANCES/AliRsnValue.cxx
-      RESONANCES/AliRsnFunction.cxx
-      RESONANCES/AliRsnExpression.cxx
-      RESONANCES/AliRsnVariableExpression.cxx
       RESONANCES/AliRsnCut.cxx
-      #RESONANCES/AliRsnCutStd.cxx
+      RESONANCES/AliRsnCutValue.cxx
       RESONANCES/AliRsnCutPID.cxx
       RESONANCES/AliRsnCutBetheBloch.cxx
       RESONANCES/AliRsnCutPrimaryVertex.cxx
@@ -17,18 +16,19 @@ set(SRCS  RESONANCES/AliRsnDaughter.cxx
       RESONANCES/AliRsnCutESD2010.cxx
       RESONANCES/AliRsnCutAOD2010.cxx
       RESONANCES/AliRsnCutSet.cxx
-      RESONANCES/AliRsnCutValue.cxx
+      RESONANCES/AliRsnExpression.cxx
+      RESONANCES/AliRsnVariableExpression.cxx
       RESONANCES/AliRsnCutManager.cxx
-      RESONANCES/AliRsnPairDef.cxx
+      RESONANCES/AliRsnFunction.cxx
       RESONANCES/AliRsnPair.cxx
       RESONANCES/AliRsnPairFunctions.cxx
       RESONANCES/AliRsnPairNtuple.cxx
       RESONANCES/AliRsnAnalysisManager.cxx
       RESONANCES/AliRsnVATProcessInfo.cxx
+      RESONANCES/AliRsnVAnalysisTask.cxx
       RESONANCES/AliRsnVAnalysisTaskSE.cxx
-      RESONANCES/AliRsnVAnalysisTaskME.cxx
+      RESONANCES/AliRsnAnalysisTask.cxx
       RESONANCES/AliRsnAnalysisSE.cxx
-      RESONANCES/AliRsnAnalysisME.cxx
       RESONANCES/AliRsnAnalysisEffSE.cxx
       RESONANCES/AliRsnTOFT0maker.cxx
       RESONANCES/AliRsnAnalysisPhi900GeV.cxx
@@ -36,7 +36,8 @@ set(SRCS  RESONANCES/AliRsnDaughter.cxx
       RESONANCES/AliRsnAnalysisPhi7TeVNoPID.cxx
       RESONANCES/AliRsnMonitorTrack.cxx
       RESONANCES/AliRsnAnalysisMonitorTask.cxx
-#      RESONANCES/AliRsnAnalysisMonitorPairTask.cxx
+      RESONANCES/AliRsnAnalysisPhiKK.cxx
+      RESONANCES/AliRsnAnalysisKStarKpi.cxx
 )
 
 # fill list of header files from list of source files
