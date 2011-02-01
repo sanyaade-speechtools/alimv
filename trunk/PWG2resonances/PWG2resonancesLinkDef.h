@@ -31,11 +31,11 @@
 #pragma link C++ class AliRsnAnalysisManager+;
 
 #pragma link C++ class AliRsnVATProcessInfo+;
+#pragma link C++ class AliRsnVAnalysisTask+;
 #pragma link C++ class AliRsnVAnalysisTaskSE+;
-#pragma link C++ class AliRsnVAnalysisTaskME+;
 
+#pragma link C++ class AliRsnAnalysisTask+;
 #pragma link C++ class AliRsnAnalysisSE+;
-#pragma link C++ class AliRsnAnalysisME+;
 #pragma link C++ class AliRsnAnalysisEffSE+;
 
 #pragma link C++ class AliRsnTOFT0maker+;
@@ -45,5 +45,8 @@
 
 #pragma link C++ class AliRsnMonitorTrack+;
 #pragma link C++ class AliRsnAnalysisMonitorTask+;
+
+#pragma link C++ class AliRsnAnalysisPhiKK+;
+#pragma link C++ class AliRsnAnalysisKStarKpi+;
 
 #endif
