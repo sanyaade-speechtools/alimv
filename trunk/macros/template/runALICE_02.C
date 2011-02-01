@@ -4,7 +4,7 @@
 void RunAnalysisManager(TString, TString, TString.TString); //|
 //
 Int_t runALICE(TString analysisSource = "proof", TString analysisMode = "test") //|
-{
+{ //|
 //
 //
    fNEvents = 1 * 1e9;

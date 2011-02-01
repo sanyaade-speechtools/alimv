@@ -32,6 +32,7 @@ function CopyFilesFromManagerMacro() {
 
 	MGR_FILENAME=`find $MY_SOURCE_DIR/macros/ -name "$1"`
 	echo "Copying Manager $MGR_FILENAME to $MY_WORK_DIR ..."
+	echo "\$MGR_FILENAME $MGR_FILENAME"
 	cat $MGR_FILENAME | grep -v "//|" > $MY_WORK_DIR/`basename $MGR_FILENAME`
 
 
@@ -47,9 +48,11 @@ function CopyFilesFromManagerMacro() {
 	for MY_TMP_FILE in $MGR_PLUGIN_MACRO; do
 		MY_TMP_PARFILE=`echo $MY_TMP_FILE | awk -F '"' '{print $2}'`
 		MY_TMP_FILE_TO_COPY=`find $MY_SOURCE_DIR/pars/ -name "$MY_TMP_PARFILE.par"`
-		if [ ! -e $MY_WORK_DIR/`basename $MY_TMP_FILE_TO_COPY` ];then
-			echo "Copying $MY_TMP_FILE_TO_COPY to $MY_WORK_DIR ..."
-			cp -f $MY_TMP_FILE_TO_COPY $MY_WORK_DIR/
+		if [ ! -z "$MY_TMP_FILE_TO_COPY" ];then
+			if [ ! -e $MY_WORK_DIR/`basename $MY_TMP_FILE_TO_COPY` ];then
+				echo "Copying $MY_TMP_FILE_TO_COPY to $MY_WORK_DIR ..."
+				cp -f $MY_TMP_FILE_TO_COPY $MY_WORK_DIR/
+			fi
 		fi
 	done 
 
@@ -75,11 +78,15 @@ if [ ! -e $1 ];then
 	exit 2
 fi
 
+echo "\$1 $1"
 # finds out what is AddManagerMacro
 MGR_FUNCTION=`cat $1 | grep 'RunAnalysisManager("'`
 for MY_TMP_MGR_FUNCTION in $MGR_FUNCTION ; do
 	MY_TMP_MGR_FUNCTION2=`echo $MY_TMP_MGR_FUNCTION | awk -F '"' '{ print $2}'`
-	CopyFilesFromManagerMacro "$MY_TMP_MGR_FUNCTION2.C"
+	
+	if [ ! -z $MY_TMP_MGR_FUNCTION2 ];then
+		CopyFilesFromManagerMacro "$MY_TMP_MGR_FUNCTION2.C"
+	fi
 done
 
 ls -al $MY_WORK_DIR
