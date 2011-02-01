@@ -13,11 +13,11 @@
 
 #include "AliLog.h"
 
-#include "AliAnalysisTaskMulti.h"
+#include "AliAnalysisTaskSE.h"
 
 class TList;
 class AliMixInfo;
-class AliAnalysisTaskMixInfo : public AliAnalysisTaskMulti {
+class AliAnalysisTaskMixInfo : public AliAnalysisTaskSE {
 public:
    AliAnalysisTaskMixInfo(const char *name = "<default name>");
    virtual ~AliAnalysisTaskMixInfo();

@@ -21,7 +21,7 @@ ClassImp(AliAnalysisTaskMixInfo)
 
 //________________________________________________________________________
 AliAnalysisTaskMixInfo::AliAnalysisTaskMixInfo(const char *name)
-   : AliAnalysisTaskMulti(name),
+   : AliAnalysisTaskSE(name),
      fOutputList(0),
      fMixInfo(0),
      fCurrentEntryTmp(-1),
@@ -85,17 +85,18 @@ void AliAnalysisTaskMixInfo::UserExec(Option_t *)
    AliMultiInputEventHandler *inEvHMain = dynamic_cast<AliMultiInputEventHandler *>(mgr->GetInputEventHandler());
    if (inEvHMain) {
       AliMixInputEventHandler *mixEH = dynamic_cast<AliMixInputEventHandler *>(inEvHMain->GetFirstMultiInputHandler());
-      if (fMixInfo) {
+      if (fMixInfo && mixEH) {
          if (mixEH->BufferSize() > 1) {
             if (mixEH->NumberMixedTimes() >= mixEH->BufferSize())
-               fMixInfo->FillHistogram(AliMixInfo::kMainEvents, CurrentBinIndex());
+               fMixInfo->FillHistogram(AliMixInfo::kMainEvents, mixEH->CurrentBinIndex());
          } else {
-            fMixInfo->FillHistogram(AliMixInfo::kMainEvents, CurrentBinIndex());
+            fMixInfo->FillHistogram(AliMixInfo::kMainEvents, mixEH->CurrentBinIndex());
          }
+
+         if (mixEH->CurrentEntryMix() >= 0)
+            AliDebug(AliLog::kDebug + 1, Form("Main %lld %d [%lld,%lld] %d", mixEH->CurrentEntry(), mixEH->CurrentBinIndex(), mixEH->CurrentEntryMain(), mixEH->CurrentEntryMix(), mixEH->NumberMixed()));
       }
    }
-   if (CurrentEntryMix() >= 0)
-      AliDebug(AliLog::kDebug + 1, Form("Main %lld %d [%lld,%lld] %d", CurrentEntry(), NumberMixed(), CurrentEntryMain(), CurrentEntryMix(), NumberMixed()));
    // Post output data.
    PostData(1, fOutputList);
 }
@@ -104,12 +105,18 @@ void AliAnalysisTaskMixInfo::UserExec(Option_t *)
 void AliAnalysisTaskMixInfo::UserExecMix(Option_t *)
 {
    // UserExecMix
-   if (fMixInfo) fMixInfo->FillHistogram(AliMixInfo::kMixedEvents, CurrentBinIndex());
-   if (CurrentEntryMix() < 0) {
-      AliError("Mix entru is -1 and it should not happen !!!!!");
-      return ;
+   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
+   AliMultiInputEventHandler *inEvHMain = dynamic_cast<AliMultiInputEventHandler *>(mgr->GetInputEventHandler());
+   if (inEvHMain) {
+      AliMixInputEventHandler *mixEH = dynamic_cast<AliMixInputEventHandler *>(inEvHMain->GetFirstMultiInputHandler());
+      if (!mixEH) return;
+      if (fMixInfo) fMixInfo->FillHistogram(AliMixInfo::kMixedEvents, mixEH->CurrentBinIndex());
+      if (mixEH->CurrentEntryMix() < 0) {
+         AliError("Mix entry is -1 and it should not happen !!!!!");
+         return ;
+      }
+      AliDebug(AliLog::kDebug, Form("Mixing %lld %d [%lld,%lld] %d", mixEH->CurrentEntry(), mixEH->CurrentBinIndex(), mixEH->CurrentEntryMain(), mixEH->CurrentEntryMix(), mixEH->NumberMixed()));
    }
-   AliDebug(AliLog::kDebug, Form("Mixing %lld %d [%lld,%lld] %d", CurrentEntry(), NumberMixed(), CurrentEntryMain(), CurrentEntryMix(), CurrentBinIndex()));
    // Post output data.
    PostData(1, fOutputList);
 }
