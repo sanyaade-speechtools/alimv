@@ -1,11 +1,13 @@
 #-*- Mode: Makefile -*-
 
 SRCS = \
-AliRsnVAnalysisTaskMulti.cxx \
-AliRsnAnalysisMulti.cxx \
 AliRsnVCustomObj.cxx \
 AliRsnCustomTrackInfo.cxx \
-AliRsnCustomTask.cxx
+AliRsnCustomTask.cxx \
+AliRsnOutDraw.cxx \
+AliRsnOutReader.cxx \
+AliRsnOutManager.cxx \
+
 
 
 HDRS:= $(SRCS:.cxx=.h) 
