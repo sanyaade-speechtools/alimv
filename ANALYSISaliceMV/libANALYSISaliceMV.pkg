@@ -1,6 +1,9 @@
 #-*- Mode: Makefile -*-
 
 SRCS = \
+AliMultiInputEventHandler.cxx \
+AliFileInfo.cxx \
+AliMergeAnalysisTask.cxx
 
 HDRS:= $(SRCS:.cxx=.h) 
 
