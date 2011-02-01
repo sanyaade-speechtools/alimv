@@ -10,47 +10,47 @@
 //                   defined inside a function named 'RsnConfigTask()',
 //                   whatever the name of the macro itself, whose first two
 //                   arguments must have to be the task and the 'dataLabel' argument.
-// 
+//
 
-AliAnalysisTask* AddRsnTask(TString format="esd",Bool_t useMC = kFALSE,TString opts="")
+AliAnalysisTask* AddRsnTask(TString format = "esd", Bool_t useMC = kFALSE, TString opts = "")
 {
-	
-	TString configMacro = "ConfigRsnSimple.C";
-  TString suffix;
-	// retrieve analysis manager
-  AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
-  if (!mgr) mgr = new AliAnalysisManager("RSN train");
-	
-  
-  if (opts.Contains("mix")) {suffix = "_mix"; }
-  // initialize task with all available slots, even if not all of them will be used:
-  AliRsnAnalysisMulti *task = new AliRsnAnalysisMulti(Form("RsnAnalysis%s",suffix.Data()));
-  task->SetZeroEventPercentWarning(100.0);
+
+   TString configMacro = "ConfigRsnSimple.C";
+   TString suffix;
+   // retrieve analysis manager
+   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
+   if (!mgr) mgr = new AliAnalysisManager("RSN train");
+
+
+   if (opts.Contains("mix")) {suffix = "_mix"; }
+   // initialize task with all available slots, even if not all of them will be used:
+   AliRsnAnalysisTask *task = new AliRsnAnalysisTask(Form("RsnAnalysis%s", suffix.Data()));
+   task->SetZeroEventPercentWarning(100.0);
 //   task->SelectCollisionCandidates();
-  if (opts.Contains("mix")) {
-    task->SetMixing();
-  }
-  
-  // load and execute configuration macro
-  gROOT->LoadMacro(configMacro);
-	configMacro.ReplaceAll(".C","");
-  if (!gROOT->ProcessLine(Form("%s((AliRsnAnalysisManager*)0x%lx)",configMacro.Data(),(ULong_t)task->GetAnalysisManager()))) return kFALSE;
+   if (opts.Contains("mix")) {
+      task->SetMixing();
+   }
 
-  // add the task to manager
-  mgr->AddTask(task);
+   // load and execute configuration macro
+   gROOT->LoadMacro(configMacro);
+   configMacro.ReplaceAll(".C", "");
+   if (!gROOT->ProcessLine(Form("%s((AliRsnAnalysisManager*)0x%lx)", configMacro.Data(), (ULong_t)task->GetAnalysisManager()))) return kFALSE;
 
-  // connect input container according to source choice
-  mgr->ConnectInput(task, 0, mgr->GetCommonInputContainer());
+   // add the task to manager
+   mgr->AddTask(task);
 
-  // create paths for the output in the common file
-  Char_t commonPath[500];
-  sprintf(commonPath, "%s", AliAnalysisManager::GetCommonFileName());
+   // connect input container according to source choice
+   mgr->ConnectInput(task, 0, mgr->GetCommonInputContainer());
 
-  // create containers for output
-  AliAnalysisDataContainer *outputInfo = mgr->CreateContainer(Form("RsnInfo%s",suffix.Data()), TList::Class(), AliAnalysisManager::kOutputContainer, commonPath);
-  AliAnalysisDataContainer *outputHist = mgr->CreateContainer(Form("RsnHist%s",suffix.Data()), TList::Class(), AliAnalysisManager::kOutputContainer, commonPath);
-  mgr->ConnectOutput(task, 1, outputInfo);
-  mgr->ConnectOutput(task, 2, outputHist);
+   // create paths for the output in the common file
+   Char_t commonPath[500];
+   sprintf(commonPath, "%s", AliAnalysisManager::GetCommonFileName());
 
-	return task;
+   // create containers for output
+   AliAnalysisDataContainer *outputInfo = mgr->CreateContainer(Form("RsnInfo%s", suffix.Data()), TList::Class(), AliAnalysisManager::kOutputContainer, commonPath);
+   AliAnalysisDataContainer *outputHist = mgr->CreateContainer(Form("RsnHist%s", suffix.Data()), TList::Class(), AliAnalysisManager::kOutputContainer, commonPath);
+   mgr->ConnectOutput(task, 1, outputInfo);
+   mgr->ConnectOutput(task, 2, outputHist);
+
+   return task;
 }

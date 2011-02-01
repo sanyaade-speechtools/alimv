@@ -1,6 +1,6 @@
 # -*- mode: cmake -*-
 
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 project(alimv)
 
@@ -14,7 +14,13 @@ find_package(AliRoot REQUIRED)
 include(AliRootBaseMacro)
 
 # ANALYSISaliceMV 
-set(PARS_TO_CREATE EventMixing PWG2resonances RESONANCESMV TASKSMV)
+set(PARS_TO_CREATE 
+EventMixing 
+PWG2resonances 
+RESONANCESMV  
+TASKSMV
+ANALYSISaliceMV
+)
 
 foreach (MYPAR ${PARS_TO_CREATE})
   add_subdirectory(${MYPAR})

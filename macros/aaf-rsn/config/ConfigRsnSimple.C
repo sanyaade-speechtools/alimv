@@ -1,4 +1,5 @@
 Bool_t ConfigRsnSimple(AliRsnAnalysisManager *rsnAnalysisManager) {
+  
 	  // decay channels
   AliRsnPairDef         *pairDefpm = new AliRsnPairDef(AliPID::kKaon, '+', AliPID::kKaon, '-', 333, 1.019455);
   AliRsnPairDef         *pairDefpp = new AliRsnPairDef(AliPID::kKaon, '+', AliPID::kKaon, '+', 333, 1.019455);
