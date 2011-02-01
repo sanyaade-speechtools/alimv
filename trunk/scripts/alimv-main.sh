@@ -32,7 +32,7 @@ export MY_ANALYSIS_SOURCE="proof"
 # export MY_ANALYSIS_SOURCE="grid"
 # export MY_ANALYSIS_SOURCE="local"
 export MY_ANALYSIS_MODE="test"
-export MY_ANALYSIS_MODE="full"
+# export MY_ANALYSIS_MODE="full"
 # export MY_ANALYSIS_MODE="submit"
 
 # Valgrind options
@@ -70,9 +70,9 @@ done
 echo "Copying macros ..."
 cd $MY_WORK_DIR
 
-cat $MY_SOURCE_DIR/macros/template/runALICE_01.C > runALICE.C
-cat $MY_SOURCE_DIR/macros/template/runALICE_02.C | grep -v '//' >> runALICE.C
-cat $MY_SOURCE_DIR/macros/template/runALICE_03.C >> runALICE.C
+cat $MY_SOURCE_DIR/macros/template/runALICE_01.C > $MY_WORK_DIR/runALICE.C
+cat $MY_SOURCE_DIR/macros/template/runALICE_02.C | grep -v '//' >> $MY_WORK_DIR/runALICE.C
+cat $MY_SOURCE_DIR/macros/template/runALICE_03.C >> $MY_WORK_DIR/runALICE.C
 
 $MY_SOURCE_DIR/scripts/alimv-generate-from-run-alice.sh $MY_WORK_DIR/runALICE.C
 
