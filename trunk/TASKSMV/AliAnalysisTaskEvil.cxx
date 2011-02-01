@@ -27,7 +27,7 @@ ClassImp(AliAnalysisTaskEvil)
 
 //________________________________________________________________________
 AliAnalysisTaskEvil::AliAnalysisTaskEvil(const char *name)
-   : AliAnalysisTaskMulti(name),
+   : AliAnalysisTaskSE(name),
      fHistBin(10),
      fHistMin(0),
      fHistMax(10),

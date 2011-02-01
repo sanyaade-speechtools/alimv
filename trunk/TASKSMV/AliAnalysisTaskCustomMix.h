@@ -6,11 +6,11 @@
 
 #include "AliLog.h"
 
-#include "AliAnalysisTaskMulti.h"
+#include "AliAnalysisTaskSE.h"
 
 class TList;
 class AliMixInfo;
-class AliAnalysisTaskCustomMix : public AliAnalysisTaskMulti {
+class AliAnalysisTaskCustomMix : public AliAnalysisTaskSE {
 public:
    AliAnalysisTaskCustomMix(const char *name = "<default name>");
    virtual ~AliAnalysisTaskCustomMix();
