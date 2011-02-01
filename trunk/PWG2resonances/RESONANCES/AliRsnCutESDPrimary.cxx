@@ -23,21 +23,21 @@ ClassImp(AliRsnCutESDPrimary)
 
 //_________________________________________________________________________________________________
 AliRsnCutESDPrimary::AliRsnCutESDPrimary() :
-  AliRsnCut(),
-  fCuts()
+   AliRsnCut(),
+   fCuts()
 {
 //
 // Default constructor.
 //
 
-  SetTargetType(AliRsnTarget::kDaughter);
+   SetTargetType(AliRsnTarget::kDaughter);
 }
 
 //_________________________________________________________________________________________________
 AliRsnCutESDPrimary::AliRsnCutESDPrimary
 (const char *name) :
-  AliRsnCut(name, AliRsnCut::kDaughter, 0.0, 0.0),
-  fCuts()
+   AliRsnCut(name, AliRsnCut::kDaughter, 0.0, 0.0),
+   fCuts()
 {
 //
 // Main constructor.
@@ -51,19 +51,18 @@ Bool_t AliRsnCutESDPrimary::IsSelected(TObject *object)
 // Cut checker.
 //
 
-  // coherence check
-  if (!TargetOK(object, AliRsnTarget::kDaughter)) return kFALSE;
-  
-  // retrieve the TPC signal
-  AliRsnDaughter *daughter = fDaughter;
-  
-  AliESDtrack *esdTrack = daughter->GetRefESDtrack();
-  if (!esdTrack) 
-  {
-    AliError("ESD information unavailable");
-    return kTRUE;
-  }
+   // coherence check
+   if (!TargetOK(object, AliRsnTarget::kDaughter)) return kFALSE;
 
-  // check cut
-  return fCuts.IsSelected(esdTrack);
+   // retrieve the TPC signal
+   AliRsnDaughter *daughter = fDaughter;
+
+   AliESDtrack *esdTrack = daughter->GetRefESDtrack();
+   if (!esdTrack) {
+      AliError("ESD information unavailable");
+      return kTRUE;
+   }
+
+   // check cut
+   return fCuts.IsSelected(esdTrack);
 }

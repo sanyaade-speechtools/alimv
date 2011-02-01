@@ -14,29 +14,27 @@
 
 #include "AliRsnCut.h"
 
-class AliRsnCutDaughterType : public AliRsnCut
-{
-  public:
-  
-    enum EType
-    {
+class AliRsnCutDaughterType : public AliRsnCut {
+public:
+
+   enum EType {
       kTrackTPC,
       kTrackITSSA,
       kV0,
       kTypes
-    };
+   };
 
-    AliRsnCutDaughterType();
-    AliRsnCutDaughterType(const char *name, EType type);
-    virtual ~AliRsnCutDaughterType() {;};
+   AliRsnCutDaughterType();
+   AliRsnCutDaughterType(const char *name, EType type);
+   virtual ~AliRsnCutDaughterType() {;};
 
-    virtual Bool_t IsSelected(TObject *object);
+   virtual Bool_t IsSelected(TObject *object);
 
-  protected:
-  
-    EType fRefType;   // type to which the track format is compared
+protected:
 
-    ClassDef(AliRsnCutDaughterType, 1)
+   EType fRefType;   // type to which the track format is compared
+
+   ClassDef(AliRsnCutDaughterType, 1)
 };
 
 #endif

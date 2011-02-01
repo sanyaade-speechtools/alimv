@@ -15,22 +15,21 @@
 #include "AliESDtrackCuts.h"
 #include "AliRsnCut.h"
 
-class AliRsnCutESDPrimary : public AliRsnCut
-{
-  public:
+class AliRsnCutESDPrimary : public AliRsnCut {
+public:
 
-    AliRsnCutESDPrimary();
-    AliRsnCutESDPrimary(const char *name);
-    virtual ~AliRsnCutESDPrimary() {;};
+   AliRsnCutESDPrimary();
+   AliRsnCutESDPrimary(const char *name);
+   virtual ~AliRsnCutESDPrimary() {;};
 
-    AliESDtrackCuts* GetCuts() {return &fCuts;}
-    virtual Bool_t   IsSelected(TObject *object);
+   AliESDtrackCuts* GetCuts() {return &fCuts;}
+   virtual Bool_t   IsSelected(TObject *object);
 
-  protected:
+protected:
 
-    AliESDtrackCuts fCuts;  // set of ESD track cuts
+   AliESDtrackCuts fCuts;  // set of ESD track cuts
 
-    ClassDef(AliRsnCutESDPrimary, 1)
+   ClassDef(AliRsnCutESDPrimary, 1)
 };
 
 #endif

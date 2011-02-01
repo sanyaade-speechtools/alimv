@@ -3,7 +3,8 @@
 #include <TROOT.h>
 #include <TSystem.h>
 
-Int_t LoadLibs() {
+Int_t LoadLibs()
+{
    ::Info("", "Loading ...");
 
    if (gROOT->Macro(gSystem->ExpandPathName("$ALICE_ROOT/macros/loadlibs.C"))) return 1;
