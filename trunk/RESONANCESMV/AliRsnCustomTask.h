@@ -12,9 +12,9 @@
 #include <TObjArray.h>
 #include "AliRsnVCustomObj.h"
 
-#include "AliRsnVAnalysisTaskMulti.h"
+#include "AliRsnVAnalysisTask.h"
 
-class AliRsnCustomTask : public AliRsnVAnalysisTaskMulti
+class AliRsnCustomTask : public AliRsnVAnalysisTask
 {
   public:
   

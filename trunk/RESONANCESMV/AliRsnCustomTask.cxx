@@ -1,7 +1,7 @@
 //
 // Class AliRsnCustomTask
 //
-// Virtual Class derivated from AliRsnVAnalysisTaskMulti which will be base class
+// Virtual Class derivated from AliRsnVAnalysisTask which will be base class
 // for all RSN SE tasks
 //
 // authors: Martin Vala (martin.vala@cern.ch)
@@ -17,7 +17,7 @@ ClassImp(AliRsnCustomTask)
 
 //_____________________________________________________________________________
 AliRsnCustomTask::AliRsnCustomTask(const char *name, Bool_t useKine) :
-  AliRsnVAnalysisTaskMulti(name, useKine),
+  AliRsnVAnalysisTask(name, useKine),
   fOutList(0)
 {
 //
@@ -30,7 +30,7 @@ AliRsnCustomTask::AliRsnCustomTask(const char *name, Bool_t useKine) :
 
 //_____________________________________________________________________________
 AliRsnCustomTask::AliRsnCustomTask(const AliRsnCustomTask& copy) :
-  AliRsnVAnalysisTaskMulti(copy)
+  AliRsnVAnalysisTask(copy)
 {
 //
 // Copy constructor.
@@ -44,7 +44,7 @@ AliRsnCustomTask& AliRsnCustomTask::operator=(const AliRsnCustomTask& copy)
 // Assigment operator.
 //
 
-  AliRsnVAnalysisTaskMulti::operator=(copy);
+  AliRsnVAnalysisTask::operator=(copy);
   
   if (fOutList) fOutList->Clear();
   
@@ -94,7 +94,10 @@ void AliRsnCustomTask::RsnUserExec(Option_t*)
 void AliRsnCustomTask::RsnUserExecMix(Option_t* /*opt*/)
 {
   if (!IsMixing()) return;
-  AliDebug(AliLog::kDebug,Form("RSN Mixing %lld %d [%lld,%lld] %d",CurrentEntry(),NumberMixed(),CurrentEntryMain(),CurrentEntryMix(),CurrentBinIndex()));
+  
+  if (!fMixedEH) return;
+  
+  AliDebug(AliLog::kDebug,Form("RSN Mixing %lld %d [%lld,%lld] %d", fMixedEH->CurrentEntry(),fMixedEH->NumberMixed(),fMixedEH->CurrentEntryMain(),fMixedEH->CurrentEntryMix(),fMixedEH->CurrentBinIndex()));
   
   // the virtual class has already sorted tracks in the PID index
   // so we need here just to call the execution of analysis
