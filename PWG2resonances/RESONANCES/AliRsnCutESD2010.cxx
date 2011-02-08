@@ -60,7 +60,8 @@ AliRsnCutESD2010::AliRsnCutESD2010
    fESDtrackCutsTPC(),
    fESDtrackCutsITS(),
    fMinTOF(-3.0),
-   fMaxTOF(3.0)
+   fMaxTOF(3.0),
+   fOCDBDefaultStorage("raw://")
 {
 //
 // Main constructor.
@@ -89,7 +90,8 @@ AliRsnCutESD2010::AliRsnCutESD2010
    fESDtrackCutsTPC(copy.fESDtrackCutsTPC),
    fESDtrackCutsITS(copy.fESDtrackCutsITS),
    fMinTOF(copy.fMinTOF),
-   fMaxTOF(copy.fMaxTOF)
+   fMaxTOF(copy.fMaxTOF),
+   fOCDBDefaultStorage(copy.fOCDBDefaultStorage)
 {
 //
 // Copy constructor.
@@ -126,7 +128,7 @@ AliRsnCutESD2010& AliRsnCutESD2010::operator=(const AliRsnCutESD2010& copy)
    fMinTOF = copy.fMinTOF;
    fMaxTOF = copy.fMaxTOF;
    fESDpid = copy.fESDpid;
-
+   fOCDBDefaultStorage = copy.fOCDBDefaultStorage;
    Int_t i = 0;
    for (i = 0; i < 5; i++) fTPCpar[i] = copy.fTPCpar[i];
 
@@ -171,7 +173,7 @@ void AliRsnCutESD2010::ProcessEvent(AliESDEvent *esd)
       AliInfo("============================================================================================");
       fgLastRun = run;
 
-      AliCDBManager::Instance()->SetDefaultStorage("raw://");
+      AliCDBManager::Instance()->SetDefaultStorage(fOCDBDefaultStorage.Data());
       AliCDBManager::Instance()->SetRun(fgLastRun);
 
       if (fgTOFmaker) delete fgTOFmaker;

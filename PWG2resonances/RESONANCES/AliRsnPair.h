@@ -28,45 +28,46 @@ class AliRsnCutSet;
 class AliRsnFunction;
 class AliRsnValue;
 
-class AliRsnPair : public TNamed {
-public:
+class AliRsnPair : public TNamed
+{
+  public:
 
-   AliRsnPair(const char *name = "default", AliRsnPairDef *def = 0);
-   AliRsnPair(const AliRsnPair &copy);
-   AliRsnPair& operator=(const AliRsnPair&);
-   ~AliRsnPair();
+    AliRsnPair(const char *name = "default", AliRsnPairDef *def = 0);
+    AliRsnPair(const AliRsnPair &copy);
+    AliRsnPair& operator=(const AliRsnPair&);
+    ~AliRsnPair();
 
-   void    SetOnlyTrue(Bool_t onlyTrue = kTRUE) {fOnlyTrue = onlyTrue;}
-   void    SetCheckDecay(Bool_t check = kTRUE)  {fCheckDecay = check;}
+    void    SetOnlyTrue(Bool_t onlyTrue = kTRUE) {fOnlyTrue = onlyTrue;}
+    void    SetCheckDecay(Bool_t check = kTRUE)  {fCheckDecay = check;}
 
-   void    Print(Option_t *option = "") const;
-   void    SetMixed(Bool_t doit = kTRUE) {fIsMixed = doit;}
-   Bool_t  IsMixed() const {return fIsMixed;}
+    void    Print(Option_t *option = "") const;
+    void    SetMixed(Bool_t doit = kTRUE) {fIsMixed = doit;}
+    Bool_t  IsMixed() const {return fIsMixed;}
+    
+    AliRsnCutManager* GetCutManager() {return &fCutManager;}
+    AliRsnMother*     GetMother() {return &fMother;}
+    AliRsnPairDef*    GetPairDef() {return fPairDef;}
+    Bool_t            Fill(AliRsnDaughter *d0, AliRsnDaughter *d1);
+    Int_t             GetCount() const {return fCount;}
+    void              ResetCount() {fCount = 0;}
+    
+    virtual void      Compute();
+    virtual void      Init(const char *prefix, TList *list);
 
-   AliRsnCutManager* GetCutManager() {return &fCutManager;}
-   AliRsnMother*     GetMother() {return &fMother;}
-   AliRsnPairDef*    GetPairDef() {return fPairDef;}
-   Bool_t            Fill(AliRsnDaughter *d0, AliRsnDaughter *d1);
-   Int_t             GetCount() const {return fCount;}
-   void              ResetCount() {fCount = 0;}
+  protected:
 
-   virtual void      Compute();
-   virtual void      Init(const char *prefix, TList *list);
+    Bool_t            fOnlyTrue;        //  select true pairs only?
+    Bool_t            fCheckDecay;      //  is the decay channel correct in a true pair?
+    Bool_t            fIsMixed;         //  is this an event-mixing?
+    Int_t             fCount;           //  counter incremented for each added pair
 
-protected:
+    AliRsnPairDef    *fPairDef;         //  pair definition (particles, charges)
+    AliRsnCutManager  fCutManager;      //  collection of all cuts
+    AliRsnMother      fMother;          //  mother candidate (to avoid creating it continuously)
+    
+  private:
 
-   Bool_t            fOnlyTrue;        //  select true pairs only?
-   Bool_t            fCheckDecay;      //  is the decay channel correct in a true pair?
-   Bool_t            fIsMixed;         //  is this an event-mixing?
-   Int_t             fCount;           //  counter incremented for each added pair
-
-   AliRsnPairDef    *fPairDef;         //  pair definition (particles, charges)
-   AliRsnCutManager  fCutManager;      //  collection of all cuts
-   AliRsnMother      fMother;          //  mother candidate (to avoid creating it continuously)
-
-private:
-
-   ClassDef(AliRsnPair, 2)
+    ClassDef(AliRsnPair, 2)
 };
 
 #endif

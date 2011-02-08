@@ -10,13 +10,14 @@
 #pragma link C++ class AliRsnCut+;
 
 #pragma link C++ class AliRsnCutValue+;
-#pragma link C++ class AliRsnCutPID+;
-#pragma link C++ class AliRsnCutBetheBloch+;
 #pragma link C++ class AliRsnCutPrimaryVertex+;
-#pragma link C++ class AliRsnCutESDPrimary+;
-#pragma link C++ class AliRsnCutDaughterType+;
 #pragma link C++ class AliRsnCutESD2010+;
 #pragma link C++ class AliRsnCutAOD2010+;
+#pragma link C++ class AliRsnCutTrackQuality+;
+#pragma link C++ class AliRsnCutPID+;
+#pragma link C++ class AliRsnCutPIDITS+;
+#pragma link C++ class AliRsnCutPIDTPC+;
+#pragma link C++ class AliRsnCutPIDTOF+;
 
 #pragma link C++ class AliRsnCutSet+;
 #pragma link C++ class AliRsnExpression+;
@@ -31,22 +32,17 @@
 #pragma link C++ class AliRsnAnalysisManager+;
 
 #pragma link C++ class AliRsnVATProcessInfo+;
-#pragma link C++ class AliRsnVAnalysisTask+;
 #pragma link C++ class AliRsnVAnalysisTaskSE+;
 
-#pragma link C++ class AliRsnAnalysisTask+;
 #pragma link C++ class AliRsnAnalysisSE+;
 #pragma link C++ class AliRsnAnalysisEffSE+;
+#pragma link C++ class AliRsnAnalysisPhiKK+;
+#pragma link C++ class AliRsnAnalysisKStarKpi+;
 
-#pragma link C++ class AliRsnTOFT0maker+;
-#pragma link C++ class AliRsnAnalysisPhi900GeV+;
-#pragma link C++ class AliRsnAnalysisPhi7TeV+;
-#pragma link C++ class AliRsnAnalysisPhi7TeVNoPID+;
+#pragma link C++ class AliRsnVAnalysisTask+;
+#pragma link C++ class AliRsnAnalysisTask+;
 
 #pragma link C++ class AliRsnMonitorTrack+;
 #pragma link C++ class AliRsnAnalysisMonitorTask+;
-
-#pragma link C++ class AliRsnAnalysisPhiKK+;
-#pragma link C++ class AliRsnAnalysisKStarKpi+;
 
 #endif

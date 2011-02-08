@@ -11,7 +11,7 @@ void AddAnalysisTaskMixInfo(TString format = "esd", Bool_t useMC = kFALSE, TStri
    AliAnalysisTaskMixInfo *task = new AliAnalysisTaskMixInfo("AliAnalysisTaskMixInfo");
 //   task->SetMixingDebug(AliLog::kDebug);
 
-   Int_t debugLevel = 3;
+   Int_t debugLevel = 0;
    TString myclasses = "";
    myclasses += ":AliAnalysisTaskMixInfo";
 //       myclasses+=":AliAnalysisTaskCustomMix";

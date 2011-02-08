@@ -12,7 +12,7 @@ Int_t LoadLibsBase()
 //   if (gSystem->Load("libPhysics.so")<0) {num++; return num;}
 //   if (gSystem->Load("libSTEERBase.so")<0) {num++; return num;}
 //   if (gSystem->Load("libESD.so")<0) {num++; return num;}
-//   if (gSystem->Load("libAOD.so")<0) {num++; return num;}
+   if (gSystem->Load("libAOD.so") < 0) {num++; return num;}
    if (gSystem->Load("libANALYSIS.so") < 0) {num++; return num;}
    if (gSystem->Load("libANALYSISalice.so") < 0) {num++; return num;}
 
@@ -94,7 +94,7 @@ Bool_t InputHandlerSetup(TString format = "esd", Bool_t useKine = kTRUE, Bool_t 
    if (cin) return;
 
    if (!format.CompareTo("esd")) {
-      AliESDInputHandler *esdInputHandler = dynamic_cast<AliESDInputHandler*>(AliAnalysisManager::GetAnalysisManager()->GetInputEventHandler());
+      AliESDInputHandler *esdInputHandler = dynamic_cast<AliESDInputHandler*>(mgr->GetInputEventHandler());
 
       if (!esdInputHandler) {
          Info("CustomAnalysisTaskInputSetup", "Creating esdInputHandler ...");
@@ -103,7 +103,7 @@ Bool_t InputHandlerSetup(TString format = "esd", Bool_t useKine = kTRUE, Bool_t 
       }
 
       if (useKine) {
-         AliMCEventHandler* mcInputHandler = dynamic_cast<AliMCEventHandler*>(AliAnalysisManager::GetAnalysisManager()->GetMCtruthEventHandler());
+         AliMCEventHandler* mcInputHandler = dynamic_cast<AliMCEventHandler*>(mgr->GetMCtruthEventHandler());
 
          if (!mcInputHandler) {
             Info("CustomAnalysisTaskInputSetup", "Creating mcInputHandler ...");
@@ -113,7 +113,7 @@ Bool_t InputHandlerSetup(TString format = "esd", Bool_t useKine = kTRUE, Bool_t 
       }
 
    } else if (!format.CompareTo("aod")) {
-      AliAODInputHandler *aodInputHandler = dynamic_cast<AliAODInputHandler*>(AliAnalysisManager::GetAnalysisManager()->GetInputEventHandler());
+      AliAODInputHandler *aodInputHandler = dynamic_cast<AliAODInputHandler*>(mgr->GetInputEventHandler());
 
       if (!aodInputHandler) {
          Info("CustomAnalysisTaskInputSetup", "Creating aodInputHandler ...");

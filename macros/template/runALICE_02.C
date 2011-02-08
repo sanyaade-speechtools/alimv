@@ -1,20 +1,34 @@
-#include <TError.h>//|
-#include <TROOT.h>//|
-#include <TString.h>//|
+#ifndef __CINT__
+#include <TError.h>
+#include <TROOT.h>
+#include <TError.h>
+#include <TString.h>
+#include <TSystem.h>
+#include <TROOT.h>
+#endif
+Long64_t fNEvents = 2 * 1e5;
+Long64_t fNEventsSkip = 0;
 void RunAnalysisManager(TString, TString, TString.TString); //|
-//
-Int_t runALICE(TString analysisSource = "proof", TString analysisMode = "test") //|
-{ //|
-//
-//
+Int_t runALICE(TString analysisSource = "grid", TString analysisMode = "terminate")
+{
    fNEvents = 1 * 1e9;
    fNEventsSkip = 0;
+
+   Int_t ret = 0;
+   ::Info(gSystem->HostName(), Form("Running <%s> in <%s> mode ...", analysisSource.Data(), analysisMode.Data()));
+
+   // Loading ANALYSIS Base libs
+   ::Info(gSystem->HostName(), "Loading ...");
+   if (LoadLibsBase()) { ::Error(gSystem->HostName(), "Error loading base libs !!!"); return kFALSE;}
+   ::Info(gSystem->HostName(), "Loading done ...");
+   // ++++++++++++++++ Adding Analysis Managers +++++++++++++++++++++++
+
 //
 //   RunAnalysisManager("AddMyAnalysisManagerESDFilter",analysisSource.Data(),analysisMode.Data());
 //
 //   RunAnalysisManager("AddMyAnalysisManagerCustomTask",analysisSource.Data(),analysisMode.Data(),"");
    //
-//   fNEvents = 1e4;
+//   fNEvents = 1e2;
 //   fNEventsSkip = 350;
 
    // mix from aliroot

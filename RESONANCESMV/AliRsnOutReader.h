@@ -21,12 +21,14 @@ public:
 
    TH1 *Get1DHistogram(Int_t dim = -1, Int_t cutDim = -1, Double_t cutMin = 0.0, Double_t cutMax = 0.0);
 
-   Double_t GetMaximumValue(Int_t dim);
+   void SetAdditionalCut(Double_t dimCut, Double_t min, Double_t max);
 
 private:
    TFile *fCurrentFile;
    TList *fCurrentList;
    THnSparse *fCurrentSparse;
+
+   Double_t  fAdditionalCutMinMaxBin[3];
 
    Bool_t fIsOk;
 

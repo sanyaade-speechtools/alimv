@@ -12,7 +12,9 @@ AliRsnOutReader::AliRsnOutReader() : TNamed(),
    fCurrentSparse(0),
    fIsOk(kFALSE)
 {
-
+   for (Int_t i = 0; i < 3; i++) {
+      fAdditionalCutMinMaxBin[i] = -1;
+   }
 }
 
 AliRsnOutReader::AliRsnOutReader(const char* name, const char* filename): TNamed(name, filename),
@@ -21,7 +23,9 @@ AliRsnOutReader::AliRsnOutReader(const char* name, const char* filename): TNamed
    fCurrentSparse(0),
    fIsOk(kFALSE)
 {
-
+   for (Int_t i = 0; i < 3; i++) {
+      fAdditionalCutMinMaxBin[i] = -1;
+   }
 }
 
 AliRsnOutReader::~AliRsnOutReader()
@@ -32,30 +36,30 @@ AliRsnOutReader::~AliRsnOutReader()
 void AliRsnOutReader::Print(Option_t* option) const
 {
    if (!option)
-      ::Info("AliRsnOutReader::Print", Form("Option : %s", option));
+      Printf("Option : %s", option);
    if (!fCurrentFile || !fCurrentList || !fCurrentSparse) return ;
-   ::Info("AliRsnOutReader::Print", Form("Filename : %s | List : %15s | Sparse: %10s", fCurrentFile->GetName(), fCurrentList->GetName(), fCurrentSparse->GetName()));
+   Printf("Filename : %s | List : %15s | Sparse: %10s", fCurrentFile->GetName(), fCurrentList->GetName(), fCurrentSparse->GetName());
 }
 Bool_t AliRsnOutReader::SetOutput(const char* listname, const char* sparsename)
 {
 
    fCurrentFile = TFile::Open(GetTitle(), "READ");
    if (!fCurrentFile) {
-      ::Error("AliRsnOutReader::Init", Form("Problem opening file %s !!!", GetTitle()));
+      Printf("Problem opening file %s !!!", GetTitle());
       fIsOk = kFALSE;
       return fIsOk;
    }
    fCurrentList = dynamic_cast<TList*>(fCurrentFile->Get(listname));
 
    if (!fCurrentList) {
-      ::Error("AliRsnOutReader::Init", Form("Problem opening list %s !!!", listname));
+      Printf("Problem opening list %s !!!", listname);
       fIsOk = kFALSE;
       return fIsOk;
    }
 
    fCurrentSparse = dynamic_cast<THnSparse*>(fCurrentList->FindObject(sparsename));
    if (!fCurrentSparse) {
-      ::Error("AliRsnOutReader::Init", Form("Problem opening THnSparse %s !!!", sparsename));
+      Printf("Problem opening THnSparse %s !!!", sparsename);
       fIsOk = kFALSE;
       return fIsOk;
    }
@@ -74,6 +78,8 @@ TH1* AliRsnOutReader::Get1DHistogram(Int_t dim, Int_t cutDim, Double_t cutMin, D
 
    if (dim >= fCurrentSparse->GetNdimensions()) return 0;
 
+   if (fAdditionalCutMinMaxBin[0] >= 0) fCurrentSparse->GetAxis(fAdditionalCutMinMaxBin[0])->SetRangeUser(fAdditionalCutMinMaxBin[1], fAdditionalCutMinMaxBin[2]);
+
    // apply cut
    if (cutDim >= 0) fCurrentSparse->GetAxis(cutDim)->SetRangeUser(cutMin, cutMax);
 
@@ -84,12 +90,9 @@ TH1* AliRsnOutReader::Get1DHistogram(Int_t dim, Int_t cutDim, Double_t cutMin, D
    return histOut;
 }
 
-
-Double_t AliRsnOutReader::GetMaximumValue(Int_t dim)
+void AliRsnOutReader::SetAdditionalCut(Double_t dimCut, Double_t min, Double_t max)
 {
-   if (!fIsOk) return 0;
-
-   return 100;
-//   return fCurrentSparse->GetAxis(dim)->Get;
+   fAdditionalCutMinMaxBin[0] = dimCut;
+   fAdditionalCutMinMaxBin[1] = min;
+   fAdditionalCutMinMaxBin[2] = max;
 }
-

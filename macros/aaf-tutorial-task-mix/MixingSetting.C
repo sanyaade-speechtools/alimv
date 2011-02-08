@@ -9,12 +9,12 @@ AliMixInputEventHandler *MixingSetting()
 
    AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
    Int_t bufferSize = 1;
-   Int_t mixNum = 5;
+   Int_t mixNum = 3;
    AliMixInputEventHandler *mixHandler = new AliMixInputEventHandler(bufferSize, mixNum);
    mixHandler->SetInputHandlerForMixing(dynamic_cast<AliMultiInputEventHandler*>(mgr->GetInputEventHandler()));
    AliMixEventPool *evPool = new AliMixEventPool();
 
-   AliMixEventCutObj *multi = new AliMixEventCutObj(AliMixEventCutObj::kMultiplicity, 1, 201, 20);
+   AliMixEventCutObj *multi = new AliMixEventCutObj(AliMixEventCutObj::kMultiplicity, 1, 101, 10);
    AliMixEventCutObj *zvertex = new AliMixEventCutObj(AliMixEventCutObj::kZVertex, -5, 5, 1);
 
    evPool->AddCut(multi);

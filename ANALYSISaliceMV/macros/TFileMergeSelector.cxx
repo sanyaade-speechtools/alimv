@@ -103,12 +103,12 @@ void TFileMergeSelector::SlaveBegin(TTree * /*tree*/)
 
    // sets TObjArray to be owner
    fFileMergers.SetOwner(kTRUE);
-
-   TNamed *out = (TNamed *) fInput->FindObject("PROOF_USE_ALIEN");
-   if (out) {
-      TGrid::Connect("alien://");
-      fFilePrefix = "alien://";
-   }
+   TNamed *out = 0;
+//    out = (TNamed *) fInput->FindObject("PROOF_USE_ALIEN");
+//    if (out) {
+// //       TGrid::Connect("alien://");
+// //       fFilePrefix = "alien://";
+//    }
    out = (TNamed *) fInput->FindObject("PROOF_USE_ARCHIVE");
    if (out) {
       fUseArchive = kTRUE;
@@ -119,6 +119,7 @@ void TFileMergeSelector::SlaveBegin(TTree * /*tree*/)
 
    if (fListFilesInArchive.IsNull()) fListFilesInArchive = "dummy.root";
 
+   fOutput->Add(new TNamed("MY_PROOF_OUT_FILES", fListFilesInArchive.Data()));
 }
 
 Bool_t TFileMergeSelector::Process(Long64_t entry)
@@ -153,8 +154,6 @@ Bool_t TFileMergeSelector::Process(Long64_t entry)
       strr = str->GetString();
       origFileName = strr;
       merger = (TFileMerger*)fFileMergers.At(i);
-
-
       if (!merger) {
          merger = new TFileMerger(kFALSE);
          merger->SetFastMethod(kTRUE);
@@ -215,21 +214,16 @@ void TFileMergeSelector::SlaveTerminate()
 
       if (!gSystem->AccessPathName(strr.Data())) {
          // add proof output file
-         TProofOutputFile *fProofFile = new TProofOutputFile(strr.Data(), "M");
+         TProofOutputFile *proofFile = new TProofOutputFile(strr.Data(), "ML");
          TNamed *out = (TNamed *) fInput->FindObject("PROOF_OUTPUTFILE");
-         if (out) fProofFile->SetOutputFileName(Form("%s/%s", out->GetTitle(), origFileName.Data()));
+         if (out) proofFile->SetOutputFileName(Form("%s/%s", out->GetTitle(), origFileName.Data()));
          // add proof file to fOutputs
-         fProofFile->Print();
-         fOutput->Add(fProofFile);
+         proofFile->Print();
+         fOutput->Add(proofFile);
 
       }
 
    }
-
-
-
-   gSystem->Exec("ls -alh");
-
 }
 
 void TFileMergeSelector::Terminate()
@@ -237,6 +231,35 @@ void TFileMergeSelector::Terminate()
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
+
+   TNamed *out = dynamic_cast<TNamed*>(fOutput->FindObject("MY_PROOF_OUT_FILES"));
+   if (!out) return;
+   fListFilesInArchive = out->GetTitle();
+
+   Printf("Running Terminate with fListFilesInArchive = %s", fListFilesInArchive.Data());
+   TObjArray* array = fListFilesInArchive.Tokenize(",");
+   TObjString *str;
+   TString strr, origfile;
+   TProofOutputFile *proofFile = 0;
+   for (Int_t i = 0; i < array->GetEntriesFast(); i++) {
+      str = (TObjString *) array->At(i);
+      strr = str->GetString();
+      origfile = strr;
+      strr.ReplaceAll(".root", "_previous.root");
+
+      Printf("Searching proofFile %s", strr.Data());
+      proofFile = dynamic_cast<TProofOutputFile*>(fOutput->FindObject(strr.Data()));
+      if (proofFile) proofFile->Print();
+//          proofFile->Copy();
+      TString outputFile(proofFile->GetOutputFileName());
+      TString outputName(proofFile->GetName());
+      outputName += ".root";
+      Printf("outputFile: %s", outputFile.Data());
+      if (out) TFile::Cp(outputFile.Data(), origfile.Data());
+   }
+
+
+
 
 }
 

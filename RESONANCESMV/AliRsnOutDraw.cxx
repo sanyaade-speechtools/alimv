@@ -1,10 +1,16 @@
 #include <TObjString.h>
 #include <TError.h>
-
-#include "AliRsnOutDraw.h"
 #include <TVirtualPad.h>
 #include <TF1.h>
 #include <TMath.h>
+
+#include "AliRsnOutDraw.h"
+#include <TH1.h>
+#include <TSystem.h>
+#include <TROOT.h>
+#include <TFile.h>
+#include <TLine.h>
+
 
 
 ClassImp(AliRsnOutDraw)
@@ -13,9 +19,15 @@ AliRsnOutDraw::AliRsnOutDraw(): TObject(),
    fHistograms(),
    fHistogramsStack(),
    fHistogramsStackError(),
-   fMaximum(0.0)
+   fHistogramsNormalize(),
+   fFitParamHistogram(),
+   fNumPars(0),
+   fParIds()
 {
-
+   for (Int_t i = 0; i < 2; i++) {
+      fNormMinMax[i] = 0;
+      fFitMinMax[i] = 0;
+   }
 }
 
 
@@ -33,36 +45,76 @@ void AliRsnOutDraw::AddHistoram(TH1* hist)
 }
 
 
-void AliRsnOutDraw::AddToHistogramStack(TString formula, TString error, TString norm)
+void AliRsnOutDraw::AddToHistogramStack(TString formula, TString error, TString norm, TString fit)
 {
    if (!formula.IsNull()) {
       fHistogramsStack.Add(new TObjString(formula));
-      if (!error.IsNull())
-         fHistogramsStackError.Add(new TObjString(error));
+      fHistogramsStackError.Add(new TObjString(error));
       fHistogramsNormalize.Add(new TObjString(norm));
+      fHistogramsStackFit.Add(new TObjString(fit));
    }
 }
 
+void AliRsnOutDraw::AddFitParamHistogram(const char* name, const char* title, Int_t parId, Double_t min, Double_t max, Double_t step)
+{
+   Int_t nBins = (Int_t)((max - min) / step);
+   Printf("%.2f %.2f %.2f %d", min, max, step, nBins);
+   TH1D *h = new TH1D(name, title, nBins, min, max);
+//    h->Sumw2();
+   fFitParamHistogram.Add(h);
+   fParIds.Set(fNumPars + 1);
+   fParIds.AddAt(parId, fNumPars++);
+//    Printf("%d %d",fNumPars-1,fParIds.At(fNumPars-1));
+}
 
-void AliRsnOutDraw::DrawFinalPicture(TVirtualPad* pad, TString opts, Double_t max)
+
+
+void AliRsnOutDraw::DrawFinalPicture(TVirtualPad* pad, TString opts, Double_t max, Double_t cutMin, Double_t cutMax)
 {
 
    opts.ReplaceAll("SAME", "");
-   TObjString *formulaStr, *errorStr, *normStr;
+   TString formulaStr, errorStr, normStr, fitStr;
+   TF1 *fitFun = 0;
    TH1*h = 0;
    for (Int_t i = 0; i < fHistogramsStack.GetEntries(); i++) {
 
-      ::Info("", Form("Stack id=%d", i));
 
-      formulaStr = (TObjString*) fHistogramsStack.At(i);
-      errorStr = (TObjString*) fHistogramsStackError.At(i);
-      normStr = (TObjString*) fHistogramsNormalize.At(i);
-      h = CreateHistogramFromFormFormula(formulaStr->GetString(), errorStr->GetString(), normStr->GetString());
-      if (!i) h->GetYaxis()->SetRangeUser(0.0, max);
+//       Printf("Stack id=%d", i);
+
+      formulaStr = ((TObjString*) fHistogramsStack.At(i))->GetString();
+      errorStr = ((TObjString*) fHistogramsStackError.At(i))->GetString();
+      normStr = ((TObjString*) fHistogramsNormalize.At(i))->GetString();
+      fitStr = ((TObjString*) fHistogramsStackFit.At(i))->GetString();
+      h = CreateHistogramFromFormFormula(formulaStr, errorStr, normStr);
+      if (!i) h->GetYaxis()->SetRangeUser(-max * 0.1, max);
       pad->cd();
       h->SetLineColor(i + 1);
       h->DrawCopy(opts.Data());
-      opts += " SAME";
+      if (!opts.Contains("SAME")) opts += " SAME";
+
+      TLine *l = new TLine(h->GetXaxis()->GetXmin(), 0.0, h->GetXaxis()->GetXmax(), 0.0);
+      l->SetLineColor(kBlue);
+      l->SetLineStyle(kDashed);
+      l->Draw();
+
+      pad->Update();
+//          gSystem->Sleep(500);
+
+      if (!fitStr.IsNull()) {
+         h->Fit(fitStr.Data(), "", opts.Data(), fFitMinMax[0], fFitMinMax[1]);
+
+         fitFun = (TF1*)gROOT->GetListOfFunctions()->FindObject("gaus");
+         for (Int_t iFitPar = 0; iFitPar < fFitParamHistogram.GetEntries(); iFitPar++) {
+//                Printf("par[%d] is %f [%d] average=%.2f [%.2f-%.2f]",iFitPar, fitFun->GetParameter(fParIds.At(iFitPar)),fParIds.At(iFitPar),(cutMin+cutMax)/2,cutMin,cutMax);
+            TH1D *histPar = (TH1D *)fFitParamHistogram.At(iFitPar);
+//                   Printf("%d %d %f",histPar->GetNbinsX(), histPar->FindBin((cutMin + cutMax) / 2)),histPar->GetBinContent((histPar->FindBin((cutMin + cutMax) / 2)));
+            histPar->SetBinContent(histPar->FindBin((cutMin + cutMax) / 2), fitFun->GetParameter(fParIds.At(iFitPar)));
+            histPar->SetBinError(histPar->FindBin((cutMin + cutMax) / 2), fitFun->GetParError(fParIds.At(iFitPar)));
+         }
+
+
+         pad->Update();
+      }
    }
 }
 
@@ -70,7 +122,7 @@ TH1* AliRsnOutDraw::CreateHistogramFromFormFormula(TString formula, TString erro
 {
    TH1 *hOut = (TH1*)fHistograms.At(0)->Clone();
    hOut->Reset();
-   hOut->Print();
+//    hOut->Print();
    TH1*h;
    TString tmpFormula, tmpError;
    for (Int_t iBin = 0; iBin < hOut->GetNbinsX() + 2; iBin++) {
@@ -82,8 +134,6 @@ TH1* AliRsnOutDraw::CreateHistogramFromFormFormula(TString formula, TString erro
          tmpFormula.ReplaceAll(Form("$%d", i + 1), Form("%f", h->GetBinContent(iBin)));
          tmpError.ReplaceAll(Form("$%d", i + 1), Form("%f", h->GetBinContent(iBin)));
       }
-
-
 
       TF1 f("tmpFun", tmpFormula.Data());
       TF1 fe("tmpFunError", tmpError.Data());
@@ -104,15 +154,15 @@ TH1* AliRsnOutDraw::CreateHistogramFromFormFormula(TString formula, TString erro
 //         norm(0,2);
       norm.ReplaceAll("$", "");
       Int_t idNorm = norm.Atoi();
-      ::Info("", Form("%d", idNorm));
+//       Printf("%d", idNorm);
       TH1 *htmp = (TH1*)fHistograms.At(idNorm - 1);
-      Double_t minmax[] = {1.05, 1.09};
-      ScaleHistogram(htmp, hOut, minmax, 1.0);
+//       Double_t minmax[] = {1.05, 1.09};
+      ScaleHistogram(htmp, hOut, fNormMinMax, 1.0);
 //         ScaleHistogram(hOut,htmp,minmax,1.0);
       TH1 *hClone = (TH1*)hOut->Clone();
       hClone->SetName(Form("%s_norm", hClone->GetName()));
       AddHistoram(hClone);
-      fHistograms.Print();
+//       fHistograms.Print();
    }
 
 //   hOut->Sumw2();
@@ -126,33 +176,25 @@ void AliRsnOutDraw::ScaleHistogram(TH1*h1, TH1*h2, Double_t *minmax, Double_t no
    if (!h2) return;
 
 
-   Info("", Form("Norm correction %f", normCorrection));
+//    Printf("Norm correction %f", normCorrection);
 
-   /*    if (!minmax) {
-           //         Info("",Form("Scale BIN <%d,%d>",fNormalizeBinMinI,fNormalizeBinMaxI));
-           Double_t normtmp = h2->Integral();
-           Info("", Form("h1(%f) h2(%f) normtmp %f", (Double_t)h1->Integral(),(Double_t)h2->Integral(),normtmp));
-           Double_t normFactor = (Double_t) h1->Integral() / normtmp;
-           Info("", Form("normFactor %f", normFactor));
-           h2->Scale(normFactor);
-       } else  */
    if (minmax[0] != minmax[1]) {
-      Info("", Form("Scale <%f,%f>", minmax[0], minmax[1]));
+//       Printf("Scale <%f,%f>", minmax[0], minmax[1]);
       Int_t fNormalizeBinMinI = h1->FindBin(minmax[0]);
       Int_t fNormalizeBinMaxI = h1->FindBin(minmax[1]);
-      Info("", Form("Scale BIN <%d,%d>", fNormalizeBinMinI, fNormalizeBinMaxI));
+//       Printf("Scale BIN <%d,%d>", fNormalizeBinMinI, fNormalizeBinMaxI);
       Double_t normtmp = h2->Integral(fNormalizeBinMinI, fNormalizeBinMaxI);
-      Info("", Form("h1(%f) h2(%f) normtmp %f", (Double_t)h1->Integral(fNormalizeBinMinI, fNormalizeBinMaxI), (Double_t)h2->Integral(fNormalizeBinMinI, fNormalizeBinMaxI), normtmp));
+//       Printf("h1(%f) h2(%f) normtmp %f", (Double_t)h1->Integral(fNormalizeBinMinI, fNormalizeBinMaxI), (Double_t)h2->Integral(fNormalizeBinMinI, fNormalizeBinMaxI), normtmp);
       Double_t normFactor = (Double_t) h1->Integral(fNormalizeBinMinI, fNormalizeBinMaxI) / normtmp * normCorrection;
-      Info("", Form("normFactor %f", normFactor));
+//       Printf("normFactor %f", normFactor);
 
       h2->Scale(normFactor);
    } else {
       //         Info("",Form("Scale BIN <%d,%d>",fNormalizeBinMinI,fNormalizeBinMaxI));
       Double_t normtmp = h2->Integral();
-      Info("", Form("h1(%f) h2(%f) normtmp %f", (Double_t)h1->Integral(), (Double_t)h2->Integral(), normtmp));
+//       Printf("h1(%f) h2(%f) normtmp %f", (Double_t)h1->Integral(), (Double_t)h2->Integral(), normtmp);
       Double_t normFactor = (Double_t) h1->Integral() / normtmp * normCorrection;
-      Info("", Form("normFactor %f", normFactor));
+//       Printf("normFactor %f", normFactor);
       h2->Scale(normFactor);
    }
 

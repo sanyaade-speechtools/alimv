@@ -156,6 +156,7 @@ void AliAnalysisTaskEvil::UserExec(Option_t *)
    }
    fMyAODEvent = dynamic_cast<AliAODEvent *>(InputEvent());
    for (Int_t i = 0; i < fNumLoopsInOneEvent; i++) {
+      AliInfo(Form("%d", i));
       if (fMyAODEvent) {
          LoopAOD();
          if (fUseMC)
