@@ -38,7 +38,7 @@ void RsnCut2010PhiKK(AliRsnCutManager *cutManager)
 
 
    AliRsnCutESD2010 *cuts2010 = new AliRsnCutESD2010(Form("cuts2010%s", suffix.Data()), isSim);
-	 // tmp fix
+   // tmp fix
    cuts2010->SetOCDBDefaultStorage("alien://folder=/alice/data/2010/OCDB");
    // --> set the reference particle for PID
    cuts2010->SetPID(AliPID::kKaon);
