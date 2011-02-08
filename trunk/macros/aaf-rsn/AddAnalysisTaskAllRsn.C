@@ -7,8 +7,12 @@ Bool_t AddAnalysisTaskAllRsn(TString format = "esd", Bool_t useMC = kFALSE, TStr
 
    // add our taks
    gROOT->LoadMacro("AddRsnTask.C");
-   AddRsnTask(format, useMC, opts);
-   AddRsnTask(format, useMC, Form("%s mix", opts.Data()));
+   opts = "Phi";
+   AddRsnTask(format, useMC, "ConfigRsnPhiKK.C", opts);
+   AddRsnTask(format, useMC, "ConfigRsnPhiKK.C", Form("%s_mix", opts.Data()));
+   opts = "Kstar";
+   AddRsnTask(format, useMC, "ConfigRsnKStarKPi.C", opts);
+   AddRsnTask(format, useMC, "ConfigRsnKStarKPi.C", Form("%s_mix", opts.Data()));
 
    return kTRUE;
 }

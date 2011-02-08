@@ -1,4 +1,4 @@
-void RsnCut2010(AliRsnCutManager *cutManager)
+void RsnCut2010PhiKK(AliRsnCutManager *cutManager)
 {
 
    if (!cutManager) return;
@@ -38,6 +38,8 @@ void RsnCut2010(AliRsnCutManager *cutManager)
 
 
    AliRsnCutESD2010 *cuts2010 = new AliRsnCutESD2010(Form("cuts2010%s", suffix.Data()), isSim);
+	 // tmp fix
+   cuts2010->SetOCDBDefaultStorage("alien://folder=/alice/data/2010/OCDB");
    // --> set the reference particle for PID
    cuts2010->SetPID(AliPID::kKaon);
    // --> include or not the ITS standalone (TPC is always in)

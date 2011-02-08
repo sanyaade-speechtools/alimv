@@ -8,8 +8,10 @@ void AddMyAnalysisManagerEvilTask(TString analysisSource = "proof", TString anal
    Bool_t useMC = kFALSE;
 //   useMC = kTRUE;
    TString format = "esd";
+   format = "aod";
+
    Bool_t useMultiHandler = kFALSE;
-   useMultiHandler = kTRUE;
+//    useMultiHandler = kTRUE;
 
    // ALICE stuff
    AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
@@ -19,14 +21,8 @@ void AddMyAnalysisManagerEvilTask(TString analysisSource = "proof", TString anal
    AliAnalysisGrid *analysisPlugin = SetupAnalysisPlugin(analysisMode.Data());
    if (!analysisPlugin) return;
 
-   if (useMultiHandler) {
-      AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
-      analysisPlugin->SetAnalysisSource("AliAnalysisTaskEvil.cxx");
-      analysisPlugin->SetAdditionalLibs("ANALYSISaliceMV.par AliAnalysisTaskEvil.h AliAnalysisTaskEvil.cxx");
-   } else {
-      analysisPlugin->SetAnalysisSource("AliAnalysisTaskEvil.cxx");
-      analysisPlugin->SetAdditionalLibs("AliAnalysisTaskEvil.h AliAnalysisTaskEvil.cxx");
-   }
+   analysisPlugin->SetAnalysisSource("AliAnalysisTaskEvil.cxx");
+   analysisPlugin->SetAdditionalLibs("AliAnalysisTaskEvil.h AliAnalysisTaskEvil.cxx");
 
    mgr->SetGridHandler(analysisPlugin);
 
@@ -39,6 +35,7 @@ void AddMyAnalysisManagerEvilTask(TString analysisSource = "proof", TString anal
       if (!InputHandlerSetup(format, useMC)) return;
    }
 
+   Printf("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
    gROOT->LoadMacro("AliAnalysisTaskEvil.cxx++g");
 
    // load and run AddTask macro

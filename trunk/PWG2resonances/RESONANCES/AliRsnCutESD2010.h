@@ -58,6 +58,7 @@ public:
    {fTPCpar[0] = p0; fTPCpar[1] = p1; fTPCpar[2] = p2; fTPCpar[3] = p3; fTPCpar[4] = p4;}
 
    void             SetTOFrange(Double_t v1, Double_t v2) {fMinTOF = v1; fMaxTOF = v2;}
+   void                 SetOCDBDefaultStorage(TString s = "raw://") { fOCDBDefaultStorage = s;}
 
    virtual void     ProcessEvent(AliESDEvent *esd);
 
@@ -98,6 +99,8 @@ protected:
    AliESDtrackCuts         fESDtrackCutsITS;  //  ESD standard defined track cuts for ITS-SA tracks
    Double_t                fMinTOF;           //  range for TOF PID (min)
    Double_t                fMaxTOF;           //  range for TOF PID (max)
+
+   TString                 fOCDBDefaultStorage;// default storage for OCDB (raw://)
 
    //static Bool_t           fgTOFcalibrateESD; //! TOF settings
    static Bool_t           fgTOFcorrectTExp;  //! TOF settings

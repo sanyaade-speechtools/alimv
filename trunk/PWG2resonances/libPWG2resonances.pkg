@@ -8,13 +8,14 @@ SRCS= RESONANCES/AliRsnDaughter.cxx \
       RESONANCES/AliRsnValue.cxx \
       RESONANCES/AliRsnCut.cxx \
       RESONANCES/AliRsnCutValue.cxx \
-      RESONANCES/AliRsnCutPID.cxx \
-      RESONANCES/AliRsnCutBetheBloch.cxx \
       RESONANCES/AliRsnCutPrimaryVertex.cxx \
-      RESONANCES/AliRsnCutESDPrimary.cxx \
-      RESONANCES/AliRsnCutDaughterType.cxx \
       RESONANCES/AliRsnCutESD2010.cxx \
       RESONANCES/AliRsnCutAOD2010.cxx \
+      RESONANCES/AliRsnCutTrackQuality.cxx \
+      RESONANCES/AliRsnCutPID.cxx \
+      RESONANCES/AliRsnCutPIDITS.cxx \
+      RESONANCES/AliRsnCutPIDTPC.cxx \
+      RESONANCES/AliRsnCutPIDTOF.cxx \
       RESONANCES/AliRsnCutSet.cxx \
       RESONANCES/AliRsnExpression.cxx \
       RESONANCES/AliRsnVariableExpression.cxx \
@@ -25,19 +26,15 @@ SRCS= RESONANCES/AliRsnDaughter.cxx \
       RESONANCES/AliRsnPairNtuple.cxx \
       RESONANCES/AliRsnAnalysisManager.cxx \
       RESONANCES/AliRsnVATProcessInfo.cxx \
-      RESONANCES/AliRsnVAnalysisTask.cxx \
       RESONANCES/AliRsnVAnalysisTaskSE.cxx \
-      RESONANCES/AliRsnAnalysisTask.cxx \
       RESONANCES/AliRsnAnalysisSE.cxx \
       RESONANCES/AliRsnAnalysisEffSE.cxx \
-      RESONANCES/AliRsnTOFT0maker.cxx \
-      RESONANCES/AliRsnAnalysisPhi900GeV.cxx \
-      RESONANCES/AliRsnAnalysisPhi7TeV.cxx \
-      RESONANCES/AliRsnAnalysisPhi7TeVNoPID.cxx \
-      RESONANCES/AliRsnMonitorTrack.cxx \
-      RESONANCES/AliRsnAnalysisMonitorTask.cxx \
       RESONANCES/AliRsnAnalysisPhiKK.cxx \
       RESONANCES/AliRsnAnalysisKStarKpi.cxx \
+      RESONANCES/AliRsnVAnalysisTask.cxx \
+      RESONANCES/AliRsnAnalysisTask.cxx \
+      RESONANCES/AliRsnMonitorTrack.cxx \
+      RESONANCES/AliRsnAnalysisMonitorTask.cxx \
 
 
 HDRS= $(SRCS:.cxx=.h)
@@ -46,7 +43,7 @@ DHDR:=PWG2resonancesLinkDef.h
 
 EXPORT:=
 
-EINCLUDE:= PYTHIA6 PWG2/RESONANCES CORRFW TOF
+EINCLUDE:= PYTHIA6 PWG2/RESONANCES PWG2/RESONANCES/extra CORRFW TOF
 
 ifeq (win32gcc,$(ALICE_TARGET))
 PACKSOFLAGS:= $(SOFLAGS) -L$(ALICE_ROOT)/lib/tgt_$(ALICE_TARGET) -lSTEERBase \

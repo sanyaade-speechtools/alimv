@@ -4,7 +4,6 @@
 #include "AliAnalysisManager.h"//|
 #include "AliAnalysisAlien.h"//|
 #include <AliAODInputHandler.h>//|
-#include <EventMixing/EventMixing/AliMultiInputEventHandler.h>//|
 #include <EventMixing/EventMixing/AliMixInputEventHandler.h>//|
 #include <EventMixing/EventMixing/AliMixEventPool.h>//|
 #include <EventMixing/EventMixing/AliMixEventCutObj.h>//|
@@ -26,19 +25,18 @@ void AddAnalysisManagerMixRsnParAOD(TString analysisSource = "proof", TString an
 
    gSystem->Load("libXMLParser.so");
    gSystem->Load("libANALYSIS.so");
+   gSystem->Load("libAOD.so");
    gSystem->Load("libANALYSISalice.so");
    gSystem->Load("libCORRFW.so");
+   gSystem->Load("libEventMixing.so");
 //     gSystem->Load("libPWG2resonances.so");
-   AliAnalysisAlien::SetupPar("EventMixing");
+//    AliAnalysisAlien::SetupPar("EventMixing");
    AliAnalysisAlien::SetupPar("PWG2resonances");
-   AliAnalysisAlien::SetupPar("RESONANCESMV");
+//    AliAnalysisAlien::SetupPar("RESONANCESMV");
 
    analysisPlugin->SetAliRootMode("ALIROOT"); // Loads AF libs by default
    // sets additional settings to plubin
-   analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so EventMixing.par  PWG2resonances.par RESONANCESMV.par");
-//     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so libPWG2resonances.so RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
-//     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so PWG2resonances.par RESONANCESMV.par AliAnalysisTaskCustomMix.h AliAnalysisTaskCustomMix.cxx");
-//     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so PWG2resonances.par RESONANCESMV.par");
+   analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so PWG2resonances.par");
 
    // sets plugin to manager
    mgr->SetGridHandler(analysisPlugin);
@@ -48,16 +46,13 @@ void AddAnalysisManagerMixRsnParAOD(TString analysisSource = "proof", TString an
    Info("AddAnalysisManagerMixRsn.C", "Creating esdInputHandler ...");
    AliAODInputHandler *aodInputHandler = new AliAODInputHandler();
    mainInputHandler->AddInputEventHandler(aodInputHandler);
-
-//       // add mixing handler (uncomment to turn on Mixnig)
-//       gROOT->LoadMacro("RsnMixingSetting.C");
-//       mainInputHandler->AddInputEventHandler(RsnMixingSetting());
 //
-//       // add main input handler (with mixing handler)
-//       mgr->SetInputEventHandler(mainInputHandler);
+//             add main input handler (with mixing handler)
+   mgr->SetInputEventHandler(mainInputHandler);
+   gROOT->LoadMacro("MixingSetting.C");
+   mainInputHandler->AddInputEventHandler(MixingSetting());
 
-//     mgr->SetInputEventHandler(mainInputHandler);
-   mgr->SetInputEventHandler(aodInputHandler);
+//     if (!InputHandlerSetup(format, useMC)) return;
 
 
    // adds all tasks

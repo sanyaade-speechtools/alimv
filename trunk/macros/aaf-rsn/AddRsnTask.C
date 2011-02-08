@@ -12,19 +12,27 @@
 //                   arguments must have to be the task and the 'dataLabel' argument.
 //
 
-AliAnalysisTask* AddRsnTask(TString format = "esd", Bool_t useMC = kFALSE, TString opts = "")
+AliAnalysisTask* AddRsnTask(TString format = "esd", Bool_t useMC = kFALSE, TString configMacro = "ConfigRsnPhiKK.C", TString opts = "")
 {
 
-   TString configMacro = "ConfigRsnSimple.C";
-   TString suffix;
+   TString suffix = opts;
    // retrieve analysis manager
    AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
    if (!mgr) mgr = new AliAnalysisManager("RSN train");
 
-
-   if (opts.Contains("mix")) {suffix = "_mix"; }
    // initialize task with all available slots, even if not all of them will be used:
    AliRsnAnalysisTask *task = new AliRsnAnalysisTask(Form("RsnAnalysis%s", suffix.Data()));
+
+   Int_t debugLevel = 0;
+   TString myclasses = "";
+//       myclasses+=":AliRsnAnalysisTask";
+//       myclasses+=":AliMixInputEventHandler";
+//       myclasses+=":AliMultiInputEventHandler";
+   //   myclasses+=":AliMixEventPool";
+   //   myclasses+=":AliMixInputHandlerInfo";
+   if (!myclasses.IsNull()) task->SetLogType(AliLog::kDebug + debugLevel, myclasses.Data());
+
+
    task->SetZeroEventPercentWarning(100.0);
 //   task->SelectCollisionCandidates();
    if (opts.Contains("mix")) {

@@ -33,6 +33,7 @@ export MY_ANALYSIS_SOURCE="proof"
 # export MY_ANALYSIS_SOURCE="local"
 export MY_ANALYSIS_MODE="test"
 # export MY_ANALYSIS_MODE="full"
+# export MY_ANALYSIS_MODE="offline"
 # export MY_ANALYSIS_MODE="submit"
 
 # Valgrind options
@@ -40,7 +41,7 @@ export MY_VALGRIND=""
 # export MY_VALGRIND="valgrind"
 # export MY_VALGRIND="$MY_VALGRIND --suppressions=$ROOTSYS/etc/valgrind-root.supp"
 # export MY_VALGRIND="$MY_VALGRIND --leak-check=full"
-# export MY_VALGRIND="$MY_VALGRIND --show-reachable=yes  "
+# export MY_VALGRIND="$MY_VALGRIND --show-reachable=yes "
 
 # custom parfiles
 export MY_PARFILES="ANALYSISaliceMV EventMixing PWG2resonances RESONANCESMV TASKSMV"

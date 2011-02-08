@@ -53,20 +53,20 @@ public :
 
 private:
 
-   Bool_t      fDoMerge;                // flag to do merge
-   Bool_t       fUseArchive;            // flag to merge files from archive
-   TString     fListFilesInArchive;// List of files to be merged (comma-separated) in zip archive
+   Bool_t         fDoMerge;              // flag to do merge
+   Bool_t         fUseArchive;           // flag to merge files from archive
+   TString        fListFilesInArchive;   // List of files to be merged (comma-separated) in zip archive
 
-   TObjArray   fFileMergers;            //! List of file mergers
+   TObjArray      fFileMergers;          //! List of file mergers
 
-   Int_t        fNMaxFilesMerged;    // Maximum number in TFile Merger
-   Long64_t     fCounter;
+   Int_t          fNMaxFilesMerged;      // Maximum number in TFile Merger
+   Long64_t       fCounter;
 
-   TString     fOutputDir;           // Output directory
-   TString         fFilePrefix;
+   TString        fOutputDir;            // Output directory
+   TString        fFilePrefix;
 
 
-   void        DoMergeAll();
+   void           DoMergeAll();
 
    ClassDef(TFileMergeSelector, 1);
 };

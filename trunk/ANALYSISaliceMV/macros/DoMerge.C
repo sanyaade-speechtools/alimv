@@ -6,16 +6,27 @@
 #include <TSelector.h>
 #include "TFileMergeSelector.h"
 #endif
-void DoMerge(TString inFile = "/tmp/inFiles.root", Bool_t useProof = kFALSE, TString proof = "")
+void DoMerge(TString inFile = "alien:///alice/cern.ch/user/m/mvala/file_collection.root", Bool_t useProof = kFALSE, TString proof = "")
 {
+   if (inFile.Contains("alien://")) TGrid::Connect("alien://");
+
    TChain c("filesTree");
    c.AddFile(inFile.Data());
+   Long64_t numEntries = c.GetEntries();
+
+   Printf("Num entries : %lld", numEntries);
+   if (!numEntries) return;
 
    if (useProof) {
       c.SetProof();
       TProof::Open(proof.Data());
-      gProof->AddInput(new TNamed("PROOF_OUTPUTFILE", "root://localhost//tmp/"));
-      gProof->AddInput(new TNamed("PROOF_USE_ALIEN", "YES"));
+
+      if (inFile.Contains("alien://")) gProof->Exec("TGrid::Connect(\"alien:\/\/\");");
+
+//       gProof->AddInput(new TNamed("PROOF_OUTPUTFILE", "root://vala.jinr.ru//tmp/"));
+//          gProof->AddInput(new TNamed("PROOF_OUTPUTFILE", "root://alicepc104.jinr.ru//tmp/"));
+      gProof->AddInput(new TNamed("PROOF_OUTPUTFILE", "root://prf000-iep-grid.saske.sk:11094//tmp/"));
+//       gProof->AddInput(new TNamed("PROOF_USE_ALIEN", "YES"));
       gProof->AddInput(new TNamed("PROOF_USE_ARCHIVE", "MixInfo.root,AnalysisResults.root"));
 
 

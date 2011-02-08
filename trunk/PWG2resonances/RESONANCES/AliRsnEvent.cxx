@@ -523,6 +523,12 @@ Bool_t AliRsnEvent::SetDaughterAODv0(AliRsnDaughter &out, Int_t i)
       return kFALSE;
    }
 
+   TClonesArray *mcArray = (TClonesArray*)ev->GetList()->FindObject(AliAODMCParticle::StdBranchName());
+   if (!mcArray) {
+      out.SetBad();
+      return kFALSE;
+   }
+
    // assign references of reconstructed track
    out.SetRef(v0);
    out.SetGood();
@@ -531,7 +537,6 @@ Bool_t AliRsnEvent::SetDaughterAODv0(AliRsnDaughter &out, Int_t i)
    // this time, assigning label is not trivial,
    // it is done only if MC is present and both
    // daughters come from a true particle
-   TClonesArray *mcArray = (TClonesArray*)ev->GetList()->FindObject(AliAODMCParticle::StdBranchName());
    AliAODTrack  *tp = ev->GetTrack(v0->GetPosID());
    AliAODTrack  *tn = ev->GetTrack(v0->GetNegID());
    if (mcArray && tp && tn) {
