@@ -60,11 +60,11 @@ void RsnCut2010KStarKPi(AliRsnCutManager *cutManager)
 //  cuts2010[0] = new AliRsnCutESD2010("cuts2010_kaon");
    cuts2010[0] = new AliRsnCutESD2010(Form("cuts2010_kaon%s", suffix.Data()), isSim);  //
    cuts2010[1] = new AliRsnCutESD2010(Form("cuts2010_pion%s", suffix.Data()), isSim);    //
-	 
-	 // tmp fix
-	 cuts2010[0]->SetOCDBDefaultStorage("alien://folder=/alice/data/2010/OCDB");
-	 cuts2010[1]->SetOCDBDefaultStorage("alien://folder=/alice/data/2010/OCDB");
-	 
+
+   // tmp fix
+   cuts2010[0]->SetOCDBDefaultStorage("alien://folder=/alice/data/2010/OCDB");
+   cuts2010[1]->SetOCDBDefaultStorage("alien://folder=/alice/data/2010/OCDB");
+
    cuts2010[0]->SetPID(AliPID::kKaon);
    cuts2010[1]->SetPID(AliPID::kPion);
    for (Int_t i = 0; i < 2; i++) {

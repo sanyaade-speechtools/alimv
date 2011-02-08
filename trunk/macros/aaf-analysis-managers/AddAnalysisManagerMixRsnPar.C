@@ -26,7 +26,7 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
    if (!analysisPlugin) return;
 
    gSystem->Load("libXMLParser.so");
-	 gSystem->Load("libAOD.so");
+   gSystem->Load("libAOD.so");
    gSystem->Load("libANALYSIS.so");
    gSystem->Load("libANALYSISalice.so");
    gSystem->Load("libTOFbase.so");
