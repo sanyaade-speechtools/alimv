@@ -2,6 +2,6 @@
 
 #pragma link C++ class AliLogInputHandler+;
 #pragma link C++ class AliTenderInputEventHandler+;
-#pragma link C++ class AliPhysicsSellectionInputHandler+;
+#pragma link C++ class AliPhysicsSelectionInputHandler+;
 
 #endif
