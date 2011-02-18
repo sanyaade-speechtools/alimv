@@ -15,11 +15,13 @@ include(AliRootBaseMacro)
 
 # ANALYSISaliceMV 
 set(PARS_TO_CREATE 
+# TENDER
+# TENDERSupplies
+# ANALYSISaliceMV
 EventMixing 
 PWG2resonances 
 RESONANCESMV  
 TASKSMV
-ANALYSISaliceMV
 )
 
 foreach (MYPAR ${PARS_TO_CREATE})
