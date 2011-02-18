@@ -1,7 +1,7 @@
 Bool_t AddAnalysisTaskAllRsn(TString format = "esd", Bool_t useMC = kFALSE, TString opts = "")
 {
 
-   // //     // adds mixing info task
+//    // adds mixing info task
    gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
    AddAnalysisTaskMixInfo(format, useMC, opts);
 

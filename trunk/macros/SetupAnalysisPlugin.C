@@ -10,7 +10,7 @@ AliAnalysisGrid* SetupAnalysisPlugin(TString analysisMode)
    plugin->SetRunMode(analysisMode.Data());  // VERY IMPORTANT - DECRIBED BELOW
 
    // seutp aliroot version
-   plugin->SetAliROOTVersion("v4-21-14-AN");
+   plugin->SetAliROOTVersion("v4-21-15-AN");
 
    // adds Proof setting
    MySetupAnalysisPluginProof(plugin);
@@ -27,7 +27,7 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin)
 //     plugin->SetProofCluster("alicaf@lxbsq1410.cern.ch:21001");
    plugin->SetProofCluster("skaf.saske.sk");
    //   plugin->SetProofCluster("skaf-test.saske.sk");
-   plugin->SetProofCluster("jraf.jinr.ru");
+//    plugin->SetProofCluster("jraf.jinr.ru");
 //       plugin->SetProofCluster("kiaf.sdfarm.kr");
 //   plugin->SetProofCluster("pod@localhost:21001");
 
@@ -36,7 +36,7 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin)
    // aod
 //     plugin->SetProofDataSet("/PWG2/mvala/LHC10b_000115401_p2_a017#aodTree");
 
-   plugin->SetProofDataSet("/alice/data/LHC10b_000115322_p2#esdTree");
+//    plugin->SetProofDataSet("/alice/data/LHC10b_000115322_p2#esdTree");
 //     plugin->SetProofDataSet("/alice/data/LHC10h_000137366_p1#esdTree");
 //    plugin->SetProofDataSet("/alice/data/LHC10b_000115401_p2#esdTree");
 //     plugin->SetProofDataSet("/alice/sim/LHC10h9_000137366#esdTree");
@@ -46,7 +46,7 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin)
 //     plugin->SetProofDataSet("/alice/data/LHC10h_000137161_p1_plusplusplus");
 
 //     plugin->SetProofDataSet("ds.txt");
-//     plugin->SetProofDataSet("mysim.txt");
+   plugin->SetProofDataSet("mysim.txt");
 //     plugin->SetProofDataSet("LHC10b.txt");
 //     plugin->SetProofDataSet("/default/alicaf/LHC10a20_140500");
 
@@ -69,6 +69,8 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin)
    plugin->SetClearPackages();
 // Plugin test mode works only providing a file containing test file locations
    plugin->SetFileForTestMode("ESD_vala_LHC10a12.txt");
+//    plugin->SetFileForTestMode("ESD_alien_test.txt");
+   plugin->SetFileForTestMode("ESD_alien_test_local.txt");
 //     plugin->SetFileForTestMode("AOD_vala_LHC10b.txt");
 //    plugin->SetFileForTestMode("AOD_vala_LHC10b_zip.txt");
    //++++++++++++++ end PROOF ++++++++++++++++
@@ -86,13 +88,16 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
 
    // Method 1: Create automatically XML collections using alien 'find' command.
 // Define production directory LFN
-//    plugin->SetGridDataDir("/alice/sim/LHC10e6");
+
+   Int_t nRunsPerMaster = 0;
+   Int_t maxRunsPerMaster = 100;
+   TString runs = "";
+   // DATA
    plugin->SetGridDataDir("/alice/data/2010/LHC10b");
-// Set data search pattern
-//   plugin->SetDataPattern("*ESDs.root");  // simulated, tags not used
    plugin->SetDataPattern("*ESDs/pass2/*ESDs.root"); // real data check reco pass and data base directory
    plugin->SetRunPrefix("000");   // real data
-
+   runs = "117222, 117220, 117116, 117112, 117109, 117099, 117092, 117063, 117060, 117059, 117053, 117052, 117050, 117048, 116643, 116574, 116571, 116562, 116403, 116402, 116288, 116102, 115414, 115401, 115393, 115193, 115186, 114931";
+   plugin->SetSplitMaxInputFileNumber(1);
 //     // AOD
 //     plugin->SetGridDataDir("/alice/data/2010/LHC10b");
 //     plugin->SetDataPattern("*ESDs/pass2/AOD034/*AliAOD.root");
@@ -101,15 +106,15 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
 //    plugin->SetDataPattern("*tag.root");  // Use ESD tags (same applies for AOD's)
 // ...then add run numbers to be considered
 //    plugin->AddRunNumber(125020);    // simulated
-   Int_t nRunsPerMaster = 0;
-   Int_t maxRunsPerMaster = 5;
-   TString runs = "117222";
-   runs = "114931,115186,115193,115310,115315,115318,115322,115325,115328,115335,115338,115345,115393";
-   runs += ",115401,115414,115514,115521,116102,116287,116288,116401,116402,116403,116559,116561,116562";
-   runs += ",116571,116572,116574,116609,116610,116611,116642,116643,117048,117050,117052,117053,117059";
-   runs += ",117060,117063,117092,117099,117112,117116,117118,117120,117220,117221,117222,117223";
 
-   runs = "115401";
+//    // sim
+//    plugin->SetGridDataDir("/alice/sim/LHC10d4/");
+//    plugin->SetDataPattern("*ESDs.root"); // real data check reco pass and data base directory
+//    plugin->SetRunPrefix("");   // sim data
+//    runs = "120829,120825";
+// //     runs = "120829,120825,120824,120823,120822,120821,120820,120758,120750";
+//    plugin->SetSplitMaxInputFileNumber(10);
+
    // AOD
 //     runs = "117220";
    TObjArray* array = runs.Tokenize(",");
@@ -136,7 +141,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
 //   plugin->AddDataFile("/alice/data/2008/LHC08c/000057657/raw/Run57657.Merged.RAW.tag.root");
 
 // Define alien work directory where all files will be copied. Relative to alien $HOME.
-   plugin->SetGridWorkingDir("work/rsn/2011-02-08/05");
+   plugin->SetGridWorkingDir("work/rsn/2011-02-16/03_step_100");
 // Declare alien output directory. Relative to working directory.
    plugin->SetGridOutputDir("output"); // In this case will be $HOME/work/output
 // Declare the analysis source files names separated by blancs. To be compiled runtime
@@ -162,7 +167,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
    plugin->SetAnalysisMacro("AnalysisTest.C");
 // Optionally set maximum number of input files/subjob (default 100, put 0 to ignore). The optimum for an analysis
 // is correlated with the run time - count few hours TTL per job, not minutes !
-   plugin->SetSplitMaxInputFileNumber(1);
+//    plugin->SetSplitMaxInputFileNumber(1);
 // Optionally set number of failed jobs that will trigger killing waiting sub-jobs.
 //    plugin->SetMaxInitFailed(5);
 // Optionally resubmit threshold.

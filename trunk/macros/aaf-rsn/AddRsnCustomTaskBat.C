@@ -14,10 +14,10 @@ AliAnalysisTask* AddRsnCustomTaskBat(TString format = "esd", Bool_t useMC = kFAL
    cutSet = new AliRsnCutSet("myCS", AliRsnTarget::kDaughter);
 
    // loads macro with RsnCutPIDOnly.C
-   gROOT->LoadMacro("RsnCurrentCuts.C");
+   gROOT->LoadMacro("RsnCut2010PhiKK.C");
    // -- tracks --> PID
    AliRsnCutManager *cutMgr = new AliRsnCutManager("tmpCutManager");
-   RsnCurrentCuts(cutMgr);
+   RsnCut2010PhiKK(cutMgr);
 
    Bool_t recalculateTOFPid = kTRUE;
 //   recalculateTOFPid=kFALSE;

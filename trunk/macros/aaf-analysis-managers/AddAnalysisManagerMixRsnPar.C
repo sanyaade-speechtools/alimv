@@ -29,23 +29,48 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
    gSystem->Load("libAOD.so");
    gSystem->Load("libANALYSIS.so");
    gSystem->Load("libANALYSISalice.so");
+   gSystem->Load("libCORRFW.so");
    gSystem->Load("libTOFbase.so");
    gSystem->Load("libTOFrec.so");
    gSystem->Load("libTOFsim.so");
-   gSystem->Load("libCORRFW.so");
-
-   Bool_t useEventMixingPar = kTRUE;
-   useEventMixingPar = kFALSE;
-
-   if (useEventMixingPar) AliAnalysisAlien::SetupPar("EventMixing");
-   else gSystem->Load("libEventMixing.so");
-   AliAnalysisAlien::SetupPar("PWG2resonances");
 
    // Loads AF libs by default
    analysisPlugin->SetAliRootMode("ALIROOT");
-   // sets additional settings to plubin
-   if (useEventMixingPar) analysisPlugin->SetAdditionalLibs("libXMLParser.so libTOFbase.so libTOFrec.so libTOFsim.so libCORRFW.so EventMixing.par PWG2resonances.par");
-   else analysisPlugin->SetAdditionalLibs("libXMLParser.so libTOFbase.so libTOFrec.so libTOFsim.so libCORRFW.so libEventMixing.so PWG2resonances.par");
+
+   Bool_t useEventMixingPar = kTRUE;
+//    useEventMixingPar = kFALSE;
+
+   Bool_t useTENDERPar = kTRUE;
+   useTENDERPar = kFALSE;
+
+//    if (useTENDERPar) {
+//       AliAnalysisAlien::SetupPar("TENDER");
+//       AliAnalysisAlien::SetupPar("TENDERSupplies");
+//    }
+//    else {
+//       gSystem->Load("libTENDER.so");
+//       gSystem->Load("libTENDERSupplies.so");
+//    }
+
+   if (useEventMixingPar) AliAnalysisAlien::SetupPar("EventMixing");
+   else gSystem->Load("libEventMixing.so");
+
+//    AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
+   AliAnalysisAlien::SetupPar("PWG2resonances");
+
+   TString mylibs = "libXMLParser.so libCORRFW.so";
+   mylibs += " libTOFbase.so libTOFsim.so libTOFrec.so";
+
+//    if (useTENDERPar) mylibs += " TENDER.par TENDERSupplies.par";
+//    else mylibs += " libTENDER.so libTENDERSupplies.so";
+
+   if (useEventMixingPar) mylibs += " EventMixing.par";
+   else mylibs += " libEventMixing.so";
+
+//    mylibs += " ANALYSISaliceMV.par";
+   mylibs += " PWG2resonances.par";
+
+   analysisPlugin->SetAdditionalLibs(mylibs.Data());
 
    // sets plugin to manager
    mgr->SetGridHandler(analysisPlugin);
@@ -62,12 +87,20 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
       mainInputHandler->AddInputEventHandler(mcInputHandler);
    }
 
+   // add Tender Handler
+//    gROOT->LoadMacro("AddTenderHandler.C");
+// //    AddTenderHandler(mainInputHandler);
+
    // add main input handler (with mixing handler)
    mgr->SetInputEventHandler(mainInputHandler);
 
    // add mixing handler (uncomment to turn on Mixnig)
-   gROOT->LoadMacro("MixingSetting.C");
-   mainInputHandler->AddInputEventHandler(MixingSetting());
+   gROOT->LoadMacro("AddMixingHandler.C");
+   AddMixingHandler(mainInputHandler);
+
+   // add Log Handler
+//    gROOT->LoadMacro("AddLogHanlder.C");
+//    AddLogHanlder(mainInputHandler);
 
    // adds all tasks
    gROOT->LoadMacro("AddAnalysisTaskAllRsn.C");

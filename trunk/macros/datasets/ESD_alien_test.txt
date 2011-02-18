@@ -1,0 +1,1 @@
+alien:///alice/data/2010/LHC10b/000117222/ESDs/pass2/10000117222041.90/AliESDs.root

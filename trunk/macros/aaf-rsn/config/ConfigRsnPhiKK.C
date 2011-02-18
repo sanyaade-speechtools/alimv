@@ -15,19 +15,11 @@ Bool_t ConfigRsnPhiKK(AliRsnAnalysisManager *rsnAnalysisManager)
    // -- Setup cuts ----------------------------------------------------------------------------------
    //
 
-   // -- tracks --> PID ONLY
-   // loads macro with RsnCutPIDOnly.C
-
-// //     RsnCurrentCuts
-//    gROOT->LoadMacro("RsnCurrentCuts.C");
-//    RsnCurrentCuts(pairPMhist->GetCutManager());
-//    RsnCurrentCuts(pairPPhist->GetCutManager());
-//    RsnCurrentCuts(pairMMhist->GetCutManager());
-
-   gROOT->LoadMacro("RsnCut2010PhiKK.C");
-   RsnCut2010PhiKK(pairPMhist->GetCutManager());
-   RsnCut2010PhiKK(pairPPhist->GetCutManager());
-   RsnCut2010PhiKK(pairMMhist->GetCutManager());
+//     RsnCurrentCutsPhiKK
+   gROOT->LoadMacro("RsnCurrentCutsPhiKK.C");
+   RsnCurrentCutsPhiKK(pairPMhist->GetCutManager());
+   RsnCurrentCutsPhiKK(pairPPhist->GetCutManager());
+   RsnCurrentCutsPhiKK(pairMMhist->GetCutManager());
 
    // function axes
    AliRsnValue *axisIM   = new AliRsnValue("IM"  , AliRsnValue::kPairInvMass,  100,  0.9,  1.1);
