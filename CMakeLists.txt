@@ -20,7 +20,8 @@ set(PARS_TO_CREATE
 # ANALYSISaliceMV
 EventMixing 
 PWG2resonances 
-RESONANCESMV  
+PWG2resonancesDevel
+PWG2resonancesOutput
 TASKSMV
 )
 
