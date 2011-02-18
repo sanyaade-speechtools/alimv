@@ -124,7 +124,7 @@ void AliMixEventPool::CreateEntryListsRecursivly(Int_t index)
    AliDebug(AliLog::kDebug + 5, "<-");
    AliMixEventCutObj *cut;
    if (index >= 0) {
-      AliDebug(AliLog::kDebug, Form("index = %d", index));
+      AliDebug(AliLog::kDebug + 1, Form("index = %d", index));
       cut = dynamic_cast<AliMixEventCutObj *>(fListOfEventCuts.At(index));
       if (!cut) return;
       cut->Reset();
@@ -133,7 +133,7 @@ void AliMixEventPool::CreateEntryListsRecursivly(Int_t index)
          CreateEntryListsRecursivly(index - 1);
          if (cut->HasMore()) {
             fBinNumber++;
-            AliDebug(AliLog::kDebug, Form("fBinnumber = %d", fBinNumber));
+            AliDebug(AliLog::kDebug + 1, Form("fBinnumber = %d", fBinNumber));
             AddEntryList();
             //                 PrintCurrentCutIntervals();
          }
@@ -156,7 +156,7 @@ TEntryList *AliMixEventPool::AddEntryList()
    }
    TEntryList *el = new TEntryList;
    fListOfEntryList.Add(el);
-   AliDebug(AliLog::kDebug, Form("Number in Entry list -> %lld", el->GetN()));
+   AliDebug(AliLog::kDebug + 1, Form("Number in Entry list -> %lld", el->GetN()));
    AliDebug(AliLog::kDebug + 5, "->");
    return el;
 }
