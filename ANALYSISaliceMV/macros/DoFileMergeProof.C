@@ -37,14 +37,14 @@ void DoFileMergeProof(TString alienFindCmd = "-l 100 /alice/cern.ch/user/m/mvala
    TChain c("filesTree");
    c.AddFile(collNameOut.Data());
    Long64_t numEntries = c.GetEntries();
-	Printf("Num entries : %lld", numEntries);
-	if (!numEntries) return;
-	
-	TFileCollection mergeColl;
-	Printf("adding file %s in to collection ",collNameOut.Data());
-	gSystem->Exec(Form("echo %s > /tmp/tmpmergefile.txt",collNameOut.Data()));
-	mergeColl.AddFromFile("/tmp/tmpmergefile.txt");
-	p->RegisterDataSet("merge_coll",&mergeColl,"OV");
+   Printf("Num entries : %lld", numEntries);
+   if (!numEntries) return;
+
+   TFileCollection mergeColl;
+   Printf("adding file %s in to collection ", collNameOut.Data());
+   gSystem->Exec(Form("echo %s > /tmp/tmpmergefile.txt", collNameOut.Data()));
+   mergeColl.AddFromFile("/tmp/tmpmergefile.txt");
+   p->RegisterDataSet("merge_coll", &mergeColl, "OV");
 
 
    // creating alien on workers
@@ -73,11 +73,11 @@ void DoFileMergeProof(TString alienFindCmd = "-l 100 /alice/cern.ch/user/m/mvala
    p->SetParameter("PROOF_PacketizerStrategy", (Int_t)0);
    p->SetParameter("PROOF_PacketAsAFraction", numEntries / p->GetParallel());
 
-	p->ShowDataSets();
-	p->Process("merge_coll","TFileMergeSelector.cxx++g");
-	
-	// remove tm dataset
-	p->RemoveDataSet("merge_coll");
+   p->ShowDataSets();
+   p->Process("merge_coll", "TFileMergeSelector.cxx++g");
+
+   // remove tm dataset
+   p->RemoveDataSet("merge_coll");
 
 }
 
