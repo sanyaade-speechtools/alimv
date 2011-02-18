@@ -23,6 +23,7 @@ AliRsnDaughter::AliRsnDaughter() :
    fOK(kFALSE),
    fLabel(-1),
    fMotherPDG(0),
+   fRsnID(-1),
    fPrec(0.0, 0.0, 0.0, 0.0),
    fPsim(0.0, 0.0, 0.0, 0.0),
    fRef(0x0),
@@ -39,6 +40,7 @@ AliRsnDaughter::AliRsnDaughter(const AliRsnDaughter &copy) :
    fOK(copy.fOK),
    fLabel(copy.fLabel),
    fMotherPDG(copy.fMotherPDG),
+   fRsnID(copy.fRsnID),
    fPrec(copy.fPrec),
    fPsim(copy.fPsim),
    fRef(copy.fRef),
@@ -63,6 +65,7 @@ AliRsnDaughter& AliRsnDaughter::operator=(const AliRsnDaughter &copy)
    fOK        = copy.fOK;
    fLabel     = copy.fLabel;
    fMotherPDG = copy.fMotherPDG;
+   fRsnID     = copy.fRsnID;
    fPrec      = copy.fPrec;
    fPsim      = copy.fPsim;
    fRef       = copy.fRef;
@@ -83,6 +86,7 @@ void AliRsnDaughter::Reset()
    fOK        = kFALSE;
    fLabel     = -1;
    fMotherPDG = 0;
+   fRsnID     = -1;
    fRef       = 0x0;
    fRefMC     = 0x0;
 

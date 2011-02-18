@@ -36,7 +36,8 @@ AliRsnAnalysisManager::AliRsnAnalysisManager(const char*name) :
    TNamed(name, ""),
    fList(0x0),
    fPairs(0),
-   fGlobalTrackCuts()
+   fGlobalTrackCuts(),
+   fIsMixing(kFALSE)
 {
 //
 // Default constructor
@@ -48,7 +49,8 @@ AliRsnAnalysisManager::AliRsnAnalysisManager(const AliRsnAnalysisManager& copy) 
    TNamed(copy),
    fList(copy.fList),
    fPairs(copy.fPairs),
-   fGlobalTrackCuts(copy.fGlobalTrackCuts)
+   fGlobalTrackCuts(copy.fGlobalTrackCuts),
+   fIsMixing(copy.fIsMixing)
 {
 //
 // Copy constructor
@@ -67,6 +69,7 @@ AliRsnAnalysisManager& AliRsnAnalysisManager::operator=(const AliRsnAnalysisMana
    fList = copy.fList;
    fPairs = copy.fPairs;
    fGlobalTrackCuts = copy.fGlobalTrackCuts;
+   fIsMixing = copy.fIsMixing;
 
    return (*this);
 }
@@ -133,12 +136,8 @@ void AliRsnAnalysisManager::InitAllPairs(TList *list)
    Int_t i = 0;
    while ((pair = (AliRsnPair*)next())) {
       AliDebug(AliLog::kDebug + 1, Form("InitAllPairs of the PairManager(%s) [%d] ...", pair->GetName(), i++));
-//     pair->Init("", list);
       pair->Init(GetName(), list);
-
-      // add a counter for used/unused events for each pair
-      TH1I *hPairUsed = new TH1I(Form("%s_%s_USED", GetName(), pair->GetName()), "Used events for pair", 2, 0, 2);
-      list->Add(hPairUsed);
+      pair->SetMixed(IsMixing());
    }
 
    fList = list;
@@ -181,15 +180,14 @@ void AliRsnAnalysisManager::ProcessAllPairs()
 
    // reset all counters which tell us
    // how many entries were added now
-   while ((pair = (AliRsnPair*)next())) {
-      pair->ResetCount();
-   }
+   while ((pair = (AliRsnPair*)next())) pair->InitEvent();
 
    // external loop
    for (i0 = 0; i0 < nTot[0]; i0++) {
       // assign first track
       if (!ev0->ConvertAbsoluteIndex(i0, index0, type0)) continue;
       ev0->SetDaughter(daughter0, index0, type0);
+      daughter0.SetRsnID(i0);
 
       // check global cuts
       if (!fGlobalTrackCuts.IsSelected(&daughter0)) continue;
@@ -205,6 +203,7 @@ void AliRsnAnalysisManager::ProcessAllPairs()
          // assign second track
          if (!ev1->ConvertAbsoluteIndex(i1, index1, type1)) continue;
          ev1->SetDaughter(daughter1, index1, type1);
+         daughter1.SetRsnID(i1);
 
          // check global cuts
          if (!fGlobalTrackCuts.IsSelected(&daughter1)) continue;
@@ -223,7 +222,7 @@ void AliRsnAnalysisManager::ProcessAllPairs()
             // process the two tracks
             if (pair->Fill(&daughter0, &daughter1)) {
                pair->Compute();
-            } else if (pair->Fill(&daughter1, &daughter0)) {
+            } else if (!IsMixing() && pair->Fill(&daughter1, &daughter0)) {
                pair->Compute();
             }
          }
@@ -234,9 +233,7 @@ void AliRsnAnalysisManager::ProcessAllPairs()
    next.Reset();
    if (!fList) return;
    while ((pair = (AliRsnPair*)next())) {
-      TH1I *hist = (TH1I*)fList->FindObject(Form("_%s_USED", pair->GetName()));
-      if (!hist) continue;
-      if (pair->GetCount() > 0) hist->Fill(1); else hist->Fill(0);
+      pair->PostEvent(GetName(), fList);
    }
 
    AliDebug(AliLog::kDebug + 2, "->");
@@ -319,13 +316,13 @@ void AliRsnAnalysisManager::ProcessAllPairsMC()
    }
 
    // update all count histograms counters
-   next.Reset();
-   if (!fList) return;
-   while ((pair = (AliRsnPair*)next())) {
-      TH1I *hist = (TH1I*)fList->FindObject(Form("_%s_USED", pair->GetName()));
-      if (!hist) continue;
-      if (pair->GetCount() > 0) hist->Fill(1); else hist->Fill(0);
-   }
+//    next.Reset();
+//    if (!fList) return;
+//    while ((pair = (AliRsnPair*)next())) {
+//       TH1I *hist = (TH1I*)fList->FindObject(Form("%s_%s_USED",GetName(), pair->GetName()));
+//       if (!hist) continue;
+//       if (pair->GetCount() > 0) hist->Fill(1); else hist->Fill(0);
+//    }
 
    AliDebug(AliLog::kDebug + 2, "->");
 }

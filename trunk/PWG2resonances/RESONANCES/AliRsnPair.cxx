@@ -41,6 +41,10 @@ AliRsnPair::AliRsnPair(const char *name, AliRsnPairDef *def) :
 //
 // Default constructor
 //
+
+   for (Int_t i = 0; i < 6; i++) {
+      fHistPairInfo[i] = 0;
+   }
 }
 
 //_____________________________________________________________________________
@@ -195,6 +199,21 @@ Bool_t AliRsnPair::Fill
    // if pair is accepted, increment counter
    ++fCount;
 
+   // here i know IDs
+   AliDebug(AliLog::kDebug + 1, Form("%s (%c)%d (%c)%d", GetName(), daughter0->ChargeChar(), daughter0->GetRsnID(), daughter1->ChargeChar(), daughter1->GetRsnID()));
+
+   if (!IsMixed() && daughter0->ChargeChar() == daughter1->ChargeChar()) {
+      if (daughter0->ChargeChar() == '+') fNumIDs[0].Enter(daughter0->GetRsnID());
+      if (daughter0->ChargeChar() == '-') fNumIDs[1].Enter(daughter0->GetRsnID());
+      if (daughter1->ChargeChar() == '+') fNumIDs[0].Enter(daughter1->GetRsnID());
+      if (daughter1->ChargeChar() == '-') fNumIDs[1].Enter(daughter1->GetRsnID());
+   } else {
+      fNumIDs[0].Enter(daughter0->GetRsnID());
+      fNumIDs[1].Enter(daughter1->GetRsnID());
+   }
+
+
+
    return kTRUE;
 }
 
@@ -209,11 +228,61 @@ void AliRsnPair::Compute()
 }
 
 //_____________________________________________________________________________
-void AliRsnPair::Init(const char* /*prefix*/, TList* /*list*/)
+void AliRsnPair::Init(const char* prefix, TList* list)
 {
 //
 // Virtual method to compute pair quantities of interest
 //
+// add a counter for used/unused events for each pair
 
-   AliWarning("Implement this method in derived classes");
+   fHistPairInfo[0] = new TH1I(Form("%s_%s_NUM1", prefix, GetName()), "Num1", 100, 0, 100);
+   fHistPairInfo[1] = new TH1I(Form("%s_%s_NUM2", prefix, GetName()), "Num2", 100, 0, 100);
+   fHistPairInfo[2] = new TH1I(Form("%s_%s_SUM", prefix, GetName()), "Sum", 100, 0, 100);
+   fHistPairInfo[3] = new TH1I(Form("%s_%s_DIFF", prefix, GetName()), "Difference", 200, -100, 100);
+   fHistPairInfo[4] = new TH1I(Form("%s_%s_OK", prefix, GetName()), "Is enough combinations (has to be always 1)", 2, 0, 2);
+   fHistPairInfo[5] = new TH1I(Form("%s_%s_USED", prefix, GetName()), "Used events for pair", 2, 0, 2);
+
+   for (Int_t i = 0; i < 6; i++) {
+      list->Add(fHistPairInfo[i]);
+   }
 }
+
+void AliRsnPair::InitEvent()
+{
+   ResetCount();
+
+   // reset id nums
+   for (Int_t i = 0; i < 2; i++) fNumIDs[i].Reset();
+}
+
+
+void AliRsnPair::PostEvent(const char* /*prefix*/, TList* /*list*/)
+{
+   TString mixStr;
+   if (IsMixed()) mixStr = "_mix";
+   AliDebug(AliLog::kDebug + 1 , Form("Sum %s%s  %lld %lld sum=%lld diff=%lld", GetName(), mixStr.Data(), fNumIDs[0].GetN(), fNumIDs[1].GetN(), fCount, fNumIDs[0].GetN() - fNumIDs[1].GetN()));
+
+   // calculate combinations
+
+   // check if it was enough
+
+   // 4 histos
+   // 1st     : 1st track and 2nd track
+   fHistPairInfo[0]->Fill(fNumIDs[0].GetN());
+   fHistPairInfo[1]->Fill(fNumIDs[1].GetN());
+
+   // 2nd     : sum
+   fHistPairInfo[2]->Fill(fCount);
+
+   // 3rd     : diff
+   Long64_t diff = fNumIDs[0].GetN() - fNumIDs[1].GetN();
+   fHistPairInfo[3]->Fill(diff);
+
+   // 4th     : OK or Not OK
+   fHistPairInfo[4]->Fill(1);
+
+   // update all count histograms counters
+   if (GetCount() > 0) fHistPairInfo[5]->Fill(1); else fHistPairInfo[5]->Fill(0);
+
+}
+

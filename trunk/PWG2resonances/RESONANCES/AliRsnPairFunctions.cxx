@@ -127,6 +127,8 @@ void AliRsnPairFunctions::Init(const char *prefix, TList *list)
       else list->Add(fcn->CreateHistogramSparse(hName.Data(), ""));
    }
 
+   AliRsnPair::Init(prefix, list);
+
    AliDebug(AliLog::kDebug + 2, "->");
 }
 

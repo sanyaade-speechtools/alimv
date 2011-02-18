@@ -82,6 +82,7 @@ void AliRsnAnalysisTask::RsnUserCreateOutputObjects()
    if (!fOutList) fOutList = new TList;
    fOutList->Clear();
 
+   fRsnAnalysisManager.SetMixing(IsMixing());
    fRsnAnalysisManager.InitAllPairs(fOutList);
 
    PostData(2, fOutList);
