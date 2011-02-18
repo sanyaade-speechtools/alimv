@@ -1,0 +1,15 @@
+#-*- Mode: Makefile -*-
+
+SRCS = AliTOFTenderSupply.cxx \
+AliPIDTenderSupply.cxx \
+AliTPCTenderSupply.cxx \
+AliTRDTenderSupply.cxx \
+AliVtxTenderSupply.cxx \
+AliVZEROTenderSupply.cxx \
+
+
+HDRS:= $(SRCS:.cxx=.h) 
+
+DHDR= TENDERSuppliesLinkDef.h
+
+EXPORT:=$(SRCS:.cxx=.h)
