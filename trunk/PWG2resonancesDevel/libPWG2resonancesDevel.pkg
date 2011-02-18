@@ -1,0 +1,11 @@
+#-*- Mode: Makefile -*-
+
+SRCS = \
+      AliRsnInputHandler.cxx \
+      AliRsnAnalysisTaskCommon.cxx
+
+HDRS:= $(SRCS:.cxx=.h) 
+
+DHDR= PWG2resonancesDevelLinkDef.h
+
+EXPORT:=$(SRCS:.cxx=.h)
