@@ -1,9 +1,9 @@
 # -*- mode: cmake -*-
 
 set(SRCS
-	AliMultiInputEventHandler.cxx
-	AliFileInfo.cxx
-	AliMergeAnalysisTask.cxx
+AliLogInputHandler.cxx
+AliTenderInputEventHandler.cxx
+AliPhysicsSellectionInputHandler.cxx
 )
 
 # fill list of header files from list of source files

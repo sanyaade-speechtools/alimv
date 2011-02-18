@@ -51,6 +51,9 @@ public :
 
    void SetFilesToMerge(TString files) { fListFilesInArchive = files;}
 
+   void UseTFileCp(Bool_t useTFCp = kTRUE) {fUseTFileCp = useTFCp;}
+   void SetLite(Bool_t useLite = kTRUE) {fIsLite = useLite;}
+
 private:
 
    Bool_t         fDoMerge;              // flag to do merge
@@ -64,6 +67,8 @@ private:
 
    TString        fOutputDir;            // Output directory
    TString        fFilePrefix;
+   Bool_t         fUseTFileCp;           // use FileCp
+   Bool_t         fIsLite;               // is Proof Lite
 
 
    void           DoMergeAll();

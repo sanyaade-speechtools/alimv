@@ -22,13 +22,17 @@
 // Root > T->Process("TFileMergeSelector.C+")
 //
 
-#include "TFileMergeSelector.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TFileMerger.h>
 #include <TSystem.h>
 #include <TProofOutputFile.h>
 #include <TAlien.h>
+#include <TROOT.h>
+#include <TEnv.h>
+
+#include "TFileMergeSelector.h"
+#include <TProof.h>
 
 ClassImp(TFileMergeSelector)
 
@@ -41,7 +45,9 @@ TFileMergeSelector::TFileMergeSelector(TTree*): TSelector(),
    fNMaxFilesMerged(10),
    fCounter(0),
    fOutputDir(""),
-   fFilePrefix("")
+   fFilePrefix(""),
+   fUseTFileCp(kFALSE),
+   fIsLite(kFALSE)
 {
 
 }
@@ -100,15 +106,19 @@ void TFileMergeSelector::SlaveBegin(TTree * /*tree*/)
    // The tree argument is deprecated (on PROOF 0 is passed).
 
    TString option = GetOption();
+//    TFile::SetOpenTimeout(5000);
+
+   //    gEnv->SetValue("XNet.ConnectTimeout", 1);
+   //    gEnv->SetValue("XNet.TransactionTimeout", 5);
+   gEnv->SetValue("XNet.RequestTimeout", 60);
+   gEnv->SetValue("XNet.FirstConnectMaxCnt", 1);
 
    // sets TObjArray to be owner
    fFileMergers.SetOwner(kTRUE);
+
+   if (!fInput) return;
+
    TNamed *out = 0;
-//    out = (TNamed *) fInput->FindObject("PROOF_USE_ALIEN");
-//    if (out) {
-// //       TGrid::Connect("alien://");
-// //       fFilePrefix = "alien://";
-//    }
    out = (TNamed *) fInput->FindObject("PROOF_USE_ARCHIVE");
    if (out) {
       fUseArchive = kTRUE;
@@ -117,9 +127,24 @@ void TFileMergeSelector::SlaveBegin(TTree * /*tree*/)
       fUseArchive = kFALSE;
    }
 
+   out = (TNamed *) fInput->FindObject("PROOF_IS_LITE");
+   if (out) fIsLite = kTRUE;
+
+   out = (TNamed *) fInput->FindObject("PROOF_USE_TFILECP");
+   if (out) fUseTFileCp = kTRUE;
+
+
+   //
+   out = (TNamed *) fInput->FindObject("PROOF_MERGE_NUM");
+   if (out) {
+      TString numStr = out->GetTitle();
+      fNMaxFilesMerged = numStr.Atoi();
+   }
+
    if (fListFilesInArchive.IsNull()) fListFilesInArchive = "dummy.root";
 
-   fOutput->Add(new TNamed("MY_PROOF_OUT_FILES", fListFilesInArchive.Data()));
+//    out = (TNamed *) fOutput->FindObject("MY_PROOF_OUT_FILES");
+//    if (!out) fOutput->Add(new TNamed("MY_PROOF_OUT_FILES", fListFilesInArchive.Data()));
 }
 
 Bool_t TFileMergeSelector::Process(Long64_t entry)
@@ -213,14 +238,32 @@ void TFileMergeSelector::SlaveTerminate()
       strr.ReplaceAll(".root", "_previous.root");
 
       if (!gSystem->AccessPathName(strr.Data())) {
-         // add proof output file
-         TProofOutputFile *proofFile = new TProofOutputFile(strr.Data(), "ML");
-         TNamed *out = (TNamed *) fInput->FindObject("PROOF_OUTPUTFILE");
-         if (out) proofFile->SetOutputFileName(Form("%s/%s", out->GetTitle(), origFileName.Data()));
-         // add proof file to fOutputs
-         proofFile->Print();
-         fOutput->Add(proofFile);
 
+         if (fUseTFileCp) {
+            if (fIsLite) {
+               origFileName.ReplaceAll(".root", Form("_%d.root", gSystem->GetPid()));
+            } else {
+               Int_t gid = gROOT->ProcessLine("gProofServ->GetGroupId();");
+               origFileName.ReplaceAll(".root", Form("_%d.root", gid));
+            }
+            Printf("mv %s %s", strr.Data(), origFileName.Data());
+            gSystem->Exec(Form("mv %s %s", strr.Data(), origFileName.Data()));
+
+            TNamed *out = (TNamed *) fInput->FindObject("PROOF_OUTPUTFILE");
+            if (out) {
+               Printf("TFile::Cp %s %s/%s", origFileName.Data(), out->GetTitle(), origFileName.Data());
+               TFile::Cp(origFileName.Data(), Form("%s/%s", out->GetTitle(), origFileName.Data()));
+            }
+
+         } else {
+            // add proof output file
+            TProofOutputFile *proofFile = new TProofOutputFile(strr.Data(), "ML");
+            TNamed *out = (TNamed *) fInput->FindObject("PROOF_OUTPUTFILE");
+            if (out) proofFile->SetOutputFileName(Form("%s/%s", out->GetTitle(), origFileName.Data()));
+            // add proof file to fOutputs
+            proofFile->Print();
+            fOutput->Add(proofFile);
+         }
       }
 
    }
@@ -232,8 +275,43 @@ void TFileMergeSelector::Terminate()
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
 
-   TNamed *out = dynamic_cast<TNamed*>(fOutput->FindObject("MY_PROOF_OUT_FILES"));
-   if (!out) return;
+   TNamed *out = 0;
+
+   out = (TNamed *) fInput->FindObject("PROOF_USE_TFILECP");
+   if (out) {
+
+      out = dynamic_cast<TNamed*>(fInput->FindObject("PROOF_USE_ARCHIVE"));
+      if (out) fListFilesInArchive = out->GetTitle();
+      else return;
+
+      out = dynamic_cast<TNamed*>(fInput->FindObject("PROOF_OUTPUTFILE"));
+      if (!out) return;
+
+      TObjArray* array = fListFilesInArchive.Tokenize(",");
+      TObjString *str;
+      TString strr, origfile;
+      for (Int_t i = 0; i < array->GetEntriesFast(); i++) {
+         str = (TObjString *) array->At(i);
+         strr = str->GetString();
+         TFileMerger merger(kFALSE);
+         merger.SetFastMethod(kTRUE);
+         merger.OutputFile(strr.Data());
+         Printf("Workers found %d", gProof->GetParallel());
+         for (Int_t iwk = 0; iwk < gProof->GetParallel(); iwk++) {
+            TString tmpStr = strr;
+            tmpStr.ReplaceAll(".root", Form("_%d.root", iwk));
+            Printf("Adding %s/%s", out->GetTitle(), tmpStr.Data());
+            merger.AddFile(Form("%s/%s", out->GetTitle(), tmpStr.Data()));
+         }
+         Printf("Final Merging of file %s (might take while, depending on number of workers and client newtwork connection) ...", strr.Data());
+         merger.Merge();
+         Printf("done...");
+      }
+
+      return;
+   }
+
+
    fListFilesInArchive = out->GetTitle();
 
    Printf("Running Terminate with fListFilesInArchive = %s", fListFilesInArchive.Data());
