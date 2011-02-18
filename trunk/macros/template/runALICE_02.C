@@ -23,43 +23,27 @@ Int_t runALICE(TString analysisSource = "grid", TString analysisMode = "terminat
    ::Info(gSystem->HostName(), "Loading done ...");
    // ++++++++++++++++ Adding Analysis Managers +++++++++++++++++++++++
 
+   fNEvents = 1e3;
+   fNEventsSkip = 350;
+
+
+   RunAnalysisManager("AddMyAnalysisManagerExampleTasks", analysisSource.Data(), analysisMode.Data(), "");
+
+//    RunAnalysisManager("AddMyAnalysisManagerEvilTask", analysisSource.Data(), analysisMode.Data(), "");
 //
-//   RunAnalysisManager("AddMyAnalysisManagerESDFilter",analysisSource.Data(),analysisMode.Data());
+//    // mix with parfiles
+//    RunAnalysisManager("AddAnalysisManagerMixPar", analysisSource.Data(), analysisMode.Data(), "");
 //
-//   RunAnalysisManager("AddMyAnalysisManagerCustomTask",analysisSource.Data(),analysisMode.Data(),"");
-   //
-//   fNEvents = 1e3;
-//   fNEventsSkip = 350;
-
-   // mix from aliroot
-//   RunAnalysisManager("AddAnalysisManagerMix",analysisSource.Data(),analysisMode.Data(),"");
-
-   // mix with parfiles
-//   RunAnalysisManager("AddAnalysisManagerMixPar",analysisSource.Data(),analysisMode.Data(),"");
-
-   // rsn from aliroot
+//    // rsn from aliroot
 //    RunAnalysisManager("AddAnalysisManagerMixRsn", analysisSource.Data(), analysisMode.Data(), "");
-
-   // rsn with parfiles
-   RunAnalysisManager("AddAnalysisManagerMixRsnPar", analysisSource.Data(), analysisMode.Data(), "");
-
-   // rsn with parfiles aod
-//   RunAnalysisManager("AddAnalysisManagerMixRsnParAOD",analysisSource.Data(),analysisMode.Data(),"");
-   // rsn with parfiles Bat
-//    RunAnalysisManager("AddAnalysisManagerMixRsnParBat", analysisSource.Data(), analysisMode.Data(), "");
-
-//    RunAnalysisManager("AddMyAnalysisManagerExampleTasks", analysisSource.Data(), analysisMode.Data(), "");
-
-//   RunAnalysisManager("AddMyAnalysisManagerEvilTask",analysisSource.Data(),analysisMode.Data(),"");
-
-//     RunAnalysisManager("AddMyAnalysisManagerRsnCustomTask",analysisSource.Data(),analysisMode.Data(),"");
-
-//    for (Int_t i=0;i<2;i++)
-//     RunAnalysisManager("AddMyAnalysisManagerEvilTask",analysisSource.Data(),analysisMode.Data(),Form("%d",i));
 //
-//   for (Int_t i=0;i<1;i++) {
-//     if (gROOT->IsInterrupted()) break;
-//     RunAnalysisManager("AddMyAnalysisManagerAodAnalysisTask",analysisSource.Data(),analysisMode.Data(),Form("%d",i));
-//   }
+//    // rsn with parfiles
+//    RunAnalysisManager("AddAnalysisManagerMixRsnPar", analysisSource.Data(), analysisMode.Data(), "");
 //
+//    // rsn with parfiles aod
+//    RunAnalysisManager("AddAnalysisManagerMixRsnParAOD", analysisSource.Data(), analysisMode.Data(), "");
+//
+//    for (Int_t i = 0; i < 2; i++)
+//       RunAnalysisManager("AddMyAnalysisManagerEvilTask", analysisSource.Data(), analysisMode.Data(), Form("%d", i));
+
 } //
