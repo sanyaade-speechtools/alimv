@@ -19,26 +19,7 @@ MY_WKDIR=`pwd`
 # MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --suffix=none --recursive"
 MY_ASTYLE_OPTS=""
 
-# MY_DIRS="ANALYSISaliceMV PWG2resonances/RESONANCES EventMixing/EventMixing TASKSMV"
-
-# astyle 2.01
-$MY_ASTYLE_CMD  $MY_ASTYLE_OPTS $MY_WKDIR/'*.h' $MY_WKDIR/'*.cxx' $MY_WKDIR/'*.C'
-
-# astyle 1.24
-# for MY_DIR in $MY_DIRS; do
-#   if [ -d $MY_WKDIR/$MY_DIR ];then
-#     echo "Reformating direcotry $MY_WKDIR/$MY_DIR ..."
-#     $MY_ASTYLE_CMD  $MY_ASTYLE_OPTS $MY_WKDIR/$MY_DIR/'*.h' $MY_WKDIR/$MY_DIR/'*.cxx'
-#   fi 
-# done
-
-# MY_DIRS="macros macros/* ANALYSISaliceMV/macros"
-# for MY_DIR in $MY_DIRS; do
-#   if [ -d $MY_WKDIR/$MY_DIR ];then
-#     echo "Reformating direcotry $MY_WKDIR/$MY_DIR ..."
-#     $MY_ASTYLE_CMD  $MY_ASTYLE_OPTS $MY_WKDIR/$MY_DIR/*.C
-#   fi 
-# done
+$MY_ASTYLE_CMD $MY_ASTYLE_OPTS $MY_WKDIR/'*.h' $MY_WKDIR/'*.cxx' $MY_WKDIR/'*.C'
 
 echo "Cleaning $MY_WKDIR ..."
 cd $MY_WKDIR
