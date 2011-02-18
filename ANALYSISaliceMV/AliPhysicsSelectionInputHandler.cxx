@@ -1,5 +1,5 @@
 //
-// Class AliPhysicsSellectionInputHandler
+// Class AliPhysicsSelectionInputHandler
 //
 // Multi input event handler
 // TODO example
@@ -9,13 +9,15 @@
 
 #include "AliLog.h"
 
-#include "AliPhysicsSellectionInputHandler.h"
+#include "AliPhysicsSelectionInputHandler.h"
 
-ClassImp(AliPhysicsSellectionInputHandler)
+ClassImp(AliPhysicsSelectionInputHandler)
 
 //_____________________________________________________________________________
-AliPhysicsSellectionInputHandler::AliPhysicsSellectionInputHandler(const char *name) :
-   AliInputEventHandler(name, name)
+AliPhysicsSelectionInputHandler::AliPhysicsSelectionInputHandler() :
+   AliInputEventHandler("",""),
+   fOption(""),
+   fPhysicsSelection(0)
 {
 //
 // Default constructor.
@@ -25,7 +27,20 @@ AliPhysicsSellectionInputHandler::AliPhysicsSellectionInputHandler(const char *n
 }
 
 //_____________________________________________________________________________
-AliPhysicsSellectionInputHandler::~AliPhysicsSellectionInputHandler()
+AliPhysicsSelectionInputHandler::AliPhysicsSelectionInputHandler(const char *name,const char *opt) :
+   AliInputEventHandler(name, name),
+   fOption(opt),
+   fPhysicsSelection(new AliPhysicsSelection)
+{
+//
+// Default constructor.
+//
+   AliDebug(AliLog::kDebug + 10, "<-");
+   AliDebug(AliLog::kDebug + 10, "->");
+}
+
+//_____________________________________________________________________________
+AliPhysicsSelectionInputHandler::~AliPhysicsSelectionInputHandler()
 {
    //
    // Destructor
@@ -35,7 +50,7 @@ AliPhysicsSellectionInputHandler::~AliPhysicsSellectionInputHandler()
 }
 
 //_____________________________________________________________________________
-Bool_t AliPhysicsSellectionInputHandler::Init(Option_t *opt)
+Bool_t AliPhysicsSelectionInputHandler::Init(Option_t *opt)
 {
    //
    // Init() is called for all mix input handlers.
@@ -45,7 +60,7 @@ Bool_t AliPhysicsSellectionInputHandler::Init(Option_t *opt)
    return AliInputEventHandler::Init(opt);
 }
 //_____________________________________________________________________________
-Bool_t AliPhysicsSellectionInputHandler::Init(TTree *tree, Option_t *opt)
+Bool_t AliPhysicsSelectionInputHandler::Init(TTree *tree, Option_t *opt)
 {
    //
    // Init(const char*path) is called for all mix input handlers.
@@ -56,7 +71,7 @@ Bool_t AliPhysicsSellectionInputHandler::Init(TTree *tree, Option_t *opt)
    return AliInputEventHandler::Init(tree, opt);
 }
 //_____________________________________________________________________________
-Bool_t AliPhysicsSellectionInputHandler::Notify()
+Bool_t AliPhysicsSelectionInputHandler::Notify()
 {
    //
    // Notify() is called for all mix input handlers
@@ -67,7 +82,7 @@ Bool_t AliPhysicsSellectionInputHandler::Notify()
 }
 
 //_____________________________________________________________________________
-Bool_t AliPhysicsSellectionInputHandler::Notify(const char *path)
+Bool_t AliPhysicsSelectionInputHandler::Notify(const char *path)
 {
    //
    // Notify(const char*path) is called for all mix input handlers
@@ -76,7 +91,7 @@ Bool_t AliPhysicsSellectionInputHandler::Notify(const char *path)
    return AliInputEventHandler::Notify(path);
 }
 //_____________________________________________________________________________
-Bool_t AliPhysicsSellectionInputHandler::BeginEvent(Long64_t entry)
+Bool_t AliPhysicsSelectionInputHandler::BeginEvent(Long64_t entry)
 {
    //
    // BeginEvent(Long64_t entry) is called for all mix input handlers
@@ -86,7 +101,7 @@ Bool_t AliPhysicsSellectionInputHandler::BeginEvent(Long64_t entry)
 }
 
 //_____________________________________________________________________________
-Bool_t AliPhysicsSellectionInputHandler::FinishEvent()
+Bool_t AliPhysicsSelectionInputHandler::FinishEvent()
 {
    //
    // FinishEvent() is called for all mix input handlers

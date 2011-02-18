@@ -3,7 +3,7 @@
 set(SRCS
 AliLogInputHandler.cxx
 AliTenderInputEventHandler.cxx
-AliPhysicsSellectionInputHandler.cxx
+AliPhysicsSelectionInputHandler.cxx
 )
 
 # fill list of header files from list of source files
