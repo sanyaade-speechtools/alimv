@@ -58,6 +58,7 @@ public:
    void    SetBad() {fOK = kFALSE;}
    void    SetGood() {fOK = kTRUE;}
    void    SetLabel(Int_t label) {fLabel = label;}
+   void    SetRsnID(Int_t id) { fRsnID = id; }
    void    SetMotherPDG(Int_t value) {fMotherPDG = value;}
    void    SetRef(AliVParticle *p) {fRef = p;}
    void    SetRefMC(AliVParticle *p = 0x0) {fRefMC = p;}
@@ -74,6 +75,7 @@ public:
    void     Reset();
    Int_t    GetPDG(Bool_t abs = kTRUE);
    Int_t    GetID();
+   Int_t    GetRsnID() { return fRsnID ;}
    Bool_t   HasFlag(ULong_t flag);
    Bool_t   SetMass(Double_t mass);
    Bool_t   IsKinkDaughter();
@@ -103,6 +105,7 @@ private:
    Bool_t         fOK;          // internal utility flag which is kFALSE when this object should not be used
    Int_t          fLabel;       // GEANT label of corresponding MC
    Int_t          fMotherPDG;   // PDG code of mother (makes sense only if fRefMC is defined)
+   Int_t          fRsnID;       // id in rsn manager cout
 
    TLorentzVector fPrec;        // 4-vector filled with track info from default ref (if present)
    TLorentzVector fPsim;        // 4-vector filled with track info from MC ref (if present)
@@ -110,7 +113,7 @@ private:
    AliVParticle  *fRef;         // reference to reconstructed track in ESD/AOD
    AliVParticle  *fRefMC;       // reference to corresponding MC particle
 
-   ClassDef(AliRsnDaughter, 8)
+   ClassDef(AliRsnDaughter, 9)
 };
 
 #endif

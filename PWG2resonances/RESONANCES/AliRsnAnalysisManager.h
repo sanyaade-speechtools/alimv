@@ -43,11 +43,16 @@ public:
    void           ProcessAllPairsMC();
    AliRsnCutSet*  GetGlobalTrackCuts() {return &fGlobalTrackCuts;}
 
+   void           SetMixing(Bool_t isMixing = kTRUE) { fIsMixing = isMixing;}
+   Bool_t         IsMixing() { return fIsMixing; }
+
 private:
 
    TList        *fList;             // container for output histograms (external object)
    TObjArray     fPairs;            // collection of pair objects for the different outputs
    AliRsnCutSet  fGlobalTrackCuts;  // a set of cuts which are applied to all tracks for all analysis
+
+   Bool_t        fIsMixing;         // flag if manager is in mixing task
 
    ClassDef(AliRsnAnalysisManager, 1)
 };
