@@ -10,15 +10,16 @@ cd `dirname $0`
 cd ../
 MY_WKDIR=`pwd`
 
-# ROOT format
-MY_ASTYLE_OPTS="--indent=spaces=3 --convert-tabs --brackets=stroustrup --indent-switches --indent-namespaces --indent-preprocessor"
-MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --max-instatement-indent=60 --min-conditional-indent=0"
-MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --pad-oper --pad-header --unpad-paren"
-MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --keep-one-line-blocks --keep-one-line-statements"
-MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --convert-tabs"
-MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --suffix=none --recursive"
+# # ROOT format
+# MY_ASTYLE_OPTS="--indent=spaces=3 --convert-tabs --brackets=stroustrup --indent-switches --indent-namespaces --indent-preprocessor"
+# MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --max-instatement-indent=60 --min-conditional-indent=0"
+# MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --pad-oper --pad-header --unpad-paren"
+# MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --keep-one-line-blocks --keep-one-line-statements"
+# MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --convert-tabs"
+# MY_ASTYLE_OPTS="$MY_ASTYLE_OPTS --suffix=none --recursive"
+MY_ASTYLE_OPTS=""
 
-MY_DIRS="ANALYSISaliceMV PWG2resonances/RESONANCES EventMixing/EventMixing TASKSMV"
+# MY_DIRS="ANALYSISaliceMV PWG2resonances/RESONANCES EventMixing/EventMixing TASKSMV"
 
 # astyle 2.01
 $MY_ASTYLE_CMD  $MY_ASTYLE_OPTS $MY_WKDIR/'*.h' $MY_WKDIR/'*.cxx' $MY_WKDIR/'*.C'
@@ -40,6 +41,5 @@ $MY_ASTYLE_CMD  $MY_ASTYLE_OPTS $MY_WKDIR/'*.h' $MY_WKDIR/'*.cxx' $MY_WKDIR/'*.C
 # done
 
 echo "Cleaning $MY_WKDIR ..."
-
-# find $MY_WKDIR -name "*.orig" -exec rm -f {} \;
-find $MY_WKDIR -name "*~" -exec rm -f {} \;
+cd $MY_WKDIR
+find . -name "*~" -exec rm -f {} \;

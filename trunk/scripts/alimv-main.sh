@@ -29,10 +29,10 @@ fi
 export MY_ROOT_DEFAULT_OPTIONS=""
 # export MY_ROOT_DEFAULT_OPTIONS="-q"
 export MY_ANALYSIS_SOURCE="proof"
-# export MY_ANALYSIS_SOURCE="grid"
+export MY_ANALYSIS_SOURCE="grid"
 # export MY_ANALYSIS_SOURCE="local"
 export MY_ANALYSIS_MODE="test"
-# export MY_ANALYSIS_MODE="full"
+export MY_ANALYSIS_MODE="full"
 # export MY_ANALYSIS_MODE="offline"
 # export MY_ANALYSIS_MODE="submit"
 
@@ -44,7 +44,7 @@ export MY_VALGRIND=""
 # export MY_VALGRIND="$MY_VALGRIND --show-reachable=yes "
 
 # custom parfiles
-export MY_PARFILES="ANALYSISaliceMV EventMixing PWG2resonances RESONANCESMV TASKSMV"
+export MY_PARFILES="ANALYSISaliceMV EventMixing PWG2resonances RESONANCESMV TASKSMV TENDER TENDERSupplies"
 
 MY_TASKS="AliAnalysisTaskCustomMix AliAnalysisTaskEvil"
 
