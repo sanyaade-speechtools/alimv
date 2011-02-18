@@ -1,4 +1,4 @@
-Bool_t ConfigRsnSimple(AliRsnAnalysisManager *rsnAnalysisManager)
+Bool_t ConfigRsnPhiKKHistsOnly(AliRsnAnalysisManager *rsnAnalysisManager)
 {
 
    // decay channels
@@ -17,24 +17,31 @@ Bool_t ConfigRsnSimple(AliRsnAnalysisManager *rsnAnalysisManager)
 
    // -- tracks --> PID ONLY
    // loads macro with RsnCutPIDOnly.C
-   gROOT->LoadMacro("RsnCurrentCuts.C");
-   RsnCurrentCuts(pairPMhist->GetCutManager());
-   RsnCurrentCuts(pairPPhist->GetCutManager());
-   RsnCurrentCuts(pairMMhist->GetCutManager());
+
+// //     RsnCurrentCuts
+//    gROOT->LoadMacro("RsnCurrentCuts.C");
+//    RsnCurrentCuts(pairPMhist->GetCutManager());
+//    RsnCurrentCuts(pairPPhist->GetCutManager());
+//    RsnCurrentCuts(pairMMhist->GetCutManager());
+
+   gROOT->LoadMacro("RsnCut2010PhiKK.C");
+   RsnCut2010PhiKK(pairPMhist->GetCutManager());
+   RsnCut2010PhiKK(pairPPhist->GetCutManager());
+   RsnCut2010PhiKK(pairMMhist->GetCutManager());
 
    // function axes
-   AliRsnValue *axisIM   = new AliRsnValue("IM"  , AliRsnValue::kPairInvMass,  100,  0.9,  1.1);
+   AliRsnValue *axisIM   = new AliRsnValue("IM"  , AliRsnValue::kPairInvMass,  10000,  0.9,  10);
    AliRsnValue *axisPt = new AliRsnValue("PT", AliRsnValue::kPairPt     ,  0.0, 10.0, 0.100);
    AliRsnValue *axisY  = new AliRsnValue("Y" , AliRsnValue::kPairY      , -1.1,  1.1, 0.100);
 
    // functions for TH1-like output
    AliRsnFunction *fnc    = new AliRsnFunction;
-//   fnc->UseSparse();
+//    fnc->UseSparse();
 
    // --> add axes
    fnc->AddAxis(axisIM);
-//   fnc->AddAxis(axisPt);
-//   fnc->AddAxis(axisY);
+//    fnc->AddAxis(axisPt);
+//    fnc->AddAxis(axisY);
 
    // add functions to TH1-like output
    pairPMhist->AddFunction(fnc);

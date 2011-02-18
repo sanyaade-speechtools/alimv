@@ -17,14 +17,14 @@ Bool_t ConfigRsnKStarKPi(AliRsnAnalysisManager *rsnAnalysisManager)
 
    // -- tracks --> PID ONLY
    // loads macro with RsnCutPIDOnly.C
-   gROOT->LoadMacro("RsnCut2010KStarKPi.C");
-   RsnCut2010KStarKPi(pairPMhist->GetCutManager());
-   RsnCut2010KStarKPi(pairMPhist->GetCutManager());
-   RsnCut2010KStarKPi(pairPPhist->GetCutManager());
-   RsnCut2010KStarKPi(pairMMhist->GetCutManager());
+   gROOT->LoadMacro("RsnCurrentCutsKStar.C");
+   RsnCurrentCutsKStar(pairPMhist->GetCutManager());
+   RsnCurrentCutsKStar(pairMPhist->GetCutManager());
+   RsnCurrentCutsKStar(pairPPhist->GetCutManager());
+   RsnCurrentCutsKStar(pairMMhist->GetCutManager());
 
    // function axes
-   AliRsnValue *axisIM   = new AliRsnValue("IM", AliRsnValue::kPairInvMass,  40,  0.7, 1.1);
+   AliRsnValue *axisIM   = new AliRsnValue("IM", AliRsnValue::kPairInvMass,  50,  0.6, 1.1);
    AliRsnValue *axisPt = new AliRsnValue("PT", AliRsnValue::kPairPt     ,  0.0, 10.0, 0.100);
    AliRsnValue *axisY  = new AliRsnValue("Y" , AliRsnValue::kPairY      , -1.1,  1.1, 0.100);
 

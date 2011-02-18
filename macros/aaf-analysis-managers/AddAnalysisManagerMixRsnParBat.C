@@ -28,7 +28,7 @@ void AddAnalysisManagerMixRsnParBat(TString analysisSource = "proof", TString an
    gSystem->Load("libANALYSIS.so");
    gSystem->Load("libANALYSISalice.so");
    gSystem->Load("libCORRFW.so");
-   AliAnalysisAlien::SetupPar("EventMixing");
+   gSystem->Load("libEventMixing.so");
    AliAnalysisAlien::SetupPar("PWG2resonances");
    AliAnalysisAlien::SetupPar("RESONANCESMV");
 
@@ -38,7 +38,7 @@ void AddAnalysisManagerMixRsnParBat(TString analysisSource = "proof", TString an
 
    // sets additional settings to plubin
    analysisPlugin->SetAnalysisSource("AliRsnCustomTrackInfoBat.cxx");
-   analysisPlugin->SetAdditionalLibs("EventMixing.par PWG2resonances.par RESONANCESMV.par AliRsnCustomTrackInfoBat.h AliRsnCustomTrackInfoBat.cxx");
+   analysisPlugin->SetAdditionalLibs("libEventMixing.so PWG2resonances.par RESONANCESMV.par AliRsnCustomTrackInfoBat.h AliRsnCustomTrackInfoBat.cxx");
 
    analysisPlugin->SetAliRootMode("ALIROOT"); // Loads AF libs by default
    // sets plugin to manager

@@ -30,12 +30,10 @@ void AddAnalysisManagerMixRsn(TString analysisSource = "proof", TString analysis
    gSystem->Load("libCORRFW.so");
    gSystem->Load("libEventMixing.so");
    gSystem->Load("libPWG2resonances.so");
-   AliAnalysisAlien::SetupPar("PWG2resonances");
-//       AliAnalysisAlien::SetupPar("RESONANCESMV");
 
    analysisPlugin->SetAliRootMode("ALIROOT"); // Loads AF libs by default
    // sets additional settings to plubin
-   analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so  PWG2resonances.par");
+   analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so  libPWG2resonances.so");
 //     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so  PWG2resonances.par RESONANCESMV.par");
 //     analysisPlugin->SetAdditionalLibs("libXMLParser.so libCORRFW.so libEventMixing.so libPWG2resonances.so");
 

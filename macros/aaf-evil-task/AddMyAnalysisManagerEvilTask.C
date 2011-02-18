@@ -35,7 +35,6 @@ void AddMyAnalysisManagerEvilTask(TString analysisSource = "proof", TString anal
       if (!InputHandlerSetup(format, useMC)) return;
    }
 
-   Printf("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
    gROOT->LoadMacro("AliAnalysisTaskEvil.cxx++g");
 
    // load and run AddTask macro
