@@ -2,9 +2,6 @@
 
 SRCS = \
 AliAnalysisTaskEvil.cxx \
-AliAnalysisTaskCustomMix.cxx \
-AliAnalysisTaskCustomMixOld.cxx \
-AliRsnCustomTrackInfoBat.cxx \
 AliAnalysisTaskEx02.cxx \
 
 
