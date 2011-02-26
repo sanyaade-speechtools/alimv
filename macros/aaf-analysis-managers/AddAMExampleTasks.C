@@ -37,24 +37,24 @@ void AddAMExampleTasks(TString analysisSource = "proof", TString analysisMode = 
    gSystem->Load("libTENDER.so");
    gSystem->Load("libTENDERSupplies.so");
    TString mylibs = "libTENDER.so libTENDERSupplies.so";
-   
+
    Bool_t useEventMixingPar = kTRUE;
 //    useEventMixingPar = kFALSE;
-   
+
 //    Bool_t useEventMixingPar = kTRUE;
 //    useEventMixingPar = kFALSE;
 
    if (useEventMixingPar) {
-     AliAnalysisAlien::SetupPar("EventMixing");
-     mylibs += " EventMixing.par";
-  } else {
-    gSystem->Load("libEventMixing.so");
-    mylibs += " libEventMixing.so";
-  }
+      AliAnalysisAlien::SetupPar("EventMixing");
+      mylibs += " EventMixing.par";
+   } else {
+      gSystem->Load("libEventMixing.so");
+      mylibs += " libEventMixing.so";
+   }
 
    AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
    mylibs += " ANALYSISaliceMV.par ";
-   
+
    mylibs += " AliAnalysisTaskEx02.h AliAnalysisTaskEx02.cxx";
    analysisPlugin->SetAnalysisSource("AliAnalysisTaskEx02.cxx");
    analysisPlugin->SetAdditionalLibs(mylibs.Data());

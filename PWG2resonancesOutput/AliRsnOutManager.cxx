@@ -59,7 +59,7 @@ void AliRsnOutManager::Draw(Option_t* /*option*/)
 
    if (TMath::Sqrt(numHists) - numHistInt > 0) divY++;
 
-	Printf("Canvas will have %.2f histogram and is divided to [%d,%d] ", numHists, divX, divY);
+   Printf("Canvas will have %.2f histogram and is divided to [%d,%d] ", numHists, divX, divY);
 
    mainCanvas->Divide(divX, divY);
 

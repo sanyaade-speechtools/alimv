@@ -71,6 +71,15 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin)
    plugin->SetFileForTestMode("ESD_vala_LHC10a12.txt");
 //    plugin->SetFileForTestMode("ESD_alien_test.txt");
    plugin->SetFileForTestMode("ESD_alien_test_local.txt");
+   plugin->SetFileForTestMode("ESD_vala_LHC10b_3_files.txt");
+
+   plugin->SetFileForTestMode("VALA_EXT3_ESD_LHC10b.txt");
+//    plugin->SetFileForTestMode("VALA_EXT3_ESD_MC_LHC10d4.txt");
+//    plugin->SetFileForTestMode("VALA_EXT3_AOD_MC_LHC10d4.txt");
+
+	
+
+
 //     plugin->SetFileForTestMode("AOD_vala_LHC10b.txt");
 //    plugin->SetFileForTestMode("AOD_vala_LHC10b_zip.txt");
    //++++++++++++++ end PROOF ++++++++++++++++

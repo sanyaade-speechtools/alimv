@@ -2,6 +2,8 @@
 #include "AliAnalysisManager.h"
 
 #include "AliRsnAnalysisTaskCommon.h"
+#include <AliAODEvent.h>
+#include <AliESDEvent.h>
 
 ClassImp(AliRsnAnalysisTaskCommon)
 
@@ -53,6 +55,16 @@ void AliRsnAnalysisTaskCommon::UserExec(Option_t *)
 {
    // Main loop
    // Called for each event
+
+   AliESDEvent *esd = dynamic_cast<AliESDEvent*>(fInputEvent);
+   if (esd) {
+      AliInfo(Form("ESD num tracks %d", esd->GetNumberOfTracks()));
+   }
+
+   AliAODEvent *aod = dynamic_cast<AliAODEvent*>(fInputEvent);
+   if (aod) {
+      AliInfo(Form("AOD num tracks %d", aod->GetNumberOfTracks()));
+   }
 
    PostData(1, fOutput);
 }

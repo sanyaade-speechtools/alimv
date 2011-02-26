@@ -23,9 +23,9 @@ void AddAMRsnCommon(TString analysisSource = "proof", TString analysisMode = "te
    Bool_t useMultiHandler = kTRUE;
 //    useMultiHandler = kFALSE;
 
-	Bool_t useEventMixingPar = kTRUE;
-	useEventMixingPar = kFALSE;
-	
+   Bool_t useEventMixingPar = kTRUE;
+   useEventMixingPar = kFALSE;
+
    // ALICE stuff
    AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
    if (!mgr) mgr = new AliAnalysisManager("Evil AM");
@@ -42,19 +42,19 @@ void AddAMRsnCommon(TString analysisSource = "proof", TString analysisMode = "te
    TString mylibs = "libTENDER.so libTENDERSupplies.so";
 
    if (useEventMixingPar) {
-     AliAnalysisAlien::SetupPar("EventMixing");
-     mylibs += " EventMixing.par";
-  } else {
-    gSystem->Load("libEventMixing.so");
-    mylibs += " libEventMixing.so";
-  }
+      AliAnalysisAlien::SetupPar("EventMixing");
+      mylibs += " EventMixing.par";
+   } else {
+      gSystem->Load("libEventMixing.so");
+      mylibs += " libEventMixing.so";
+   }
 
    AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
    mylibs += " ANALYSISaliceMV.par ";
-   
+
    AliAnalysisAlien::SetupPar("PWG2resonancesDevel");
    mylibs += " PWG2resonancesDevel.par ";
-   
+
    analysisPlugin->SetAdditionalLibs(mylibs.Data());
    analysisPlugin->SetAliRootMode("ALIROOT");
 
@@ -81,7 +81,7 @@ void AddAMRsnCommon(TString analysisSource = "proof", TString analysisMode = "te
 
       // add mixing handler (uncomment to turn on Mixnig)
       gROOT->LoadMacro("AddMixingHandler.C");
-      AddMixingHandler(multiInputHandler,format, useMC,opts);
+      AddMixingHandler(multiInputHandler, format, useMC, opts);
 
       // add Log Handler
       gROOT->LoadMacro("AddLogHanlder.C");

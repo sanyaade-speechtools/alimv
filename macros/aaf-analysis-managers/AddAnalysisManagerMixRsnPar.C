@@ -68,10 +68,10 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
 
 
 
-// 	AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
+//    AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
 //    mylibs += " ANALYSISaliceMV.par";
-		
-	AliAnalysisAlien::SetupPar("PWG2resonances");
+
+   AliAnalysisAlien::SetupPar("PWG2resonances");
    mylibs += " PWG2resonances.par";
 
    analysisPlugin->SetAdditionalLibs(mylibs.Data());

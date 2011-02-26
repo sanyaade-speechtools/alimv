@@ -319,27 +319,23 @@ void AliMixInfo::DynamicExec(AliMixInfo *const mixInfo)
 
    Int_t mixNum = 1;
    if (text) {
-      text->SetName("mixInfoText");
-      text->SetTextAlign(12);
-      text->SetToolTipText("Mixing Info about current binX");
-//         text->SetTextSize(0.1);
-//         text->SetTextColor(3);
-      text->SetBorderSize(2);
-      text->AddText(Form("binX=%d", binX));
-      text->AddText(Form("numMain=%.0f", numMain));
-      text->AddText(Form("numMix=%.0f", numMix));
-      text->AddText(Form("BINCONTENT=%d", hist2DValue));
-
       if (mixInfo) {
-
          AliMixEventPool *evPool = (AliMixEventPool *) mixInfo->GetEventPool("mixEventPool");
          if (evPool) {
             mixNum = evPool->GetMixNumber();
-            if (binX - 1 > 0)
-               evPool->SetCutValuesFromBinIndex(binX - 1);
+            if (binX - 1 >= 0) {
+               if (!evPool->SetCutValuesFromBinIndex(binX - 1)) return;
+            }
+            text->SetName("mixInfoText");
+            text->SetTextAlign(12);
+            text->SetToolTipText("Mixing Info about current binX");
+            text->SetBorderSize(2);
+            text->AddText(Form("binX=%d", binX));
+            text->AddText(Form("numMain=%.0f", numMain));
+            text->AddText(Form("numMix=%.0f", numMix));
+            text->AddText(Form("BINCONTENT=%d", hist2DValue));
             TObjArray *eventCuts = evPool->GetListOfEventCuts();
             if (eventCuts) {
-
                TObjArrayIter next(eventCuts);
                AliMixEventCutObj *cut;
                while ((cut = (AliMixEventCutObj *) next())) {
@@ -347,9 +343,7 @@ void AliMixInfo::DynamicExec(AliMixInfo *const mixInfo)
                   else text->AddText(Form("%s <Out of Range>", cut->GetCutName()));
                }
             }
-
          }
-
       }
       switch (hist2DValue) {
          case 1 :
