@@ -52,15 +52,14 @@ void AliRsnOutManager::Draw(Option_t* /*option*/)
    fCount++;
    TCanvas *mainCanvas = new TCanvas(Form("%s_%d", GetName(), fCount), Form("%s (%d)", GetTitle(), fCount));
    Double_t numHists = (fMax - fMin) / fStep;
-   Int_t numHistInt = numHists;
+   Int_t numHistInt = TMath::Sqrt(numHists);
 
    Int_t divY = numHists / TMath::Sqrt(numHists);
    Int_t divX = numHists / divY;
 
-//     if (numHists - numHistInt>0) divY++;
-//    divY++;
+   if (TMath::Sqrt(numHists) - numHistInt > 0) divY++;
 
-   Printf("Canvas will have %.2f histogram and is divided to [%d,%d] ", numHists, divX, divY);
+	Printf("Canvas will have %.2f histogram and is divided to [%d,%d] ", numHists, divX, divY);
 
    mainCanvas->Divide(divX, divY);
 

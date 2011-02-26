@@ -3,6 +3,10 @@
 # DIRS
 function CopyFilesFromAddTaskMacro() {
 
+	if [ -z $1 ]; then
+		return 1
+	fi
+	
 	if [ ! -e $MY_WORK_DIR/`basename $1` ];then
     
     MY_FILE_TYPE=`echo $1 | awk -F '.' '{print $2}' | awk -F '+' '{print $1}'`
@@ -29,6 +33,10 @@ function CopyFilesFromAddTaskMacro() {
 
 }
 function CopyFilesFromManagerMacro() {
+	
+	if [ -z $1 ]; then
+		return 1
+	fi
 
 	MGR_FILENAME=`find $MY_SOURCE_DIR/macros/ -name "$1"`
 	echo "Copying Manager $MGR_FILENAME to $MY_WORK_DIR ..."
