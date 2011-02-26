@@ -4,14 +4,21 @@
 #include <TMath.h>
 
 #include "AliRsnOutManager.h"
-#include "AliRsnOutReader.h"
+#include <TString.h>
+#include "AliRsnOutPad.h"
+#include <TSystem.h>
 
 
 ClassImp(AliRsnOutManager)
 
 AliRsnOutManager::AliRsnOutManager(const char* name, const char* title): TNamed(name, title),
-   fOutputs(),
-   fSheme("")
+   fInputs(),
+   fMin(0.0),
+   fMax(10.0),
+   fStep(10.0),
+   fValDimension(0),
+   fCutDimension(1),
+   fCount(0)
 {
 
 }
@@ -20,79 +27,69 @@ void AliRsnOutManager::Print(Option_t* option) const
 {
    TNamed::Print(option);
 
-   TObjArrayIter next(&fOutputs);
-   AliRsnOutReader *r;
-   while ((r = (AliRsnOutReader*)next())) {
-      r->Print();
-   }
-}
+   Printf("min=%.2f max=%.2f step=%.2f valDim=%d cutDim=%d", fMin, fMax, fStep, fValDimension, fCutDimension);
 
-
-void AliRsnOutManager::AddOutput(AliRsnOutReader* reader)
-{
-   fOutputs.Add(reader);
-}
-
-Bool_t AliRsnOutManager::SetScheme(TString scheme)
-{
-   // scheme should be validated
-   fSheme = scheme;
-   return kTRUE;
-}
-
-void AliRsnOutManager::PrepareOutput(Int_t dim, Int_t cutDim, Double_t cutMin, Double_t cutMax, TVirtualPad* pad, TString opts)
-{
-
-   if (pad) pad->cd();
-
-   TString extraHistName;
-   TString extraHistTitle;
-   if (cutDim >= 0) {
-      extraHistName = Form("%d_[%.1f-%.1f]", cutDim, cutMin, cutMax);
-      extraHistTitle = Form("[%.1f-%.1f]", cutDim, cutMin, cutMax);
+   TObjArrayIter next(&fInputs);
+   AliRsnOutInput *input;
+   while ((input = (AliRsnOutInput*)next())) {
+      input->Print();
    }
 
-   TObjArrayIter next(&fOutputs);
-   AliRsnOutReader *r;
-
-   TH1*h = 0;
-   TString extraOpts = "";
-   next.Reset();
-   fDrawer.ClearHistograms();
-   Double_t max = 0.0;
-   while ((r = (AliRsnOutReader*)next())) {
-      h = r->Get1DHistogram(dim, cutDim, cutMin, cutMax);
-      if (h) {
-         h->SetName(Form("%s_%s_%s", r->GetName(), h->GetName(), extraHistName.Data()));
-         if (extraOpts.IsNull()) h->SetTitle(Form("%s %s", GetTitle(), extraHistTitle.Data()));
-         fDrawer.AddHistoram(h);
-//          Printf("Max Hists current %f  in  hist %f", max, h->GetMaximum());
-         if (max < h->GetMaximum()) max = 1.3 * h->GetMaximum();
-      }
-   }
-//    Printf("Max Hists current %f", max);
-   fDrawer.DrawFinalPicture(pad, opts, max, cutMin, cutMax);
-
 }
 
-void AliRsnOutManager::FinalOutput(Double_t min, Double_t max, Double_t step, Int_t dim, Int_t cutDim, TCanvas* canvas)
+void AliRsnOutManager::SetOutputSettings(Double_t min, Double_t max, Double_t step, Int_t dim, Int_t cutDim)
 {
-   if (!canvas) canvas = new TCanvas();
+   fMin = min;
+   fMax = max;
+   fStep = step;
+   fValDimension = dim;
+   fCutDimension = cutDim;
+}
 
-   Int_t i = 1;
-   Double_t numHists = (max - min) / step;
+void AliRsnOutManager::Draw(Option_t* /*option*/)
+{
+   //TODO reuse mainCanvas
+   fCount++;
+   TCanvas *mainCanvas = new TCanvas(Form("%s_%d", GetName(), fCount), Form("%s (%d)", GetTitle(), fCount));
+   Double_t numHists = (fMax - fMin) / fStep;
+   Int_t numHistInt = numHists;
+
    Int_t divY = numHists / TMath::Sqrt(numHists);
    Int_t divX = numHists / divY;
 
-   Printf("***************========================== [%d,%d] %.2f", divX, divY, numHists);
+//     if (numHists - numHistInt>0) divY++;
+//    divY++;
 
-   canvas->Divide(divX, divY);
+   Printf("Canvas will have %.2f histogram and is divided to [%d,%d] ", numHists, divX, divY);
 
-   for (Double_t iVal = min; iVal <= max - step ; iVal += step) {
-      Printf("Dim=%d CutDim=%d [%.2f,%.2f]", dim, cutDim, iVal, iVal + step);
-      PrepareOutput(dim, cutDim, iVal, iVal + step, canvas->cd(i++));
+   mainCanvas->Divide(divX, divY);
+
+   AliRsnOutParamHist *obj;
+   TObjArrayIter next(&fParamOutputs);
+   while ((obj = (AliRsnOutParamHist*)next())) {
+      obj->CreateHistogram(numHists, fMin, fMax);
    }
 
-   canvas->cd();
-}
 
+   Int_t iCountPad = 0;
+   for (Double_t iVal = fMin; iVal < fMax ; iVal += fStep) {
+      Printf("Dim=%d CutDim=%d [%.2f,%.2f]", fValDimension, fCutDimension, iVal, iVal + fStep);
+      if (fPad) {
+         fPad->DrawPad(this, fValDimension, fCutDimension, iVal, iVal + fStep, mainCanvas->cd(++iCountPad));
+      }
+      next.Reset();
+      while ((obj = (AliRsnOutParamHist*)next())) {
+         obj->Fill(iCountPad);
+      }
+   }
+
+   next.Reset();
+   Int_t count = 0;
+   while ((obj = (AliRsnOutParamHist*)next())) {
+      TCanvas *c = new TCanvas(Form("c%d", count++), "c title");
+      c->cd();
+      obj->DrawOutHist("E1");
+   }
+
+   mainCanvas->cd();
+}

@@ -3,30 +3,49 @@
 
 #include <TNamed.h>
 #include <TObjArray.h>
-#include "AliRsnOutDraw.h"
+#include "AliRsnOutInput.h"
+#include "AliRsnOutParamHist.h"
 
 class TCanvas;
-class TVirtualPad;
-class AliRsnOutReader;
+class AliRsnOutPad;
 class AliRsnOutManager : public TNamed {
 
 public:
    AliRsnOutManager(const char* name, const char* title);
    virtual void Print(Option_t* option = "") const;
 
-   void AddOutput(AliRsnOutReader*reader);
-   Bool_t SetScheme(TString scheme);
+   void SetOutputSettings(Double_t min = 0.0, Double_t max = 0.0, Double_t step = 0.0, Int_t dim = -1, Int_t cutDim = -1);
 
-   void PrepareOutput(Int_t dim = -1, Int_t cutDim = -1, Double_t cutMin = 0.0, Double_t cutMax = 0.0, TVirtualPad* pad = 0, TString opts = "");
+   virtual void Draw(Option_t* option = "");
 
-   void FinalOutput(Double_t min = 0.0, Double_t max = 0.0, Double_t step = 0.0, Int_t dim = -1, Int_t cutDim = -1, TCanvas *canvas = 0);
 
-   AliRsnOutDraw *GetDrawer() { return &fDrawer;}
+   void AddInput(AliRsnOutInput *input) { fInputs.Add(input);;}
+   TObjArray *GetInputs() { return &fInputs;}
+
+   void AddParamOutput(AliRsnOutParamHist *input) { fParamOutputs.Add(input);}
+   TObjArray *GetParamOutputs() { return &fParamOutputs;}
+
+   Double_t GetMin() { return fMin;}
+   Double_t GetMax() { return fMax;}
+   Double_t GetStep() { return fStep;}
+   Int_t GetValDim() { return fValDimension; }
+   Int_t GetCutDim() { return fCutDimension; }
+
+   void SetPad(AliRsnOutPad*pad) { fPad = pad; }
 
 private:
-   TObjArray       fOutputs;
-   TString         fSheme;
-   AliRsnOutDraw   fDrawer;
+
+   AliRsnOutPad      *fPad;
+
+   TObjArray         fInputs;
+   Double_t          fMin;
+   Double_t          fMax;
+   Double_t          fStep;
+   Int_t             fValDimension;
+   Int_t             fCutDimension;
+   Int_t             fCount;
+
+   TObjArray         fParamOutputs;
 
    ClassDef(AliRsnOutManager, 1) // AliRsnOutManager
 };

@@ -32,9 +32,9 @@ public:
    virtual void     UserExecMix(Option_t*);
    virtual void     Terminate(Option_t *);
 
-   void LoopESD();
+   void Loop(AliESDEvent* esd);
    void LoopESDMC();
-   void LoopAOD();
+   void Loop(AliAODEvent* aod);
    void LoopAODMC();
 
 private:

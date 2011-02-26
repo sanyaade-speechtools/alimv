@@ -98,6 +98,10 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
    gROOT->LoadMacro("AddMixingHandler.C");
    AddMixingHandler(mainInputHandler);
 
+   //    // adds mixing info task
+   gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
+   AddAnalysisTaskMixInfo(format, useMC, opts);
+
    // add Log Handler
 //    gROOT->LoadMacro("AddLogHanlder.C");
 //    AddLogHanlder(mainInputHandler);

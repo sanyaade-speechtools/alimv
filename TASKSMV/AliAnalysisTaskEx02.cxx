@@ -121,41 +121,19 @@ void AliAnalysisTaskEx02::UserExec(Option_t *)
    // Called for each event
 
 
-// AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
-// AliMultiInputEventHandler *inEvHMainMulti = dynamic_cast<AliMultiInputEventHandler *>(mgr->GetInputEventHandler());
-// if (inEvHMainMulti) {
-//    AliInputEventHandler *inEvMain = dynamic_cast<AliInputEventHandler *> (inEvHMainMulti->GetFirstInputEventHandler());
-//
-//    AliMixInputEventHandler *mixEH = dynamic_cast<AliMixInputEventHandler *>(inEvHMainMulti->GetFirstMultiInputHandler());
-//    if (!mixEH) return;
-//
-//
-//    AliESDEvent* esd = dynamic_cast<AliESDEvent*>(inEvMain->GetEvent());
-//    if (esd) {
-//       AliDebug(AliLog::kDebug,Form("============= UserExec %lld (%lld) ======================",mixEH->CurrentEntry(),mixEH->CurrentEntryMain()));
-//       AliDebug(AliLog::kDebug, Form("Main Muilti was %d", esd->GetNumberOfTracks()));
-//       AliDebug(AliLog::kDebug, Form("Main ZVertex was %f", esd->GetVertex()->GetZ()));
-//       LoopESD();
-//       AliDebug(AliLog::kDebug,Form("============= End UserExec %lld (%lld) ==================",mixEH->CurrentEntry(),mixEH->CurrentEntryMain()));
-//
-//    } else {
-//       AliAODEvent* aod = dynamic_cast<AliAODEvent*>(inEvMain->GetEvent());
-//       if (aod) LoopAOD();
-//    }
-// }
-   AliESDEvent* esd = dynamic_cast<AliESDEvent*>(fInputEvent);
-   if (esd) {
-      AliDebug(AliLog::kDebug, "============= UserExec ======================");
-      AliDebug(AliLog::kDebug, Form("Main Muilti was %d", esd->GetNumberOfTracks()));
-      AliDebug(AliLog::kDebug, Form("Main ZVertex was %f", esd->GetVertex()->GetZ()));
-      LoopESD();
-      AliDebug(AliLog::kDebug, "============= End UserExec ==================");
+   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
+   AliMultiInputEventHandler *inEvHMainMulti = dynamic_cast<AliMultiInputEventHandler *>(mgr->GetInputEventHandler());
+   if (inEvHMainMulti) {
+      AliInputEventHandler *inEvMain = dynamic_cast<AliInputEventHandler *>(inEvHMainMulti->GetFirstInputEventHandler());
 
-   } else {
-      AliAODEvent* aod = dynamic_cast<AliAODEvent*>(fInputEvent);
-      if (aod) LoopAOD();
+      AliESDEvent* esd = dynamic_cast<AliESDEvent*>(inEvMain->GetEvent());
+      if (esd) {
+         Loop(esd);
+      } else {
+         AliAODEvent* aod = dynamic_cast<AliAODEvent*>(inEvMain->GetEvent());
+         if (aod) Loop(aod);
+      }
    }
-
 
    PostData(1, fOutput);
 }
@@ -211,15 +189,8 @@ void AliAnalysisTaskEx02::Terminate(Option_t *)
    fHistEta->DrawCopy("E");
 }
 
-void AliAnalysisTaskEx02::LoopESD()
+void AliAnalysisTaskEx02::Loop(AliESDEvent* esd)
 {
-   // Retreive the number of tracks for this event.
-   AliESDEvent* esd = dynamic_cast<AliESDEvent*>(fInputEvent);
-   if (!esd) {
-      AliError("Cannot get the ESD event");
-      return;
-   }
-
    // Track loop for reconstructed event
    Int_t ntracks = esd->GetNumberOfTracks();
    for (Int_t i = 0; i < ntracks; i++) {
@@ -237,14 +208,8 @@ void AliAnalysisTaskEx02::LoopESDMC()
    // TODO
 }
 
-void AliAnalysisTaskEx02::LoopAOD()
+void AliAnalysisTaskEx02::Loop(AliAODEvent* aod)
 {
-   // Retreive the number of tracks for this event.
-   AliAODEvent* aod = dynamic_cast<AliAODEvent*>(fInputEvent);
-   if (!aod) {
-      AliError("Cannot get the ESD event");
-      return;
-   }
 
    // Track loop for reconstructed event
    Int_t ntracks = aod->GetNumberOfTracks();

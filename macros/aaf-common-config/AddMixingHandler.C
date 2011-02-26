@@ -3,7 +3,8 @@
 #include <AliMultiInputEventHandler.h>//|
 #include <EventMixing/EventMixing/AliMixEventPool.h>//|
 #include <EventMixing/EventMixing/AliMixEventCutObj.h>//|
-#include <AliMixInputEventHandler.h>//|
+#include <EventMixing/EventMixing/AliMixInputEventHandler.h>//|
+#include <AliVEvent.h>//|
 #endif//|
 
 void AddMixingHandler(AliMultiInputEventHandler* multiInputHandler)
@@ -19,13 +20,15 @@ void AddMixingHandler(AliMultiInputEventHandler* multiInputHandler)
    AliMixEventPool *evPool = new AliMixEventPool();
 
    AliMixEventCutObj *multi = new AliMixEventCutObj(AliMixEventCutObj::kMultiplicity, 1, 101, 100);
-   AliMixEventCutObj *zvertex = new AliMixEventCutObj(AliMixEventCutObj::kZVertex, -5, 5, 1);
+   AliMixEventCutObj *zvertex = new AliMixEventCutObj(AliMixEventCutObj::kZVertex, -5, 5, 10);
 
    evPool->AddCut(multi);
    evPool->AddCut(zvertex);
 
    // adds event pool (comment it and u will have default mixing)
    mixHandler->SetEventPool(evPool);
+
+   mixHandler->SelectCollisionCandidates(AliVEvent::kAny);
 
    multiInputHandler->AddInputEventHandler(mixHandler);
 }
