@@ -38,7 +38,7 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
    analysisPlugin->SetAliRootMode("ALIROOT");
 
    Bool_t useEventMixingPar = kTRUE;
-//    useEventMixingPar = kFALSE;
+   useEventMixingPar = kFALSE;
 
    Bool_t useTENDERPar = kTRUE;
    useTENDERPar = kFALSE;
@@ -55,8 +55,7 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
    if (useEventMixingPar) AliAnalysisAlien::SetupPar("EventMixing");
    else gSystem->Load("libEventMixing.so");
 
-//    AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
-   AliAnalysisAlien::SetupPar("PWG2resonances");
+
 
    TString mylibs = "libXMLParser.so libCORRFW.so";
    mylibs += " libTOFbase.so libTOFsim.so libTOFrec.so";
@@ -67,7 +66,12 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
    if (useEventMixingPar) mylibs += " EventMixing.par";
    else mylibs += " libEventMixing.so";
 
+
+
+// 	AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
 //    mylibs += " ANALYSISaliceMV.par";
+		
+	AliAnalysisAlien::SetupPar("PWG2resonances");
    mylibs += " PWG2resonances.par";
 
    analysisPlugin->SetAdditionalLibs(mylibs.Data());

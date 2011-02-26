@@ -11,7 +11,7 @@
 #include <AliAnalysisAlien.h>
 #include <AliPhysicsSelection.h>
 #endif
-void AddMyAnalysisManagerExampleTasks(TString analysisSource = "proof", TString analysisMode = "test", TString opts = "")
+void AddAMRsnCommon(TString analysisSource = "proof", TString analysisMode = "test", TString opts = "")
 {
 
    Bool_t useMC = kFALSE;
@@ -20,9 +20,12 @@ void AddMyAnalysisManagerExampleTasks(TString analysisSource = "proof", TString 
 //    format = "aod";
    format.ToLower();
 
-   Bool_t useMultiHandler = kFALSE;
-   useMultiHandler = kTRUE;
+   Bool_t useMultiHandler = kTRUE;
+//    useMultiHandler = kFALSE;
 
+	Bool_t useEventMixingPar = kTRUE;
+	useEventMixingPar = kFALSE;
+	
    // ALICE stuff
    AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
    if (!mgr) mgr = new AliAnalysisManager("Evil AM");
@@ -36,23 +39,22 @@ void AddMyAnalysisManagerExampleTasks(TString analysisSource = "proof", TString 
    gSystem->Load("libANALYSISalice.so");
    gSystem->Load("libTENDER.so");
    gSystem->Load("libTENDERSupplies.so");
-
-   Bool_t useEventMixingPar = kTRUE;
-//    useEventMixingPar = kFALSE;
-
-   if (useEventMixingPar) AliAnalysisAlien::SetupPar("EventMixing");
-   else gSystem->Load("libEventMixing.so");
-
-   AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
-
-   analysisPlugin->SetAnalysisSource("AliAnalysisTaskEx02.cxx");
    TString mylibs = "libTENDER.so libTENDERSupplies.so";
 
-   if (useEventMixingPar) mylibs += " EventMixing.par";
-   else mylibs += " libEventMixing.so";
+   if (useEventMixingPar) {
+     AliAnalysisAlien::SetupPar("EventMixing");
+     mylibs += " EventMixing.par";
+  } else {
+    gSystem->Load("libEventMixing.so");
+    mylibs += " libEventMixing.so";
+  }
 
-   mylibs += " ANALYSISaliceMV.par AliAnalysisTaskEx02.h AliAnalysisTaskEx02.cxx";
-
+   AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
+   mylibs += " ANALYSISaliceMV.par ";
+   
+   AliAnalysisAlien::SetupPar("PWG2resonancesDevel");
+   mylibs += " PWG2resonancesDevel.par ";
+   
    analysisPlugin->SetAdditionalLibs(mylibs.Data());
    analysisPlugin->SetAliRootMode("ALIROOT");
 
@@ -79,18 +81,12 @@ void AddMyAnalysisManagerExampleTasks(TString analysisSource = "proof", TString 
 
       // add mixing handler (uncomment to turn on Mixnig)
       gROOT->LoadMacro("AddMixingHandler.C");
-      AddMixingHandler(multiInputHandler);
-
-      // adds mixing info task
-      gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
-      AddAnalysisTaskMixInfo(format, useMC, opts);
+      AddMixingHandler(multiInputHandler,format, useMC,opts);
 
       // add Log Handler
       gROOT->LoadMacro("AddLogHanlder.C");
       AddLogHanlder(multiInputHandler);
    }
-   gROOT->LoadMacro("AliAnalysisTaskEx02.cxx++g");
-
 //    gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPhysicsSelection.C");
 //    AddTaskPhysicsSelection(useMC);
 //
@@ -99,7 +95,7 @@ void AddMyAnalysisManagerExampleTasks(TString analysisSource = "proof", TString 
 //       esdInputHandler->SetEventSelection(multiInputHandler->GetEventSelection());
 
    // load and run AddTask macro
-   gROOT->LoadMacro("AddExampleAnalysisTask.C");
-   AddExampleAnalysisTask(format, useMC);
+   gROOT->LoadMacro("AddRsnTaskCommonAll.C");
+   AddRsnTaskCommonAll(format, useMC);
 
 }

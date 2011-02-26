@@ -7,7 +7,7 @@ Int_t SETUP()
    gROOT->ProcessLine(Form(".include %s", gSystem->pwd()));
 
    // Set our location, so that other packages can find us
-   gSystem->Setenv("RESONANCESMV_INCLUDE", Form("%s", gSystem->pwd()));
+   gSystem->Setenv("PWG2resonancesDevel_INCLUDE", Form("%s", gSystem->pwd()));
 
-   return gSystem->Load(TString::Format("%s/libRESONANCESMV.so", gSystem->pwd()).Data());
+   return gSystem->Load(TString::Format("%s/libPWG2resonancesDevel.so", gSystem->pwd()).Data());
 }

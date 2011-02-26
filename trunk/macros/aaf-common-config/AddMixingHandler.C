@@ -7,7 +7,7 @@
 #include <AliVEvent.h>//|
 #endif//|
 
-void AddMixingHandler(AliMultiInputEventHandler* multiInputHandler)
+void AddMixingHandler(AliMultiInputEventHandler* multiInputHandler,TString format = "esd", Bool_t useMC = kFALSE, TString opts = "")
 {
 
    if (!multiInputHandler) return;
@@ -31,4 +31,8 @@ void AddMixingHandler(AliMultiInputEventHandler* multiInputHandler)
    mixHandler->SelectCollisionCandidates(AliVEvent::kAny);
 
    multiInputHandler->AddInputEventHandler(mixHandler);
+	
+	      // adds mixing info task
+      gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
+      AddAnalysisTaskMixInfo(format, useMC, opts);
 }

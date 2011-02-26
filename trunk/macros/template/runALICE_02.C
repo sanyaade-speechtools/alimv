@@ -27,9 +27,13 @@ Int_t runALICE(TString analysisSource = "grid", TString analysisMode = "terminat
 //    fNEventsSkip = 350;
 
 
-//    RunAnalysisManager("AddMyAnalysisManagerExampleTasks", analysisSource.Data(), analysisMode.Data(), "");
+//    RunAnalysisManager("AddAMExampleTasks", analysisSource.Data(), analysisMode.Data(), "");
 
-//    RunAnalysisManager("AddMyAnalysisManagerEvilTask", analysisSource.Data(), analysisMode.Data(), "");
+//    RunAnalysisManager("AddAMEvilTask", analysisSource.Data(), analysisMode.Data(), "");
+	
+	   RunAnalysisManager("AddAMRsnCommon", analysisSource.Data(), analysisMode.Data(), "");
+	
+	
 //
 //    // mix with parfiles
 //    RunAnalysisManager("AddAnalysisManagerMixPar", analysisSource.Data(), analysisMode.Data(), "");
@@ -38,7 +42,7 @@ Int_t runALICE(TString analysisSource = "grid", TString analysisMode = "terminat
 //    RunAnalysisManager("AddAnalysisManagerMixRsn", analysisSource.Data(), analysisMode.Data(), "");
 //
 //    // rsn with parfiles
-   RunAnalysisManager("AddAnalysisManagerMixRsnPar", analysisSource.Data(), analysisMode.Data(), "");
+//    RunAnalysisManager("AddAnalysisManagerMixRsnPar", analysisSource.Data(), analysisMode.Data(), "");
 //
 //    // rsn with parfiles aod
 //    RunAnalysisManager("AddAnalysisManagerMixRsnParAOD", analysisSource.Data(), analysisMode.Data(), "");

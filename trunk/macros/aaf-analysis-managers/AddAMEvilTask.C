@@ -1,14 +1,16 @@
+#ifndef __CINT__
 #include <TString.h>
 #include <TROOT.h>
 #include <AliAnalysisManager.h>
+#endif
 
-void AddMyAnalysisManagerEvilTask(TString analysisSource = "proof", TString analysisMode = "test", TString opts = "")
+void AddAMEvilTask(TString analysisSource = "proof", TString analysisMode = "test", TString opts = "")
 {
 
    Bool_t useMC = kFALSE;
 //   useMC = kTRUE;
    TString format = "esd";
-   format = "aod";
+//    format = "aod";
 
    Bool_t useMultiHandler = kFALSE;
 //    useMultiHandler = kTRUE;
