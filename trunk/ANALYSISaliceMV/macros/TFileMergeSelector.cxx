@@ -106,6 +106,9 @@ void TFileMergeSelector::SlaveBegin(TTree * /*tree*/)
    // The tree argument is deprecated (on PROOF 0 is passed).
 
    TString option = GetOption();
+   TNamed *out = 0;
+
+
 //    TFile::SetOpenTimeout(5000);
 
    //    gEnv->SetValue("XNet.ConnectTimeout", 1);
@@ -113,12 +116,20 @@ void TFileMergeSelector::SlaveBegin(TTree * /*tree*/)
    gEnv->SetValue("XNet.RequestTimeout", 60);
    gEnv->SetValue("XNet.FirstConnectMaxCnt", 1);
 
+   out = (TNamed *) fInput->FindObject("PROOF_MERGE_RequestTimeout");
+   if (out) {
+      TString numStr = out->GetTitle();
+      gEnv->SetValue("XNet.RequestTimeout", numStr.Atoi());
+      fNMaxFilesMerged = numStr.Atoi();
+   }
+
+
    // sets TObjArray to be owner
    fFileMergers.SetOwner(kTRUE);
 
    if (!fInput) return;
 
-   TNamed *out = 0;
+
    out = (TNamed *) fInput->FindObject("PROOF_USE_ARCHIVE");
    if (out) {
       fUseArchive = kTRUE;
