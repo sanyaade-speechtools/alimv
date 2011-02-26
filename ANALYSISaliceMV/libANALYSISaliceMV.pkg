@@ -2,7 +2,6 @@
 
 SRCS = AliLogInputHandler.cxx \
 AliTenderInputEventHandler.cxx \
-AliPhysicsSelectionInputHandler.cxx \
 
 
 HDRS:= $(SRCS:.cxx=.h) 

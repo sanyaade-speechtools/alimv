@@ -46,6 +46,7 @@ Bool_t AliLogInputHandler::Init(Option_t *opt)
    TNamed*obj = 0;
    while ((obj = (TNamed *) next())) {
       TString level(obj->GetTitle());
+      AliInfo(Form("Setting Class Debug Level : %s -> %d", obj->GetName(), level.Atoi()));
       AliLog::SetClassDebugLevel(obj->GetName(), level.Atoi());
    }
    AliDebug(AliLog::kDebug + 5, Form("->"));

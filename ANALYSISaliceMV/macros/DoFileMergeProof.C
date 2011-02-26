@@ -70,6 +70,9 @@ void DoFileMergeProof(TString alienFindCmd = "-l 100 /alice/cern.ch/user/m/mvala
 
    p->AddInput(new TNamed("PROOF_MERGE_NUM", "10"));
 
+   // opening files optim
+//    p->AddInput(new TNamed("PROOF_MERGE_RequestTimeout", "10"));
+
    p->SetParameter("PROOF_PacketizerStrategy", (Int_t)0);
    p->SetParameter("PROOF_PacketAsAFraction", numEntries / p->GetParallel());
 
