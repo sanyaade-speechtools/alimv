@@ -2,7 +2,7 @@
 #include <AliAnalysisManager.h>//|
 #include <PWG2resonancesDevel/AliRsnAnalysisTaskCommon.h>//|
 #endif//|
-AliAnalysisTask* AddRsnCommonTask(TString format = "esd", Bool_t useMC = kFALSE,TString opts = "")
+AliAnalysisTask* AddRsnCommonTask(TString format = "esd", Bool_t useMC = kFALSE, TString opts = "")
 {
 
    AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
@@ -11,7 +11,7 @@ AliAnalysisTask* AddRsnCommonTask(TString format = "esd", Bool_t useMC = kFALSE,
    // initialize task with all available slots, even if not all of them will be used:
    AliRsnAnalysisTaskCommon *task = new AliRsnAnalysisTaskCommon(Form("RsnCommonAnalysis%s", opts.Data()));
 
-	// add the task to manager
+   // add the task to manager
    mgr->AddTask(task);
 
    // connect input container according to source choice
@@ -19,7 +19,7 @@ AliAnalysisTask* AddRsnCommonTask(TString format = "esd", Bool_t useMC = kFALSE,
 
    // create paths for the output in the common file
    TString commonPath = AliAnalysisManager::GetCommonFileName();
-   
+
    // create containers for output
    AliAnalysisDataContainer *output = mgr->CreateContainer(Form("RsnHist%s", opts.Data()), TList::Class(), AliAnalysisManager::kOutputContainer, commonPath.Data());
    mgr->ConnectOutput(task, 1, output);

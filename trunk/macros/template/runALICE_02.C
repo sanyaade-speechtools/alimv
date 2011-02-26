@@ -28,12 +28,10 @@ Int_t runALICE(TString analysisSource = "grid", TString analysisMode = "terminat
 
 
 //    RunAnalysisManager("AddAMExampleTasks", analysisSource.Data(), analysisMode.Data(), "");
-
 //    RunAnalysisManager("AddAMEvilTask", analysisSource.Data(), analysisMode.Data(), "");
-	
-	   RunAnalysisManager("AddAMRsnCommon", analysisSource.Data(), analysisMode.Data(), "");
-	
-	
+   RunAnalysisManager("AddAMRsnCommon", analysisSource.Data(), analysisMode.Data(), "");
+
+
 //
 //    // mix with parfiles
 //    RunAnalysisManager("AddAnalysisManagerMixPar", analysisSource.Data(), analysisMode.Data(), "");

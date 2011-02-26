@@ -11,7 +11,7 @@ void AddLogHanlder(AliMultiInputEventHandler *multiInputHandler)
 //       logHandler->AddClassDebugLevel("AliAnalysisTaskEx02", AliLog::kDebug);
 //       logHandler->AddClassDebugLevel("AliMixEventPool", AliLog::kDebug + 1);
 //       logHandler->AddClassDebugLevel("AliMixEventCutObj", AliLog::kDebug + 1);
-      logHandler->AddClassDebugLevel("AliAnalysisTaskMixInfo", AliLog::kDebug + 1);
+      logHandler->AddClassDebugLevel("AliAnalysisTaskMixInfo", AliLog::kDebug+1);
 
 //       logHandler->AddClassDebugLevel("AliTenderInputEventHandler", AliLog::kDebug + 5);
 //       logHandler->AddClassDebugLevel("AliMixInputEventHandler", AliLog::kDebug);

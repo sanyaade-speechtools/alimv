@@ -7,7 +7,7 @@
 #include <AliVEvent.h>//|
 #endif//|
 
-void AddMixingHandler(AliMultiInputEventHandler* multiInputHandler,TString format = "esd", Bool_t useMC = kFALSE, TString opts = "")
+void AddMixingHandler(AliMultiInputEventHandler* multiInputHandler, TString format = "esd", Bool_t useMC = kFALSE, TString opts = "")
 {
 
    if (!multiInputHandler) return;
@@ -19,8 +19,8 @@ void AddMixingHandler(AliMultiInputEventHandler* multiInputHandler,TString forma
    mixHandler->SetInputHandlerForMixing(dynamic_cast<AliMultiInputEventHandler*>(mgr->GetInputEventHandler()));
    AliMixEventPool *evPool = new AliMixEventPool();
 
-   AliMixEventCutObj *multi = new AliMixEventCutObj(AliMixEventCutObj::kMultiplicity, 1, 101, 100);
-   AliMixEventCutObj *zvertex = new AliMixEventCutObj(AliMixEventCutObj::kZVertex, -5, 5, 10);
+   AliMixEventCutObj *multi = new AliMixEventCutObj(AliMixEventCutObj::kMultiplicity, 2, 102, 10);
+   AliMixEventCutObj *zvertex = new AliMixEventCutObj(AliMixEventCutObj::kZVertex, -5, 5, 1);
 
    evPool->AddCut(multi);
    evPool->AddCut(zvertex);
@@ -31,8 +31,8 @@ void AddMixingHandler(AliMultiInputEventHandler* multiInputHandler,TString forma
    mixHandler->SelectCollisionCandidates(AliVEvent::kAny);
 
    multiInputHandler->AddInputEventHandler(mixHandler);
-	
-	      // adds mixing info task
-      gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
-      AddAnalysisTaskMixInfo(format, useMC, opts);
+
+   // adds mixing info task
+   gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
+   AddAnalysisTaskMixInfo(format, useMC, opts);
 }
