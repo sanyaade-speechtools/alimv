@@ -6,6 +6,8 @@ AliAnalysisTask* AddExampleAnalysisTask(TString format = "esd", Bool_t useMC = k
 
    // create our task
    AliAnalysisTaskEx02 *task = new AliAnalysisTaskEx02("AliAnalysisTaskEx02");
+   task->SelectCollisionCandidates(AliVEvent::kAny);
+//    task->SelectCollisionCandidates(AliVEvent::kMB);
 
    // create output container
    AliAnalysisDataContainer *output1 = mgr->CreateContainer("cEx2", TList::Class(), AliAnalysisManager::kOutputContainer, "MyOutput.root");

@@ -1,8 +1,11 @@
 # -*- mode: cmake -*-
 
 set(SRCS
-AliRsnOutDraw.cxx
-AliRsnOutReader.cxx
+AliRsnOutInput.cxx
+AliRsnOutFunction.cxx
+AliRsnOutDrawObject.cxx
+AliRsnOutPad.cxx
+AliRsnOutParamHist.cxx
 AliRsnOutManager.cxx
 
 )

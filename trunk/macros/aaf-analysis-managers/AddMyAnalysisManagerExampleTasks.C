@@ -9,6 +9,7 @@
 #include <ANALYSISaliceMV/AliTenderInputEventHandler.h>
 #include <AliESDpid.h>
 #include <AliAnalysisAlien.h>
+#include <AliPhysicsSelection.h>
 #endif
 void AddMyAnalysisManagerExampleTasks(TString analysisSource = "proof", TString analysisMode = "test", TString opts = "")
 {
@@ -35,41 +36,54 @@ void AddMyAnalysisManagerExampleTasks(TString analysisSource = "proof", TString 
    gSystem->Load("libANALYSISalice.so");
    gSystem->Load("libTENDER.so");
    gSystem->Load("libTENDERSupplies.so");
-   gSystem->Load("libEventMixing.so");
-//    AliAnalysisAlien::SetupPar("EventMixing");
+
+   Bool_t useEventMixingPar = kTRUE;
+//    useEventMixingPar = kFALSE;
+
+   if (useEventMixingPar) AliAnalysisAlien::SetupPar("EventMixing");
+   else gSystem->Load("libEventMixing.so");
+
    AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
 
    analysisPlugin->SetAnalysisSource("AliAnalysisTaskEx02.cxx");
-//    analysisPlugin->SetAdditionalLibs("libTENDER.so libTENDERSupplies.so EventMixing.par ANALYSISaliceMV.par AliAnalysisTaskEx02.h AliAnalysisTaskEx02.cxx");
-   analysisPlugin->SetAdditionalLibs("libTENDER.so libTENDERSupplies.so libEventMixing.so ANALYSISaliceMV.par AliAnalysisTaskEx02.h AliAnalysisTaskEx02.cxx");
+   TString mylibs = "libTENDER.so libTENDERSupplies.so";
+
+   if (useEventMixingPar) mylibs += " EventMixing.par";
+   else mylibs += " libEventMixing.so";
+
+   mylibs += " ANALYSISaliceMV.par AliAnalysisTaskEx02.h AliAnalysisTaskEx02.cxx";
+
+   analysisPlugin->SetAdditionalLibs(mylibs.Data());
    analysisPlugin->SetAliRootMode("ALIROOT");
 
    mgr->SetGridHandler(analysisPlugin);
    AliMultiInputEventHandler *multiInputHandler = 0;
+   AliESDInputHandler *esdInputHandler = 0;
    if (useMultiHandler)  {
       multiInputHandler = new AliMultiInputEventHandler();
       // add main input handler
       mgr->SetInputEventHandler(multiInputHandler);
 
       if (!format.CompareTo("esd")) {
-         multiInputHandler->AddInputEventHandler(new AliESDInputHandler());
+         esdInputHandler = new AliESDInputHandler();
+         multiInputHandler->AddInputEventHandler(esdInputHandler);
          if (useMC) multiInputHandler->AddInputEventHandler(new AliMCEventHandler());
       } else if (!format.CompareTo("aod"))multiInputHandler->AddInputEventHandler(new AliAODInputHandler());
    } else {
       if (!InputHandlerSetup(format, useMC)) return;
    }
    if (useMultiHandler)  {
-      // add Tender Handler
-      gROOT->LoadMacro("AddTenderHandler.C");
+      // add Tender Handler (not working with mixing)
+//       gROOT->LoadMacro("AddTenderHandler.C");
 //       AddTenderHandler(multiInputHandler);
 
       // add mixing handler (uncomment to turn on Mixnig)
       gROOT->LoadMacro("AddMixingHandler.C");
-//       AddMixingHandler(multiInputHandler);
+      AddMixingHandler(multiInputHandler);
 
       // adds mixing info task
-//       gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
-//       AddAnalysisTaskMixInfo(format, useMC, opts);
+      gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
+      AddAnalysisTaskMixInfo(format, useMC, opts);
 
       // add Log Handler
       gROOT->LoadMacro("AddLogHanlder.C");
@@ -77,9 +91,15 @@ void AddMyAnalysisManagerExampleTasks(TString analysisSource = "proof", TString 
    }
    gROOT->LoadMacro("AliAnalysisTaskEx02.cxx++g");
 
+//    gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPhysicsSelection.C");
+//    AddTaskPhysicsSelection(useMC);
+//
+//    // maybe we can put it in $ALICE_ROOT/ANALYSIS/macros/AddTaskPhysicsSelection.C
+//    if (multiInputHandler)
+//       esdInputHandler->SetEventSelection(multiInputHandler->GetEventSelection());
+
    // load and run AddTask macro
    gROOT->LoadMacro("AddExampleAnalysisTask.C");
    AddExampleAnalysisTask(format, useMC);
 
 }
-

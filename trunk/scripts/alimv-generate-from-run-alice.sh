@@ -17,7 +17,7 @@ function CopyFilesFromAddTaskMacro() {
     fi
 	fi
 	# copy all files which are in needed by gROOT->LoadMacro("...")
-	MY_FILES_TO_COPY=`cat $1 | grep -v '//' | grep 'gROOT->LoadMacro'`
+	MY_FILES_TO_COPY=`cat $1 | grep -v '//' | grep 'gROOT->LoadMacro'| grep -v ALICE_ROOT`
 	for MY_TMP_FILE in $MY_FILES_TO_COPY; do
 		MY_TMP_FILE_TO_COPY=`echo $MY_TMP_FILE | awk -F '"' '{print $2}' | awk -F '+' '{print $1}'`
 		MY_TMP_FILE_TO_COPY=`find $MY_SOURCE_DIR/macros/ -name "$MY_TMP_FILE_TO_COPY"`
@@ -36,7 +36,7 @@ function CopyFilesFromManagerMacro() {
 	cat $MGR_FILENAME | grep -v "//|" > $MY_WORK_DIR/`basename $MGR_FILENAME`
 
 
-	MY_FILES_TO_COPY=`cat $MGR_FILENAME | grep -v '//' | grep 'gROOT->LoadMacro'`
+	MY_FILES_TO_COPY=`cat $MGR_FILENAME | grep -v '//' | grep 'gROOT->LoadMacro'| grep -v ALICE_ROOT`
 	for MY_TMP_FILE in $MY_FILES_TO_COPY; do
 		MY_TMP_FILE=`echo $MY_TMP_FILE | awk -F '"' '{print $2}' | awk -F '+' '{print $1}'`
 		MY_TMP_FILE=`find $MY_SOURCE_DIR/macros/ -name "$MY_TMP_FILE"`

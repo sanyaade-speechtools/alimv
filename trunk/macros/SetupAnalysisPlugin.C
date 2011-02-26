@@ -81,7 +81,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
 {
 
    plugin->SetAPIVersion("V1.1x");
-   plugin->SetROOTVersion("v5-27-06b");
+   plugin->SetROOTVersion("v5-27-06d");
 //    plugin->SetAliROOTVersion("v4-20-13-AN");
    plugin->SetExecutableCommand("aliroot -b -q");
 
@@ -141,7 +141,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
 //   plugin->AddDataFile("/alice/data/2008/LHC08c/000057657/raw/Run57657.Merged.RAW.tag.root");
 
 // Define alien work directory where all files will be copied. Relative to alien $HOME.
-   plugin->SetGridWorkingDir("work/rsn/2011-02-16/03_step_100");
+   plugin->SetGridWorkingDir("work/rsn/2011-02-16/03_step_100_no_vz");
 // Declare alien output directory. Relative to working directory.
    plugin->SetGridOutputDir("output"); // In this case will be $HOME/work/output
 // Declare the analysis source files names separated by blancs. To be compiled runtime
