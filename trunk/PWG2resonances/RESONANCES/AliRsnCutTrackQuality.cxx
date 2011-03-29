@@ -21,8 +21,6 @@
 #include <TBits.h>
 
 #include "AliLog.h"
-#include "AliESDtrack.h"
-#include "AliAODTrack.h"
 #include "AliESDtrackCuts.h"
 
 #include "AliRsnEvent.h"
@@ -39,23 +37,23 @@ AliRsnCutTrackQuality::AliRsnCutTrackQuality(const char *name) :
    fRejectKinkDaughters(kTRUE),
    fDCARfixed(kTRUE),
    fDCARptFormula(""),
-   fDCARmax(fgkVeryBig),
+   fDCARmax(1E20),
    fDCAZfixed(kTRUE),
    fDCAZptFormula(""),
-   fDCAZmax(fgkVeryBig),
+   fDCAZmax(1E20),
    fSPDminNClusters(0),
    fITSminNClusters(0),
-   fITSmaxChi2(fgkVeryBig),
+   fITSmaxChi2(1E20),
    fTPCminNClusters(0),
-   fTPCmaxChi2(fgkVeryBig)
+   fTPCmaxChi2(1E20)
 {
 //
 // Default constructor.
 // Initializes all cuts in such a way that all of them are disabled.
 //
 
-   SetPtRange(0.0, fgkVeryBig);
-   SetEtaRange(-fgkVeryBig, fgkVeryBig);
+   SetPtRange(0.0, 1E20);
+   SetEtaRange(-1E20, 1E20);
 }
 
 //_________________________________________________________________________________________________
@@ -127,18 +125,18 @@ void AliRsnCutTrackQuality::DisableAll()
    fRejectKinkDaughters = kFALSE;
    fDCARfixed = kTRUE;
    fDCARptFormula = "";
-   fDCARmax = fgkVeryBig;
+   fDCARmax = 1E20;
    fDCAZfixed = kTRUE;
    fDCAZptFormula = "";
-   fDCAZmax = fgkVeryBig;
+   fDCAZmax = 1E20;
    fSPDminNClusters = 0;
    fITSminNClusters = 0;
-   fITSmaxChi2 = fgkVeryBig;
+   fITSmaxChi2 = 1E20;
    fTPCminNClusters = 0;
-   fTPCmaxChi2 = fgkVeryBig;
+   fTPCmaxChi2 = 1E20;
 
-   SetPtRange(0.0, fgkVeryBig);
-   SetEtaRange(-fgkVeryBig, fgkVeryBig);
+   SetPtRange(0.0, 1E20);
+   SetEtaRange(-1E20, 1E20);
 }
 
 //_________________________________________________________________________________________________
@@ -157,7 +155,7 @@ Bool_t AliRsnCutTrackQuality::IsSelected(TObject *object)
    // as a convention, if a the collection of 'on' flags is '0x0', it
    // is assumed that no flags are required, and this check is skipped;
    // for the collection of 'off' flags this is not needed
-   AliVTrack *vtrack = dynamic_cast<AliVTrack*>(fDaughter->GetRef());
+   AliVTrack *vtrack = fDaughter->GetRefVtrack();
    if (!vtrack) {
       AliDebug(AliLog::kDebug + 2, Form("This object is not either an ESD nor AOD track, it is an %s", fDaughter->GetRef()->ClassName()));
       return kFALSE;
@@ -242,6 +240,14 @@ Bool_t AliRsnCutTrackQuality::CheckAOD(AliAODTrack *track)
 // an equivalend checker for AOD tracks
 //
 
+   // try to retrieve the reference AOD event
+   AliAODEvent *aodEvent = 0x0;
+   if (fEvent) aodEvent = fEvent->GetRefAOD();
+   if (!aodEvent) {
+      AliError("AOD reference event is not initialized!");
+      return kFALSE;
+   }
+
    // step #0: check SPD and ITS clusters
    Int_t nSPD = 0;
    nSPD  = TESTBIT(track->GetITSClusterMap(), 0);
@@ -281,13 +287,18 @@ Bool_t AliRsnCutTrackQuality::CheckAOD(AliAODTrack *track)
    }
 
    // step #4: DCA cut (transverse)
+   // --> reject all tracks not ITS refitted
    Double_t b[2], cov[3];
-   vertex = AliRsnTarget::GetCurrentEvent()->GetRefAOD()->GetPrimaryVertex();
+   vertex = aodEvent->GetPrimaryVertex();
    if (!vertex) {
       AliDebug(AliLog::kDebug + 2, "NULL vertex");
       return kFALSE;
    }
-   if (!track->PropagateToDCA(vertex, AliRsnTarget::GetCurrentEvent()->GetRefAOD()->GetMagneticField(), kVeryBig, b, cov)) {
+   if ((track->GetStatus() & AliESDtrack::kITSrefit) == 0) {
+      AliDebug(AliLog::kDebug + 2, "Not ITS refitted");
+      return kFALSE;
+   }
+   if (!track->PropagateToDCA(vertex, aodEvent->GetMagneticField(), kVeryBig, b, cov)) {
       AliDebug(AliLog::kDebug + 2, "Failed propagation to vertex");
       return kFALSE;
    }
@@ -330,6 +341,7 @@ Bool_t AliRsnCutTrackQuality::CheckAOD(AliAODTrack *track)
    }
 
    // if we are here, all cuts were passed and no exit point was got
+   AliDebug(AliLog::kDebug + 2, "============================= ACCEPTED TRACK =====================================================");
    return kTRUE;
 }
 

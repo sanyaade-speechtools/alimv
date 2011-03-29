@@ -1,0 +1,3 @@
+/cern/data/alice/data/2010/LHC10h/000139107/ESDs/pass1/AOD040/0400/root_archive.zip#AliAOD.root
+/cern/data/alice/data/2010/LHC10h/000139107/ESDs/pass1/AOD040/0399/root_archive.zip#AliAOD.root
+/cern/data/alice/data/2010/LHC10h/000139107/ESDs/pass1/AOD040/0397/root_archive.zip#AliAOD.root

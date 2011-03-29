@@ -17,7 +17,7 @@ include(AliRootBaseMacro)
 set(PARS_TO_CREATE 
 # TENDER
 # TENDERSupplies
-# ANALYSISaliceMV
+ANALYSISaliceMV
 EventMixing 
 PWG2resonances 
 PWG2resonancesDevel

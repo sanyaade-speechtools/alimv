@@ -268,9 +268,9 @@ void TFileMergeSelector::SlaveTerminate()
 
          } else {
             // add proof output file
-            TProofOutputFile *proofFile = new TProofOutputFile(strr.Data(), "ML");
-            TNamed *out = (TNamed *) fInput->FindObject("PROOF_OUTPUTFILE");
-            if (out) proofFile->SetOutputFileName(Form("%s/%s", out->GetTitle(), origFileName.Data()));
+            TProofOutputFile *proofFile = new TProofOutputFile(strr.Data(), "M");
+//             TNamed *out = (TNamed *) fInput->FindObject("PROOF_OUTPUTFILE");
+//             if (out) proofFile->SetOutputFileName(Form("%s/%s", out->GetTitle(), origFileName.Data()));
             // add proof file to fOutputs
             proofFile->Print();
             fOutput->Add(proofFile);
@@ -285,6 +285,8 @@ void TFileMergeSelector::Terminate()
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
+
+//    return;
 
    TNamed *out = 0;
 
@@ -322,7 +324,8 @@ void TFileMergeSelector::Terminate()
       return;
    }
 
-
+   out = dynamic_cast<TNamed*>(fInput->FindObject("PROOF_USE_ARCHIVE"));
+   if (out) fListFilesInArchive = out->GetTitle();
    fListFilesInArchive = out->GetTitle();
 
    Printf("Running Terminate with fListFilesInArchive = %s", fListFilesInArchive.Data());

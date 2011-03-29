@@ -11,7 +11,9 @@
 #define ALIRSNINPUTHANDLER_H
 
 #include "AliInputEventHandler.h"
+#include "AliRsnPIDManager.h"
 
+class AliRsnEvent;
 class AliRsnInputHandler : public AliInputEventHandler {
 
 public:
@@ -25,8 +27,16 @@ public:
    virtual Bool_t  FinishEvent();
    virtual Bool_t  Notify();
    virtual Bool_t  Notify(const char *path);
+   virtual Bool_t  GetEntry();
+
+   AliRsnEvent *GetRsnEvent() { return fRsnEvent; }
+   AliRsnPIDManager *GetPIDManager() { return &fRsnPIDManager; }
 
 private:
+
+   AliRsnEvent *fRsnEvent; //!
+   AliRsnPIDManager fRsnPIDManager;
+
    AliRsnInputHandler(const AliRsnInputHandler& handler);
    AliRsnInputHandler &operator=(const AliRsnInputHandler &handler);
 

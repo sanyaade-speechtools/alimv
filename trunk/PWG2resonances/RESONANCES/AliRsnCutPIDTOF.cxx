@@ -13,6 +13,10 @@
 
 #include "AliAnalysisManager.h"
 #include "AliESDInputHandler.h"
+#include "AliESDtrack.h"
+#include "AliESDpid.h"
+#include "AliAODTrack.h"
+#include "AliAODpidUtil.h"
 
 #include "AliRsnCutPIDTOF.h"
 
@@ -22,12 +26,11 @@ ClassImp(AliRsnCutPIDTOF)
 AliRsnCutPIDTOF::AliRsnCutPIDTOF
 (const char *name, AliPID::EParticleType ref, Double_t min, Double_t max, Bool_t rejectUnmatched) :
    AliRsnCut(name, AliRsnCut::kDaughter, min, max),
-   fInitialized(kFALSE),
    fRejectUnmatched(rejectUnmatched),
    fRefType(AliPID::kUnknown),
    fRefMass(0.0),
-   fESDpid(),
-   fAODpid()
+   fESDpid(0x0),
+   fAODpid(0x0)
 {
 //
 // Default constructor.
@@ -41,7 +44,6 @@ AliRsnCutPIDTOF::AliRsnCutPIDTOF
 //_________________________________________________________________________________________________
 AliRsnCutPIDTOF::AliRsnCutPIDTOF(const AliRsnCutPIDTOF& copy) :
    AliRsnCut(copy),
-   fInitialized(kFALSE),
    fRejectUnmatched(copy.fRejectUnmatched),
    fRefType(AliPID::kUnknown),
    fRefMass(0.0),
@@ -66,7 +68,6 @@ AliRsnCutPIDTOF& AliRsnCutPIDTOF::operator=(const AliRsnCutPIDTOF& copy)
 // which sets the mass accordingly and coherently.
 //
 
-   fInitialized     = kFALSE;
    fRejectUnmatched = copy.fRejectUnmatched;
    fESDpid          = copy.fESDpid;
    fAODpid          = copy.fAODpid;
@@ -83,14 +84,11 @@ Bool_t AliRsnCutPIDTOF::IsSelected(TObject *object)
 // Cut checker.
 //
 
-   // initialize if needed
-   if (!fInitialized) Initialize();
-
    // coherence check
    if (!TargetOK(object)) return kFALSE;
 
    // reject always non-track objects
-   AliVTrack *vtrack = dynamic_cast<AliVTrack*>(fDaughter->GetRef());
+   AliVTrack *vtrack = fDaughter->GetRefVtrack();
    if (!vtrack) {
       AliDebug(AliLog::kDebug + 2, Form("Impossible to process an object of type '%s'. Cut applicable only to ESD/AOD tracks", fDaughter->GetRef()->ClassName()));
       return kFALSE;
@@ -116,24 +114,27 @@ Bool_t AliRsnCutPIDTOF::IsSelected(TObject *object)
    // cut check depends on the object type
    if (esdTrack) {
       // setup the ESD PID object
-      AliESDEvent *esd = AliRsnTarget::GetCurrentEvent()->GetRefESD();
+      AliESDEvent *esd = 0x0;
+      if (fEvent) esd = fEvent->GetRefESD();
       if (!esd) {
          AliError("Processing an ESD track, but target is not an ESD event");
          return kFALSE;
       }
-      fESDpid.SetTOFResponse(esd, AliESDpid::kTOF_T0);
+      if (!fESDpid) fESDpid = new AliESDpid;
+      fESDpid->SetTOFResponse(esd, AliESDpid::kTOF_T0);
 
       // get time of flight, reference times and sigma
       esdTrack->GetIntegratedTimes(times);
-      tof   = (Double_t)(esdTrack->GetTOFsignal() - fESDpid.GetTOFResponse().GetStartTime(esdTrack->P()));
-      sigma = (Double_t)fESDpid.GetTOFResponse().GetExpectedSigma(esdTrack->P(), ref, fRefMass);
+      tof   = (Double_t)(esdTrack->GetTOFsignal() - fESDpid->GetTOFResponse().GetStartTime(esdTrack->P()));
+      sigma = (Double_t)fESDpid->GetTOFResponse().GetExpectedSigma(esdTrack->P(), ref, fRefMass);
 
       // port values to standard AliRsnCut checker
       fCutValueD = (tof - ref) / sigma;
       return OkRangeD();
    } else if (aodTrack) {
       // for AOD tracks, all operations are done by the AOD PID utility
-      fCutValueD = (Double_t)fAODpid.NumberOfSigmasTOF(aodTrack, fRefType);
+      if (!fAODpid) fAODpid = new AliAODpidUtil;
+      fCutValueD = (Double_t)fAODpid->NumberOfSigmasTOF(aodTrack, fRefType);
       return OkRangeD();
    } else {
       AliDebug(AliLog::kDebug + 2, Form("Impossible to process an object of type '%s'. Cut applicable only to ESD/AOD tracks", fDaughter->GetRef()->ClassName()));
@@ -153,19 +154,3 @@ void AliRsnCutPIDTOF::Print(const Option_t *) const
    AliInfo(Form("Unmatched tracks are      : %s", (fRejectUnmatched ? "rejected" : "accepted")));
 }
 
-//_________________________________________________________________________________________________
-void AliRsnCutPIDTOF::Initialize()
-{
-//
-// Initialize ESD pid object from global one
-//
-
-   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
-   AliESDInputHandler *handler = dynamic_cast<AliESDInputHandler*>(mgr->GetInputEventHandler());
-   if (handler) {
-      AliESDpid *pid = handler->GetESDpid();
-      fESDpid = (*pid);
-   }
-
-   fInitialized = kTRUE;
-}

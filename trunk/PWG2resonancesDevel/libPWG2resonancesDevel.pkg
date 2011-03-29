@@ -1,6 +1,7 @@
 #-*- Mode: Makefile -*-
 
 SRCS = \
+      AliRsnPIDManager.cxx \
       AliRsnInputHandler.cxx \
       AliRsnAnalysisTaskCommon.cxx
 

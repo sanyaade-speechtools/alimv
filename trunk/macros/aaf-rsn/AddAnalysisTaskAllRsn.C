@@ -6,9 +6,9 @@ Bool_t AddAnalysisTaskAllRsn(TString format = "esd", Bool_t useMC = kFALSE, TStr
    opts = "Phi";
    AddRsnTask(format, useMC, "ConfigRsnPhiKK.C", opts);
    AddRsnTask(format, useMC, "ConfigRsnPhiKK.C", Form("%s_mix", opts.Data()));
-   opts = "Kstar";
-   AddRsnTask(format, useMC, "ConfigRsnKStarKPi.C", opts);
-   AddRsnTask(format, useMC, "ConfigRsnKStarKPi.C", Form("%s_mix", opts.Data()));
+//    opts = "Kstar";
+//    AddRsnTask(format, useMC, "ConfigRsnKStarKPi.C", opts);
+//    AddRsnTask(format, useMC, "ConfigRsnKStarKPi.C", Form("%s_mix", opts.Data()));
 
    return kTRUE;
 }

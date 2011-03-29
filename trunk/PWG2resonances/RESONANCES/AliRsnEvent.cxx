@@ -1,16 +1,33 @@
-//
-// *** Class AliRsnEvent ***
-//
-// A container for a collection of AliRsnDaughter objects from an event.
-// Contains also the primary vertex, useful for some cuts.
-// In order to retrieve easily the tracks which have been identified
-// as a specific type and charge, there is an array of indexes which
-// allows to avoid to loop on all tracks and have only the neede ones.
-//
-// authors: A. Pulvirenti (email: alberto.pulvirenti@ct.infn.it)
-//          M. Vala (email: martin.vala@cern.ch)
-//
+/**************************************************************************
+ * Copyright(c) 1998-1999, ALICE Experiment at CERN, All rights reserved. *
+ *                                                                        *
+ * Author: The ALICE Off-line Project.                                    *
+ * Contributors are mentioned in the code where appropriate.              *
+ *                                                                        *
+ * Permission to use, copy, modify and distribute this software and its   *
+ * documentation strictly for non-commercial purposes is hereby granted   *
+ * without fee, provided that the above copyright notice appears in all   *
+ * copies and that both the copyright notice and this permission notice   *
+ * appear in the supporting documentation. The authors make no claims     *
+ * about the suitability of this software for any purpose. It is          *
+ * provided "as is" without express or implied warranty.                  *
+ **************************************************************************/
 
+////////////////////////////////////////////////////////////////////////////////
+//
+//  This class works as generic interface to an event.
+//  Its main purpose is to provide a unique reference which includes all the
+//  facilities available in the AliVEvent generic base class, plus all info
+//  which could be needed during analysis, which are not in AliVEvent but
+//  need to be accessed from ESD or AOD objects, usually in different ways.
+//  When MC is available, it is properly taken into account.
+//
+//  authors: A. Pulvirenti (alberto.pulvirenti@ct.infn.it)
+//           M. Vala (martin.vala@cern.ch)
+//
+////////////////////////////////////////////////////////////////////////////////
+
+#include <Riostream.h>
 #include <TArrayF.h>
 
 #include "AliLog.h"
@@ -18,16 +35,14 @@
 #include "AliMCEvent.h"
 #include "AliStack.h"
 #include "AliGenEventHeader.h"
-#include "AliAODEvent.h"
-#include "AliRsnCutPID.h"
 #include "AliESDtrackCuts.h"
-
+#include "AliESDUtils.h"
+#include "AliAODVertex.h"
+#include "AliMultiplicity.h"
+#include "AliRsnCutPID.h"
 #include "AliRsnEvent.h"
 
 ClassImp(AliRsnEvent)
-
-AliRsnEvent* AliRsnEvent::fgRsnEvent1 = 0;
-AliRsnEvent* AliRsnEvent::fgRsnEvent2 = 0;
 
 //_____________________________________________________________________________
 AliRsnEvent::AliRsnEvent(AliVEvent *ref, AliVEvent *refMC) :
@@ -95,14 +110,42 @@ Bool_t AliRsnEvent::SetDaughter(AliRsnDaughter &out, Int_t i, AliRsnDaughter::ER
 // Returns kFALSE whenever the operation fails (out of range, NULL references).
 //
 
-   if (IsESD() && type == AliRsnDaughter::kTrack) return SetDaughterESDtrack(out, i);
-   if (IsAOD() && type == AliRsnDaughter::kTrack) return SetDaughterAODtrack(out, i);
-   if (IsESD() && type == AliRsnDaughter::kV0) return SetDaughterESDv0(out, i);
-   if (IsAOD() && type == AliRsnDaughter::kV0) return SetDaughterAODv0(out, i);
-   if (IsESD() && type == AliRsnDaughter::kCascade) return SetDaughterESDcascade(out, i);
-   if (IsAOD() && type == AliRsnDaughter::kCascade) return SetDaughterAODcascade(out, i);
+   Bool_t ok = kFALSE;
 
-   return kFALSE;
+   out.Reset();
+   out.SetOwnerEvent(this);
+
+   if (IsESD() && type == AliRsnDaughter::kTrack)   ok = SetDaughterESDtrack(out, i);
+   if (IsAOD() && type == AliRsnDaughter::kTrack)   ok = SetDaughterAODtrack(out, i);
+   if (IsESD() && type == AliRsnDaughter::kV0)      ok = SetDaughterESDv0(out, i);
+   if (IsAOD() && type == AliRsnDaughter::kV0)      ok = SetDaughterAODv0(out, i);
+   if (IsESD() && type == AliRsnDaughter::kCascade) ok = SetDaughterESDcascade(out, i);
+   if (IsAOD() && type == AliRsnDaughter::kCascade) ok = SetDaughterAODcascade(out, i);
+
+   return ok;
+}
+
+//_____________________________________________________________________________
+Bool_t AliRsnEvent::SetDaughterAbs(AliRsnDaughter &out, Int_t absIndex)
+{
+//
+// Sets the first argument daughter using the absolute index, which
+// runs continuously from tracks, to V0s, to cascades.
+// In case the conversion to real index fails, the track is flagged as bad.
+// Additionally, sets the daughter internal 'fRsnID' member to this index.
+//
+
+   Int_t index;
+   AliRsnDaughter::ERefType type;
+
+   out.SetRsnID(absIndex);
+
+   if (ConvertAbsoluteIndex(absIndex, index, type)) {
+      return SetDaughter(out, index, type);
+   } else {
+      out.Reset();
+      return kFALSE;
+   }
 }
 
 //_____________________________________________________________________________
@@ -178,6 +221,8 @@ Bool_t AliRsnEvent::SetDaughterMC(AliRsnDaughter &out, Int_t label)
       return kTRUE;
    }
 
+   out.SetOwnerEvent(this);
+
    return kFALSE;
 }
 
@@ -194,6 +239,18 @@ AliRsnDaughter AliRsnEvent::GetDaughter(Int_t i, AliRsnDaughter::ERefType type)
 }
 
 //_____________________________________________________________________________
+AliRsnDaughter AliRsnEvent::GetDaughterAbs(Int_t absIndex)
+{
+//
+// Returns a daughter set using same criteria as SetDaughter
+//
+
+   AliRsnDaughter d;
+   SetDaughterAbs(d, absIndex);
+   return d;
+}
+
+//_____________________________________________________________________________
 AliRsnDaughter AliRsnEvent::GetDaughterMC(Int_t i)
 {
 //
@@ -203,23 +260,6 @@ AliRsnDaughter AliRsnEvent::GetDaughterMC(Int_t i)
    AliRsnDaughter d;
    SetDaughterMC(d, i);
    return d;
-}
-
-//_____________________________________________________________________________
-Int_t AliRsnEvent::GetAbsoluteSum()
-{
-//
-// Utility method that returns the sum of all daughter-like objects:
-// tracks, V0s and cascades
-//
-
-   Int_t total = 0;
-
-   total += fRef->GetNumberOfTracks();
-   total += fRef->GetNumberOfV0s();
-   total += fRef->GetNumberOfCascades();
-
-   return total;
 }
 
 //_____________________________________________________________________________
@@ -266,29 +306,76 @@ Bool_t AliRsnEvent::ConvertAbsoluteIndex(Int_t index, Int_t &realIndex, AliRsnDa
 }
 
 //_____________________________________________________________________________
-Int_t AliRsnEvent::GetMultiplicity(AliESDtrackCuts *cuts)
+Int_t AliRsnEvent::ConvertRealIndex(Int_t index, AliRsnDaughter::ERefType type)
 {
 //
-// Returns event multiplicity as the number of tracks.
-// If the argument is not NULL, returns instead the
-// number of tracks passing the cuts hereby defined.
+// Translates a pair made by index + object type into the corresponding
+// absolute index, which is set to -1 in case the real index overflows.
 //
 
-   if (!fRef) return 0;
+   Int_t nTracks   = fRef->GetNumberOfTracks();
+   Int_t nV0s      = fRef->GetNumberOfV0s();
+   Int_t nCascades = fRef->GetNumberOfCascades();
 
-   AliESDEvent *esd = GetRefESD();
-   if (cuts && esd) return cuts->CountAcceptedTracks(esd);
-   else return fRef->GetNumberOfTracks();
+   switch (type) {
+      case AliRsnDaughter::kTrack:
+         if (index >= 0 && index < nTracks)
+            return index;
+         else
+            return -1;
+      case AliRsnDaughter::kV0:
+         if (index >= 0 && index < nV0s)
+            return nTracks + index;
+         else
+            return -1;
+      case AliRsnDaughter::kCascade:
+         if (index >= 0 && index < nCascades)
+            return nTracks + nV0s + index;
+         else
+            return -1;
+      default:
+         return -1;
+   }
 }
 
 //_____________________________________________________________________________
-Double_t AliRsnEvent::GetVz()
+Int_t AliRsnEvent::GetMultiplicityFromESDCuts()
 {
 //
-// Return Z coord of primary vertex
+// Returns event multiplicity as the number of
+// tracks passing the standard quality cuts.
 //
 
-   return fRef->GetPrimaryVertex()->GetZ();
+   if (!fRef) return -1;
+
+   AliESDEvent *esd = GetRefESD();
+   if (esd)
+      return AliESDtrackCuts::GetReferenceMultiplicity(esd, kTRUE);
+   else {
+      AliWarning("Invoked multicplicity estimation from AliESDtrackCuts with null ESD");
+      return -1;
+   }
+}
+
+//_____________________________________________________________________________
+Float_t AliRsnEvent::GetMultiplicityFromSPD()
+{
+//
+// Returns event multiplicity computed from SPD.
+//
+
+   if (!fRef) return -1.0;
+
+   AliESDEvent *esd = GetRefESD();
+   if (esd) {
+      const AliMultiplicity *mult = esd->GetMultiplicity();
+      Float_t nClusters[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+      for (Int_t ilay = 0; ilay < 6; ilay++) nClusters[ilay] = (Float_t)mult->GetNumberOfITSClusters(ilay);
+      return AliESDUtils::GetCorrSPD2(nClusters[1], GetVz());
+   } else {
+      AliWarning("Cannot compute SPD multiplicity without a well initialized ESD event");
+      return -1.0;
+   }
 }
 
 //_____________________________________________________________________________
@@ -338,7 +425,7 @@ Double_t AliRsnEvent::GetAverageMomentum(Int_t &count, AliRsnCutPID *cutPID)
    for (i = 0, count = 0; i < nTracks; i++) {
       AliRsnDaughter track = GetDaughter(i);
       if (cutPID) if (!cutPID->IsSelected(&track)) continue;
-      pmean += track.P().Mag();
+      pmean += track.Prec().Mag();
       count++;
    }
 
@@ -350,7 +437,7 @@ Double_t AliRsnEvent::GetAverageMomentum(Int_t &count, AliRsnCutPID *cutPID)
 
 //_____________________________________________________________________________
 Bool_t AliRsnEvent::GetAngleDistr
-(Double_t &angleMean, Double_t &angleRMS, AliRsnDaughter leading)
+(Double_t &angleMean, Double_t &angleRMS, AliRsnDaughter *leading)
 {
 //
 // Takes the leading particle and computes the mean and RMS
@@ -358,7 +445,8 @@ Bool_t AliRsnEvent::GetAngleDistr
 // with respect to the direction of leading particle.
 //
 
-   if (!leading.IsOK()) return kFALSE;
+   if (!leading) return kFALSE;
+   if (!leading->IsOK()) return kFALSE;
 
    Int_t i, count, nTracks = fRef->GetNumberOfTracks();
    Double_t angle, angle2Mean = 0.0;
@@ -367,9 +455,9 @@ Bool_t AliRsnEvent::GetAngleDistr
 
    for (i = 0, count = 0; i < nTracks; i++) {
       AliRsnDaughter trk = GetDaughter(i);
-      if (trk.GetID() == leading.GetID()) continue;
+      if (trk.GetID() == leading->GetID()) continue;
 
-      angle = leading.P().Angle(trk.P().Vect());
+      angle = leading->Prec().Angle(trk.Prec().Vect());
 
       angleMean += angle;
       angle2Mean += angle * angle;
@@ -478,6 +566,7 @@ Bool_t AliRsnEvent::SetDaughterESDv0(AliRsnDaughter &out, Int_t i)
    // assign references of reconstructed track
    out.SetRef(v0);
    out.SetGood();
+   out.SetLabel(-1);
 
    // this time, assigning label is not trivial,
    // it is done only if MC is present and both
@@ -492,7 +581,7 @@ Bool_t AliRsnEvent::SetDaughterESDv0(AliRsnDaughter &out, Int_t i)
       TParticle   *pn = mc->Stack()->Particle(ln);
       // if their first mothers are the same, the V0 is true
       // otherwise no label can be assigned
-      if (pp->GetFirstMother() == pn->GetFirstMother()) out.SetLabel(pp->GetFirstMother());
+      if (pp->GetFirstMother() == pn->GetFirstMother() && pp->GetFirstMother() >= 0) out.SetLabel(pp->GetFirstMother());
    }
 
    // assign MC info, if available
@@ -534,24 +623,23 @@ Bool_t AliRsnEvent::SetDaughterAODv0(AliRsnDaughter &out, Int_t i)
    out.SetGood();
    out.SetLabel(-1);
 
-   // this time, assigning label is not trivial,
-   // it is done only if MC is present and both
-   // daughters come from a true particle
-   AliAODTrack  *tp = ev->GetTrack(v0->GetPosID());
-   AliAODTrack  *tn = ev->GetTrack(v0->GetNegID());
+   // retrieve the owner vertex and its daughters
+   AliAODTrack  *tp  = (AliAODTrack*)v0->GetDaughter(0);
+   AliAODTrack  *tn  = (AliAODTrack*)v0->GetDaughter(1);
    if (mcArray && tp && tn) {
-      Int_t        lp = TMath::Abs(tp->GetLabel());
-      Int_t        ln = TMath::Abs(tn->GetLabel());
+      Int_t lp = TMath::Abs(tp->GetLabel());
+      Int_t ln = TMath::Abs(tn->GetLabel());
       // loop on array to find MC daughters
       AliAODMCParticle *pp = 0x0, *pn = 0x0;
       TObjArrayIter next(mcArray);
       AliAODMCParticle *part = 0x0;
       while ((part = (AliAODMCParticle*)next())) {
-         if (TMath::Abs(part->GetLabel()) == lp) pp = (AliAODMCParticle*)mcArray->IndexOf(part);
-         if (TMath::Abs(part->GetLabel()) == ln) pn = (AliAODMCParticle*)mcArray->IndexOf(part);
+         if (TMath::Abs(part->GetLabel()) == lp) pp = part;
+         if (TMath::Abs(part->GetLabel()) == ln) pn = part;
       }
       // assign a MC reference and a label only to true V0s
-      if (pp->GetMother() == pn->GetMother()) out.SetLabel(pp->GetMother());
+      if (pp && pn)
+         if (pp->GetMother() == pn->GetMother() && pp->GetMother() >= 0) out.SetLabel(pp->GetMother());
    }
 
    // assign MC info, if available
@@ -559,7 +647,7 @@ Bool_t AliRsnEvent::SetDaughterAODv0(AliRsnDaughter &out, Int_t i)
 }
 
 //_____________________________________________________________________________
-Bool_t AliRsnEvent::SetDaughterESDcascade(AliRsnDaughter &, Int_t)
+Bool_t AliRsnEvent::SetDaughterESDcascade(AliRsnDaughter &out, Int_t i)
 {
 //
 // Setup the first argument to the track identified by the index.
@@ -568,11 +656,30 @@ Bool_t AliRsnEvent::SetDaughterESDcascade(AliRsnDaughter &, Int_t)
 // Version #3: ESD cascade
 //
 
+   // check 1: index in good range
+   if (i > fRef->GetNumberOfCascades()) {
+      out.SetBad();
+      return 1;
+   }
+
+   // check 2: not NULL object
+   AliESDEvent   *ev   = GetRefESD();
+   AliESDcascade *casc = ev->GetCascade(i);
+   if (!casc) {
+      out.SetBad();
+      return 2;
+   }
+
+   // assign references of reconstructed track
+   out.SetRef(casc);
+   out.SetGood();
+   out.SetLabel(-1);
+
    return kTRUE;
 }
 
 //_____________________________________________________________________________
-Bool_t AliRsnEvent::SetDaughterAODcascade(AliRsnDaughter &, Int_t)
+Bool_t AliRsnEvent::SetDaughterAODcascade(AliRsnDaughter &out, Int_t i)
 {
 //
 // Setup the first argument to the track identified by the index.
@@ -580,6 +687,25 @@ Bool_t AliRsnEvent::SetDaughterAODcascade(AliRsnDaughter &, Int_t)
 // ---
 // Version #4: AOD cascade
 //
+
+   // check 1: index in good range
+   if (i > fRef->GetNumberOfCascades()) {
+      out.SetBad();
+      return kFALSE;
+   }
+
+   // check 2: not NULL object
+   AliAODEvent *ev = GetRefAOD();
+   AliAODv0    *casc = ev->GetCascade(i);
+   if (!casc) {
+      out.SetBad();
+      return kFALSE;
+   }
+
+   // assign references of reconstructed track
+   out.SetRef(casc);
+   out.SetGood();
+   out.SetLabel(-1);
 
    return kTRUE;
 }
@@ -594,16 +720,21 @@ Bool_t AliRsnEvent::SetMCInfoESD(AliRsnDaughter &out)
 //
 
    Int_t label = out.GetLabel();
-   if (label < 0) return kFALSE;
 
    // if no MC reference is available, exit here (successfully)
    AliMCEvent *mc = GetRefMCESD();
    if (!mc) return kTRUE;
    Int_t nMC = mc->GetNumberOfTracks();
 
+   // debug message for fakes
+   if (label < 0) {
+      AliDebug(AliLog::kDebug + 1, "Fake object (fake track or false V0)");
+      return kFALSE;
+   }
+
    // assign MC reference, being aware of eventual
    // overflows in the array (sometimes happened)
-   if (label < 0 || label >= nMC) {
+   if (label >= nMC) {
       AliWarning(Form("Stack overflow: track label = %d -- stack maximum = %d", label, nMC));
       return kFALSE;
    }
@@ -616,7 +747,10 @@ Bool_t AliRsnEvent::SetMCInfoESD(AliRsnDaughter &out)
 
    // if this is a primary track, exit here (successfully)
    Int_t imum = mcPart->Particle()->GetFirstMother();
-   if (imum < 0) return kTRUE;
+   if (imum < 0) {
+      out.SetMotherPDG(0);
+      return kTRUE;
+   }
 
    // if didn't stop there, search for the mother
    if (imum >= nMC) {
@@ -625,7 +759,7 @@ Bool_t AliRsnEvent::SetMCInfoESD(AliRsnDaughter &out)
    }
    AliMCParticle *mcMother = (AliMCParticle*)mc->GetTrack(imum);
    if (!mcMother) {
-      AliWarning(Form("Stack discontinuity: label %d refers to a NULL object", imum));
+      AliWarning(Form("Stack discontinuity: label mother %d refers to a NULL object", imum));
       return kFALSE;
    }
    out.SetMotherPDG(TMath::Abs(mcMother->Particle()->GetPdgCode()));
@@ -643,7 +777,12 @@ Bool_t AliRsnEvent::SetMCInfoAOD(AliRsnDaughter &out)
 //
 
    Int_t label = out.GetLabel();
-   if (label < 0) return kFALSE;
+
+   // debug message for fakes
+   if (label < 0) {
+      AliDebug(AliLog::kDebug + 1, "Fake object (fake track or false V0)");
+      return kFALSE;
+   }
 
    // if no MC reference is available, exit here (successfully)
    AliAODEvent *mc = GetRefMCAOD();
@@ -658,10 +797,12 @@ Bool_t AliRsnEvent::SetMCInfoAOD(AliRsnDaughter &out)
    while ((part = (AliAODMCParticle*)next())) {
       if (TMath::Abs(part->GetLabel()) == label) {
          out.SetRefMC(part);
+         out.SetMotherPDG(0);
          Int_t imum = part->GetMother();
          if (imum >= 0 && imum <= mcArray->GetEntriesFast()) {
             AliAODMCParticle *mum = (AliAODMCParticle*)mcArray->At(imum);
             if (mum) out.SetMotherPDG(TMath::Abs(mum->GetPdgCode()));
+            return kTRUE;
          } else {
             AliWarning(Form("Array overflow: track mother label = %d -- stack maximum = %d", imum, mcArray->GetEntriesFast()));
             return kFALSE;

@@ -23,14 +23,14 @@ Int_t runALICE(TString analysisSource = "grid", TString analysisMode = "terminat
    ::Info(gSystem->HostName(), "Loading done ...");
    // ++++++++++++++++ Adding Analysis Managers +++++++++++++++++++++++
 
-//    fNEvents = 1e3;
+   fNEvents = 5e3;
 //    fNEventsSkip = 350;
 
 
-//    RunAnalysisManager("AddAMExampleTasks", analysisSource.Data(), analysisMode.Data(), "");
+   RunAnalysisManager("AddAMExampleTasks", analysisSource.Data(), analysisMode.Data(), "");
 //    RunAnalysisManager("AddAMEvilTask", analysisSource.Data(), analysisMode.Data(), "");
-   RunAnalysisManager("AddAMRsnCommon", analysisSource.Data(), analysisMode.Data(), "");
-
+//    RunAnalysisManager("AddAMRsnNew", analysisSource.Data(), analysisMode.Data(), "");
+//    RunAnalysisManager("AddAnalysisManagerMixRsnPar", analysisSource.Data(), analysisMode.Data(), "");
 
 //
 //    // mix with parfiles

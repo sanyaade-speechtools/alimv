@@ -10,6 +10,7 @@
 #include <AliESDpid.h>
 #include <AliAnalysisAlien.h>
 #include <AliPhysicsSelection.h>
+#include <AliMCEventHandler.h>
 #endif
 void AddAMExampleTasks(TString analysisSource = "proof", TString analysisMode = "test", TString opts = "")
 {
@@ -36,13 +37,12 @@ void AddAMExampleTasks(TString analysisSource = "proof", TString analysisMode = 
    gSystem->Load("libANALYSISalice.so");
    gSystem->Load("libTENDER.so");
    gSystem->Load("libTENDERSupplies.so");
-   TString mylibs = "libTENDER.so libTENDERSupplies.so";
+   TString mylibs;
+   mylibs = "libTENDER.so libTENDERSupplies.so";
+
 
    Bool_t useEventMixingPar = kTRUE;
-//    useEventMixingPar = kFALSE;
-
-//    Bool_t useEventMixingPar = kTRUE;
-//    useEventMixingPar = kFALSE;
+   useEventMixingPar = kFALSE;
 
    if (useEventMixingPar) {
       AliAnalysisAlien::SetupPar("EventMixing");
@@ -72,36 +72,68 @@ void AddAMExampleTasks(TString analysisSource = "proof", TString analysisMode = 
          esdInputHandler = new AliESDInputHandler();
          multiInputHandler->AddInputEventHandler(esdInputHandler);
          if (useMC) multiInputHandler->AddInputEventHandler(new AliMCEventHandler());
-      } else if (!format.CompareTo("aod"))multiInputHandler->AddInputEventHandler(new AliAODInputHandler());
+      } else if (!format.CompareTo("aod")) multiInputHandler->AddInputEventHandler(new AliAODInputHandler());
    } else {
       if (!InputHandlerSetup(format, useMC)) return;
    }
+
+   gROOT->LoadMacro("AliAnalysisTaskEx02.cxx+g");
+
+   Bool_t usePhysSel = kTRUE;
+   usePhysSel = kFALSE;
+
+   Bool_t useMixing = kTRUE;
+//    useMixing = kFALSE;
+
+   Bool_t useTender = kTRUE;
+   useTender = kFALSE;
+
+   Bool_t usePIDResponse = kTRUE;
+//    usePIDResponse = kFALSE;
+
+   Bool_t useCentrality = kTRUE;
+//    useCentrality = kFALSE;
+
    if (useMultiHandler)  {
-      // add Tender Handler (not working with mixing)
-//       gROOT->LoadMacro("AddTenderHandler.C");
-//       AddTenderHandler(multiInputHandler);
 
-      // add mixing handler (uncomment to turn on Mixnig)
-      gROOT->LoadMacro("AddMixingHandler.C");
-      AddMixingHandler(multiInputHandler);
 
-      // adds mixing info task
-      gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
-      AddAnalysisTaskMixInfo(format, useMC, opts);
+      if (useTender) {
+         // add Tender Handler (not working with mixing)
+         gROOT->LoadMacro("AddTenderHandler.C");
+         AddTenderHandler(multiInputHandler);
+      }
 
+      if (usePIDResponse) {
+         // add PID Response Handler
+         gROOT->LoadMacro("AddPIDResponseInputHandler.C");
+         AddPIDResponseInputHandler(multiInputHandler);
+      }
+      if (useCentrality) {
+         // add Centrality Handler
+         gROOT->LoadMacro("AddCentralityInputHandler.C");
+         AddCentralityInputHandler(multiInputHandler);
+      }
+
+
+      if (useMixing) {
+         // add mixing handler (uncomment to turn on Mixnig)
+         gROOT->LoadMacro("AddMixingHandler.C");
+         AddMixingHandler(multiInputHandler, format, useMC, opts);
+      }
       // add Log Handler
       gROOT->LoadMacro("AddLogHanlder.C");
       AddLogHanlder(multiInputHandler);
    }
-   gROOT->LoadMacro("AliAnalysisTaskEx02.cxx++g");
 
-//    gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPhysicsSelection.C");
-//    AddTaskPhysicsSelection(useMC);
-//
-//    // maybe we can put it in $ALICE_ROOT/ANALYSIS/macros/AddTaskPhysicsSelection.C
-//    if (multiInputHandler)
-//       esdInputHandler->SetEventSelection(multiInputHandler->GetEventSelection());
+   if (usePhysSel) {
+      gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPhysicsSelection.C");
+      AddTaskPhysicsSelection(useMC);
 
+      // maybe we can put it in $ALICE_ROOT/ANALYSIS/macros/AddTaskPhysicsSelection.C
+      AliMultiInputEventHandler *multiIH = dynamic_cast<AliMultiInputEventHandler *>(mgr->GetInputEventHandler());
+      if (multiIH)
+         esdInputHandler->SetEventSelection(multiIH->GetEventSelection());
+   }
    // load and run AddTask macro
    gROOT->LoadMacro("AddExampleAnalysisTask.C");
    AddExampleAnalysisTask(format, useMC);

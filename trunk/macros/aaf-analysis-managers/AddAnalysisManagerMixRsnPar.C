@@ -68,8 +68,8 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
 
 
 
-//    AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
-//    mylibs += " ANALYSISaliceMV.par";
+   AliAnalysisAlien::SetupPar("ANALYSISaliceMV");
+   mylibs += " ANALYSISaliceMV.par";
 
    AliAnalysisAlien::SetupPar("PWG2resonances");
    mylibs += " PWG2resonances.par";
@@ -102,13 +102,9 @@ void AddAnalysisManagerMixRsnPar(TString analysisSource = "proof", TString analy
    gROOT->LoadMacro("AddMixingHandler.C");
    AddMixingHandler(mainInputHandler);
 
-   //    // adds mixing info task
-   gROOT->LoadMacro("AddAnalysisTaskMixInfo.C");
-   AddAnalysisTaskMixInfo(format, useMC, opts);
-
    // add Log Handler
-//    gROOT->LoadMacro("AddLogHanlder.C");
-//    AddLogHanlder(mainInputHandler);
+   gROOT->LoadMacro("AddLogHanlder.C");
+   AddLogHanlder(mainInputHandler);
 
    // adds all tasks
    gROOT->LoadMacro("AddAnalysisTaskAllRsn.C");

@@ -27,44 +27,39 @@ ClassImp(AliRsnCutValue)
 //_________________________________________________________________________________________________
 AliRsnCutValue::AliRsnCutValue() :
    AliRsnCut(),
-   fValue(),
-   fPairDef(0x0)
+   fUseMC(kFALSE),
+   fValue(0x0)
 {
 //
 // Default constructor.
 //
-
-   SetTargetType(fValue.GetTargetType());
 }
 
 //_________________________________________________________________________________________________
 AliRsnCutValue::AliRsnCutValue
-(const char *name, AliRsnValue::EValueType type, Double_t min, Double_t max, AliRsnPairDef *pd) :
+(const char *name, Double_t min, Double_t max, Bool_t useMC) :
    AliRsnCut(name, AliRsnTarget::kTargetTypes, min, max),
-   fValue(Form("val_%s", name), type),
-   fPairDef(pd)
+   fUseMC(useMC),
+   fValue(0x0)
 {
 //
 // Main constructor.
-// Recalls the setter for the value type of the AliRsnValue data member,
-// which determines also the type of target to be expected
+// Sets the AliRsnValue data member accordingly to arguments passed here.
+// NOTE: if the value needs a support object, it must be passed separately
+//       using the GetValueObje() of this class
 //
-
-   SetTargetType(fValue.GetTargetType());
 }
 
 //_________________________________________________________________________________________________
 AliRsnCutValue::AliRsnCutValue(const AliRsnCutValue& copy) :
    AliRsnCut(copy),
-   fValue(copy.fValue),
-   fPairDef(copy.fPairDef)
+   fUseMC(copy.fUseMC),
+   fValue(copy.fValue)
 {
 //
 // Copy constructor.
 // Does not duplicate memory allocation.
 //
-
-   SetTargetType(fValue.GetTargetType());
 }
 
 //_________________________________________________________________________________________________
@@ -76,10 +71,8 @@ AliRsnCutValue& AliRsnCutValue::operator=(const AliRsnCutValue& copy)
 //
 
    AliRsnCut::operator=(copy);
-
-   fValue   = copy.fValue;
-   fPairDef = copy.fPairDef;
-   SetTargetType(fValue.GetTargetType());
+   fUseMC = copy.fUseMC;
+   fValue = copy.fValue;
 
    return (*this);
 }
@@ -92,12 +85,14 @@ Bool_t AliRsnCutValue::IsSelected(TObject *object)
 // Calls the AliRsnValue::Eval() method and then checks its output.
 //
 
-   // make sure that target of this object matches that
-   // of the inserted value object
-   SetTargetType(fValue.GetTargetType());
+   // skip cut if value is not initialized
+   if (!fValue) return kTRUE;
+
+   // match target types
+   SetTargetType(fValue->GetTargetType());
 
    // try to compute values
-   Bool_t success = fValue.Eval(object);
+   Bool_t success = fValue->Eval(object, fUseMC);
 
    // check success
    if (!success) {
@@ -106,7 +101,7 @@ Bool_t AliRsnCutValue::IsSelected(TObject *object)
    }
 
    // check in range
-   fCutValueD = fValue.GetComputedValue();
+   fCutValueD = fValue->GetComputedValue();
    return OkRangeD();
 }
 
@@ -118,6 +113,6 @@ void AliRsnCutValue::Print(const Option_t *) const
 //
 
    AliInfo(Form("Cut name   : %s", GetName()));
-   AliInfo(Form("Cut value  : %s", fValue.GetValueTypeName()));
+   AliInfo(Form("Cut value  : %s", fValue->GetName()));
    AliInfo(Form("Cut range  : %f - %f", fMinD, fMaxD));
 }

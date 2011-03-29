@@ -10,18 +10,19 @@
 #include <TTimeStamp.h>
 #endif
 
-void DoFileMergeProof(TString alienFindCmd = "-l 100 /alice/cern.ch/user/m/mvala/work/rsn/2011-02-16/03_step_1/output/ root_archive.zip",
+void DoFileMergeProof(TString alienFindCmd = "-l 100 /alice/cern.ch/user/m/mvala/work/rsn/2011-02-16/03_step_100_no_vz/output/ root_archive.zip",
                       TString filesInZip = "AnalysisResults.root",
                       TString proof = "skaf.saske.sk",
                       TString proofOpt = "", TString outputSE = "prf000-iep-grid.saske.sk:11094")
 {
 
+   TProof::AddEnvVar("GCLIENT_SERVER_LIST", "pcapiserv03.cern.ch:10000");
    TProof *p = TProof::Open(proof.Data(), proofOpt.Data());
    if (!p) {
       Printf("Error opending %s !!!", proof.Data());
       return;
    }
-
+//    gProof->SetParameter ( "PROOF_UseMergers", -1 );
    TString usernameLetter = p->GetUser();
    usernameLetter.Remove(1, usernameLetter.Length());
 
@@ -51,12 +52,14 @@ void DoFileMergeProof(TString alienFindCmd = "-l 100 /alice/cern.ch/user/m/mvala
    Printf("Creating AliEn connection on workers (it may take while)");
 
    Bool_t useAliRoot = kTRUE;
+   useAliRoot = kFALSE;
 
    if (useAliRoot) AddAlirootSupport(p);
    else p->Exec("TGrid::Connect(\"alien:\/\/\");");
 
+   p->SetParameter("PROOF_UseMergers", -1);
 
-   p->AddInput(new TNamed("PROOF_OUTPUTFILE", Form("root://%s/%s", outputSE.Data(), xrdDir.Data())));
+//    p->AddInput(new TNamed("PROOF_OUTPUTFILE", Form("root://%s/%s", outputSE.Data(), xrdDir.Data())));
 
    if (!filesInZip.IsNull()) p->AddInput(new TNamed("PROOF_USE_ARCHIVE", filesInZip.Data()));
 
@@ -66,7 +69,7 @@ void DoFileMergeProof(TString alienFindCmd = "-l 100 /alice/cern.ch/user/m/mvala
    if (proof.IsNull()) p->AddInput(new TNamed("PROOF_IS_LITE", "YES"));
 
    // use TFileCp instead of TProofOutputFile
-   p->AddInput(new TNamed("PROOF_USE_TFILECP", "YES"));
+//    p->AddInput(new TNamed("PROOF_USE_TFILECP", "YES"));
 
    p->AddInput(new TNamed("PROOF_MERGE_NUM", "10"));
 
@@ -84,7 +87,7 @@ void DoFileMergeProof(TString alienFindCmd = "-l 100 /alice/cern.ch/user/m/mvala
 
 }
 
-void AddAlirootSupport(TProof *p, TString alirootVer = "VO_ALICE@AliRoot::v4-21-14-AN")
+void AddAlirootSupport(TProof *p, TString alirootVer = "VO_ALICE@AliRoot::v4-21-17-AN")
 {
 
    TList *list = new TList();

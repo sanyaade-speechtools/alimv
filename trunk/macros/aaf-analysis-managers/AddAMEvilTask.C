@@ -37,7 +37,7 @@ void AddAMEvilTask(TString analysisSource = "proof", TString analysisMode = "tes
       if (!InputHandlerSetup(format, useMC)) return;
    }
 
-   gROOT->LoadMacro("AliAnalysisTaskEvil.cxx++g");
+   gROOT->LoadMacro("AliAnalysisTaskEvil.cxx+g");
 
    // load and run AddTask macro
    gROOT->LoadMacro("AddEvilAnalysisTask.C");

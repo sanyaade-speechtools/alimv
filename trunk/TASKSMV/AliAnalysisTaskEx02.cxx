@@ -36,8 +36,9 @@
 #include "AliAODEvent.h"
 
 #include "AliAnalysisTaskEx02.h"
-#include <AliMultiInputEventHandler.h>
-#include <AliMixInputEventHandler.h>
+#include "AliMultiInputEventHandler.h"
+#include "AliMixInputEventHandler.h"
+#include "AliPIDResponse.h"
 
 ClassImp(AliAnalysisTaskEx02)
 
@@ -47,18 +48,18 @@ AliAnalysisTaskEx02::AliAnalysisTaskEx02() // All data members should be initial
      fOutput(0),
      fHistPt(0),
      fHistEta(0),
-     fHistMultiDiff(0) // The last in the above list should not have a comma after it
+     fHistMultiDiff(0)  // The last in the above list should not have a comma after it
 {
    // Dummy constructor ALWAYS needed for I/O.
 }
 
 //________________________________________________________________________
-AliAnalysisTaskEx02::AliAnalysisTaskEx02(const char *name) // All data members should be initialised here
+AliAnalysisTaskEx02::AliAnalysisTaskEx02(const char *name)  // All data members should be initialised here
    : AliAnalysisTaskSE(name),
      fOutput(0),
      fHistPt(0),
      fHistEta(0),
-     fHistMultiDiff(0) // The last in the above list should not have a comma after it
+     fHistMultiDiff(0)  // The last in the above list should not have a comma after it
 {
    // Constructor
    // Define input and output slots here (never in the dummy constructor)
@@ -111,7 +112,7 @@ void AliAnalysisTaskEx02::UserCreateOutputObjects()
    fOutput->Add(fHistEta);
    fOutput->Add(fHistMultiDiff);
    // NEW HISTO added to fOutput here
-   PostData(1, fOutput); // Post data for ALL output slots >0 here, to get at least an empty histogram
+   PostData(1, fOutput);  // Post data for ALL output slots >0 here, to get at least an empty histogram
 }
 
 //________________________________________________________________________
@@ -126,11 +127,14 @@ void AliAnalysisTaskEx02::UserExec(Option_t *)
    if (inEvHMainMulti) {
       AliInputEventHandler *inEvMain = dynamic_cast<AliInputEventHandler *>(inEvHMainMulti->GetFirstInputEventHandler());
 
-      AliESDEvent* esd = dynamic_cast<AliESDEvent*>(inEvMain->GetEvent());
+      AliPIDResponse *pidResponse = inEvMain->GetPIDResponse();
+      AliInfo(Form("pidResponse = %p", pidResponse));
+
+      AliESDEvent *esd = dynamic_cast<AliESDEvent *>(inEvMain->GetEvent());
       if (esd) {
          Loop(esd);
       } else {
-         AliAODEvent* aod = dynamic_cast<AliAODEvent*>(inEvMain->GetEvent());
+         AliAODEvent *aod = dynamic_cast<AliAODEvent *>(inEvMain->GetEvent());
          if (aod) Loop(aod);
       }
    }
@@ -138,7 +142,7 @@ void AliAnalysisTaskEx02::UserExec(Option_t *)
    PostData(1, fOutput);
 }
 
-void AliAnalysisTaskEx02::UserExecMix(Option_t*)
+void AliAnalysisTaskEx02::UserExecMix(Option_t *)
 {
 
    AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
@@ -155,10 +159,26 @@ void AliAnalysisTaskEx02::UserExecMix(Option_t*)
       AliInputEventHandler *ihMainCurrent = inEvHMain->GetFirstInputEventHandler();
       AliMultiInputEventHandler *inEvHMixedCurrent = mixEH->GetFirstMultiInputHandler();
       AliInputEventHandler *ihMixedCurrent = inEvHMixedCurrent->GetFirstInputEventHandler();
-      AliESDEvent *esdEvent = dynamic_cast<AliESDEvent*>(ihMainCurrent->GetEvent());
-      AliESDEvent *esdEventMix = dynamic_cast<AliESDEvent*>(ihMixedCurrent->GetEvent());
-      AliDebug(AliLog::kDebug, Form("Multi=%d MultiMix=%d", esdEvent->GetNumberOfTracks(), esdEventMix->GetNumberOfTracks()));
-      fHistMultiDiff->Fill(TMath::Abs(esdEvent->GetNumberOfTracks() - esdEventMix->GetNumberOfTracks()));
+
+      AliPIDResponse *pidResponse = ihMainCurrent->GetPIDResponse();
+      AliPIDResponse *pidResponseMixed = ihMixedCurrent->GetPIDResponse();
+      AliInfo(Form("pidResponse=%p\tpidResponseMix=%p", pidResponse, pidResponseMixed));
+
+      AliESDEvent *esdEvent = dynamic_cast<AliESDEvent *>(ihMainCurrent->GetEvent());
+      if (esdEvent) {
+         AliESDEvent *esdEventMix = dynamic_cast<AliESDEvent *>(ihMixedCurrent->GetEvent());
+         AliDebug(AliLog::kDebug, Form("Multi=%d MultiMix=%d", esdEvent->GetNumberOfTracks(), esdEventMix->GetNumberOfTracks()));
+         fHistMultiDiff->Fill(TMath::Abs(esdEvent->GetNumberOfTracks() - esdEventMix->GetNumberOfTracks()));
+      } else {
+         AliAODEvent *aodEvent = dynamic_cast<AliAODEvent *>(ihMainCurrent->GetEvent());
+         if (esdEvent) {
+            AliAODEvent *aodEventMix = dynamic_cast<AliAODEvent *>(ihMixedCurrent->GetEvent());
+            AliDebug(AliLog::kDebug, Form("Multi=%d MultiMix=%d", aodEvent->GetNumberOfTracks(), aodEventMix->GetNumberOfTracks()));
+            fHistMultiDiff->Fill(TMath::Abs(aodEvent->GetNumberOfTracks() - aodEventMix->GetNumberOfTracks()));
+         }
+      }
+
+
    }
 
    PostData(1, fOutput);
@@ -170,12 +190,12 @@ void AliAnalysisTaskEx02::Terminate(Option_t *)
    // Draw result to screen, or perform fitting, normalizations
    // Called once at the end of the query
 
-   fOutput = dynamic_cast<TList*>(GetOutputData(1));
+   fOutput = dynamic_cast<TList *>(GetOutputData(1));
    if (!fOutput) { AliError("Could not retrieve TList fOutput"); return; }
 
-   fHistPt = dynamic_cast<TH1F*>(fOutput->FindObject("fHistPt"));
+   fHistPt = dynamic_cast<TH1F *>(fOutput->FindObject("fHistPt"));
    if (!fHistPt) { AliError("Could not retrieve fHistPt"); return;}
-   fHistEta = dynamic_cast<TH1F*>(fOutput->FindObject("fHistEta"));
+   fHistEta = dynamic_cast<TH1F *>(fOutput->FindObject("fHistEta"));
    if (!fHistEta) { AliError("Could not retrieve fHistEta"); return;}
 
    // NEW HISTO should be retrieved from the TList container in the above way,
@@ -189,12 +209,12 @@ void AliAnalysisTaskEx02::Terminate(Option_t *)
    fHistEta->DrawCopy("E");
 }
 
-void AliAnalysisTaskEx02::Loop(AliESDEvent* esd)
+void AliAnalysisTaskEx02::Loop(AliESDEvent *esd)
 {
    // Track loop for reconstructed event
    Int_t ntracks = esd->GetNumberOfTracks();
    for (Int_t i = 0; i < ntracks; i++) {
-      AliESDtrack* esdtrack = esd->GetTrack(i); // pointer to reconstructed to track
+      AliESDtrack *esdtrack = esd->GetTrack(i);  // pointer to reconstructed to track
       if (!esdtrack) {
          AliError(Form("ERROR: Could not retrieve esdtrack %d", i));
          continue;
@@ -208,13 +228,13 @@ void AliAnalysisTaskEx02::LoopESDMC()
    // TODO
 }
 
-void AliAnalysisTaskEx02::Loop(AliAODEvent* aod)
+void AliAnalysisTaskEx02::Loop(AliAODEvent *aod)
 {
 
    // Track loop for reconstructed event
    Int_t ntracks = aod->GetNumberOfTracks();
    for (Int_t i = 0; i < ntracks; i++) {
-      AliAODTrack* aodTrack = aod->GetTrack(i); // pointer to reconstructed to track
+      AliAODTrack *aodTrack = aod->GetTrack(i);  // pointer to reconstructed to track
       if (!aodTrack) {
          AliError(Form("ERROR: Could not retrieve esdtrack %d", i));
          continue;
@@ -228,3 +248,9 @@ void AliAnalysisTaskEx02::LoopAODMC()
 {
    // TODO
 }
+
+
+
+
+
+

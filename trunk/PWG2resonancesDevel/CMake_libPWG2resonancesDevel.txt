@@ -1,6 +1,7 @@
 # -*- mode: cmake -*-
 
 set(SRCS
+AliRsnPIDManager.cxx
 AliRsnInputHandler.cxx
 AliRsnAnalysisTaskCommon.cxx
 )
