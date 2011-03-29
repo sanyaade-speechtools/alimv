@@ -4,8 +4,10 @@
 # The extension is already found.  Any number of sources could be listed here.
 
 set(INCLUDE_DIRECTORIES
+${CMAKE_SOURCE_DIR}/PWG2resonances/RESONANCES
 ${CMAKE_SOURCE_DIR}/PWG2resonancesDevel
 ${ALIROOT_INCLUDE_DIR}
+${ALIROOT_INCLUDE_DIR}../ANALYSIS
 ${ROOT_INCLUDE_DIR}
 )
 

@@ -20,7 +20,7 @@ ClassImp(AliTenderInputEventHandler)
 //_____________________________________________________________________________
 AliTenderInputEventHandler::AliTenderInputEventHandler(const char *name) :
    AliInputEventHandler(name, name),
-   fTender("fakeTender")
+   fTender(0)
 {
 //
 // Default constructor.
@@ -57,8 +57,6 @@ Bool_t AliTenderInputEventHandler::Init(TTree *tree, Option_t *opt)
    // Create event pool if needed
    //
    AliDebug(AliLog::kDebug + 5, Form("<- %p %s", (void *) tree, tree->GetName()));
-
-
 
    DoInit();
 
@@ -115,19 +113,35 @@ void AliTenderInputEventHandler::DoInit()
 {
 
    // TODO connect CORRECT esd handler (event mxing case)
-   AliMultiInputEventHandler *multiH = dynamic_cast<AliMultiInputEventHandler*>(AliAnalysisManager::GetAnalysisManager()->GetInputEventHandler());
-//    AliMultiInputEventHandler *multiH = dynamic_cast<AliMultiInputEventHandler*>(ParentHandler());
+   AliMultiInputEventHandler *multiHMain = dynamic_cast<AliMultiInputEventHandler*>(AliAnalysisManager::GetAnalysisManager()->GetInputEventHandler());
+   AliMultiInputEventHandler *multiH = dynamic_cast<AliMultiInputEventHandler*>(ParentHandler());
 
    AliESDInputHandler*esdH =  dynamic_cast<AliESDInputHandler *>(multiH->GetFirstInputEventHandler());
    if (esdH) {
-      fTender.SetESDhandler(esdH);
+
+      // TODO solve problem with index of tenderIH
+      Int_t indexInMultiHanlder = 1;
+      AliTenderInputEventHandler *tenderIH = dynamic_cast<AliTenderInputEventHandler*>((AliInputEventHandler*)multiHMain->InputEventHandler(indexInMultiHanlder));
+//       AliTenderInputEventHandler *tenderIH = dynamic_cast<AliTenderInputEventHandler*> ((AliInputEventHandler*)multiH->InputEventHandler(indexInMultiHanlder));
+      if (tenderIH) {
+         fTender = tenderIH->GetTender();
+         if (fTender) {
+            AliInfo(Form("Using Tender %s...", fTender->GetName()));
+         } else {
+            AliFatal("fTender is null !!!");
+         }
+      } else {
+         AliFatal("Tender Handler was not found !!!");
+      }
+
+      fTender->SetESDhandler(esdH);
       if (!esdH->GetESDpid()) esdH->SetESDpid(new AliESDpid());
-      TIter next(fTender.GetSupplies());
+      TIter next(fTender->GetSupplies());
       AliTenderSupply *supply;
       while ((supply = (AliTenderSupply*)next())) {
-         supply->SetTender(&fTender);
+         supply->SetTender(fTender);
       }
-      fTender.ConnectInputData();
+      fTender->ConnectInputData();
    } else {
       AliFatal("AliTenderInputEventHandler:No ESD input event handler connected");
    }
@@ -136,13 +150,19 @@ void AliTenderInputEventHandler::DoProcess()
 {
 
 
-   AliESDInputHandler*esdH =  fTender.GetESDhandler();
+   AliESDInputHandler*esdH =  fTender->GetESDhandler();
    if (esdH) {
-      AliDebug(AliLog::kDebug, Form("We have ESD event with %d tracks", fTender.GetEvent()->GetNumberOfTracks()));
+      AliDebug(AliLog::kDebug, Form("We have ESD event with %d tracks", fTender->GetEvent()->GetNumberOfTracks()));
    } else {
       AliFatal("No ESD input event handler connected");
    }
 
-   fTender.UserExec("NoPost");;
+   fTender->UserExec("NoPost");;
 
 }
+
+void AliTenderInputEventHandler::CreateTender(AliTender* tender)
+{
+
+}
+

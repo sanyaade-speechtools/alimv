@@ -6,7 +6,7 @@ PACKAGE = PWG2resonances
 
 PWG2resonances: lib$(PACKAGE).so
 
-ALICEINC      = -I. -I$(ALICE_ROOT)/TOF
+ALICEINC      = -I.
 
 ### define include dir for local case and par case
 ifneq ($(STEERBase_INCLUDE),)

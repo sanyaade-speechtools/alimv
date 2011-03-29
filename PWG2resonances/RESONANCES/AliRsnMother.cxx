@@ -1,49 +1,52 @@
+/**************************************************************************
+ * Copyright(c) 1998-1999, ALICE Experiment at CERN, All rights reserved. *
+ *                                                                        *
+ * Author: The ALICE Off-line Project.                                    *
+ * Contributors are mentioned in the code where appropriate.              *
+ *                                                                        *
+ * Permission to use, copy, modify and distribute this software and its   *
+ * documentation strictly for non-commercial purposes is hereby granted   *
+ * without fee, provided that the above copyright notice appears in all   *
+ * copies and that both the copyright notice and this permission notice   *
+ * appear in the supporting documentation. The authors make no claims     *
+ * about the suitability of this software for any purpose. It is          *
+ * provided "as is" without express or implied warranty.                  *
+ **************************************************************************/
+
+////////////////////////////////////////////////////////////////////////////////
 //
-// Class AliRsnMother
+//  This class implements a candidate resonance. It has two pointers to its
+//  two candidate daughters, whose 4-momenta are combined to obtain the mother
+//  invariant mass and other kinematical quantities.
+//  This class contains also some methods used to compute kinematical relations
+//  between the candidate resonance and other particles.
 //
-// Implementation of a pair of tracks, for several purposes
-// - computing the total 4-momentum & inv. mass for output histos filling
-// - evaluating cut checks on the pair of particles
-// - evaluating any kind of kinematic value over their sum
+//  authors: A. Pulvirenti (alberto.pulvirenti@ct.infn.it)
+//           M. Vala (martin.vala@cern.ch)
 //
-// authors: Martin Vala (martin.vala@cern.ch)
-//          Alberto Pulvirenti (alberto.pulvirenti@ct.infn.it)
-//
+////////////////////////////////////////////////////////////////////////////////
+
 #include <Riostream.h>
 #include <TVector3.h>
+
 #include "AliAODMCParticle.h"
 #include "AliMCParticle.h"
 #include "AliRsnDaughter.h"
-#include "AliRsnPairDef.h"
+#include "AliRsnEvent.h"
+
 #include "AliRsnMother.h"
 
 ClassImp(AliRsnMother)
 
 //_____________________________________________________________________________
-AliRsnMother::AliRsnMother() :
-   fUseMC(kFALSE),
-   fSum(),
-   fSumMC()
-{
-//
-// Constructor.
-// Initializes all variables to meaningless values.
-//
-
-   Int_t i;
-   for (i = 0; i < 2; i++) fDaughter[i] = 0x0;
-}
-
-//_____________________________________________________________________________
 AliRsnMother::AliRsnMother(const AliRsnMother &obj) :
    TObject(obj),
-   fUseMC(obj.fUseMC),
+   fRefEvent(obj.fRefEvent),
    fSum(obj.fSum),
    fSumMC(obj.fSumMC)
 {
 //
 // Copy constructor.
-// Initializes all variables to copy values.
 // Does not duplicate pointers.
 //
 
@@ -56,7 +59,6 @@ AliRsnMother& AliRsnMother::operator=(const AliRsnMother &obj)
 {
 //
 // Assignment operator.
-// Initializes all variables to copy values.
 // Does not duplicate pointers.
 //
 
@@ -66,6 +68,8 @@ AliRsnMother& AliRsnMother::operator=(const AliRsnMother &obj)
    fSumMC = obj.fSumMC;
 
    for (i = 0; i < 2; i++) fDaughter[i] = obj.fDaughter[i];
+
+   fRefEvent = obj.fRefEvent;
 
    return (*this);
 }
@@ -83,16 +87,17 @@ AliRsnMother::~AliRsnMother()
 Int_t AliRsnMother::CommonMother(Int_t &m0, Int_t &m1) const
 {
 //
-// Checks if the two tracks in the pair have the same mother.
-// This can be known if MC info is present.
-// If the mother label is the same, rhe PDG code of the mother is returned,
-// otherwise the method returns 0.
-// In the two arguments passed by reference, the mothers of the two daghters are stored
+// If MC info is available, checks if the two tracks in the pair have the same mother.
+// If the mother label is the same, the function returns the PDG code of mother,
+// otherwise it returns 0.
+// The two arguments passed by reference contain the GEANT labels of the mother
+// of the two particles to which the two daughters point. This is for being able
+// to check if they are really coming from a resonance (indexes >= 0) or not.
 //
 
-   // if MC info is not available, the pairs is not true by default
+   // if MC info is not available, the check can't be done
    if (!fDaughter[0]->GetRefMC() || !fDaughter[1]->GetRefMC()) {
-      AliInfo("Cannot know if the pairs is true or not because MC Info is not present");
+      AliDebug(AliLog::kDebug, "MC Info absent --> cannot check common mother");
       return 0;
    }
 
@@ -111,66 +116,121 @@ Int_t AliRsnMother::CommonMother(Int_t &m0, Int_t &m1) const
          m1 = fDaughter[1]->GetRefMCAOD()->GetMother();
       }
    }
-   if (m0 != m1) return 0;
 
-   // if we reach this point, the two tracks have the same mother
-   // let's check now the PDG code of this common mother
-   return TMath::Abs(fDaughter[0]->GetMotherPDG());
+   // decide the answer depending on the two mother labels
+   if (m0 != m1)
+      return 0;
+   else
+      return TMath::Abs(fDaughter[0]->GetMotherPDG());
 }
 
 //_____________________________________________________________________________
-void AliRsnMother::SetDaughters
-(AliRsnDaughter *d0, Double_t mass0, AliRsnDaughter *d1, Double_t mass1)
+void AliRsnMother::ComputeSum(Double_t mass0, Double_t mass1)
 {
 //
-// Sets the pair defined in this usind tso passed daughters and two masses
-// which will be assigned to them, in order to recompute their 4-momenta
-// and sum them into the datamembers of this object.
+// Sets the masses for the 4-momenta of the daughters and then
+// sums them, taking into account that the space part is set to
+// each of them when the reference object is set (see AliRsnDaughter::SetRef)
 //
-
-   if (d0) fDaughter[0] = d0;
-   if (d1) fDaughter[1] = d1;
-
-   if (!d0 || !d1) return;
 
    fDaughter[0]->SetMass(mass0);
    fDaughter[1]->SetMass(mass1);
 
-   fSum   = fDaughter[0]->P(kFALSE) + fDaughter[1]->P(kFALSE);
-   fSumMC = fDaughter[0]->P(kTRUE)  + fDaughter[1]->P(kTRUE);
+   fSum   = fDaughter[0]->Prec() + fDaughter[1]->Prec();
+   fSumMC = fDaughter[0]->Psim() + fDaughter[1]->Psim();
 }
 
 //_____________________________________________________________________________
 void AliRsnMother::ResetPair()
 {
 //
-// Resets the mother, nullifying all data members
+// Resets the mother, zeroing all data members.
 //
 
    Int_t i;
    for (i = 0; i < 2; i++) fDaughter[i] = 0x0;
+   fRefEvent = 0x0;
 
    fSum  .SetXYZM(0.0, 0.0, 0.0, 0.0);
    fSumMC.SetXYZM(0.0, 0.0, 0.0, 0.0);
 }
 
 //_____________________________________________________________________________
+Double_t AliRsnMother::AngleTo(AliRsnDaughter *track, Bool_t mc)
+{
+//
+// Compute the angle betwee this and the passed object
+// if second argument is kTRUE, use MC values.
+//
+
+   TLorentzVector &me = (mc ? fSumMC : fSum);
+   TLorentzVector &he = track->P(mc);
+
+   return me.Angle(he.Vect());
+}
+
+//_____________________________________________________________________________
+Double_t AliRsnMother::AngleToLeading(Bool_t &success)
+{
+//
+// Compute the angle betwee this and the leading particls
+// of the reference event (if this was set properly).
+// In case one of the two daughters is the leading, return
+// a meaningless value, in order to skip this pair.
+// if second argument is kTRUE, use MC values.
+//
+
+   if (!fRefEvent) {
+      success = kFALSE;
+      return -99.0;
+   }
+
+   Int_t id1 = fDaughter[0]->GetID();
+   Int_t id2 = fDaughter[1]->GetID();
+   Int_t idL = fRefEvent->GetLeadingParticleID();
+
+   if (id1 == idL || id2 == idL) {
+      success = kFALSE;
+      return -99.0;
+   }
+
+   AliRsnDaughter leading = fRefEvent->GetDaughter(idL);
+   AliVParticle  *ref     = leading.GetRef();
+   Double_t       angle   = ref->Phi() - fSum.Phi();
+
+   //return angle w.r.t. leading particle in the range -pi/2, 3/2pi
+   while (angle >= 1.5 * TMath::Pi()) angle -= 2 * TMath::Pi();
+   while (angle < -0.5 * TMath::Pi()) angle += 2 * TMath::Pi();
+   success = kTRUE;
+
+   return angle;
+}
+
+//_____________________________________________________________________________
 Double_t AliRsnMother::CosThetaStar(Bool_t first, Bool_t useMC)
 {
+//
+// Computes the cosine of theta*, which is the angle of one of the daughters
+// with respect to the total momentum of the resonance, in its rest frame.
+// The arguments are needed to choose which of the daughters one want to use
+// and if reconstructed or MC momentum must be used.
+// [Contribution from Z. Feckova]
+//
+
    TLorentzVector mother    = (useMC ? fSumMC : fSum);
-   TLorentzVector daughter0 = (first ? fDaughter[0]->P() : fDaughter[1]->P());
-   TLorentzVector daughter1 = (first ? fDaughter[1]->P() : fDaughter[0]->P());
+   TLorentzVector daughter0 = (first ? fDaughter[0]->P(useMC) : fDaughter[1]->P(useMC));
+   TLorentzVector daughter1 = (first ? fDaughter[1]->P(useMC) : fDaughter[0]->P(useMC));
    TVector3 momentumM(mother.Vect());
    TVector3 normal(mother.Y() / momentumM.Mag(), -mother.X() / momentumM.Mag(), 0.0);
 
    // Computes first the invariant mass of the mother
-   Double_t mass0            = fDaughter[0]->P().M();
-   Double_t mass1            = fDaughter[1]->P().M();
-   Double_t p0               = daughter0.Vect().Mag();
-   Double_t p1               = daughter1.Vect().Mag();
-   Double_t E0               = TMath::Sqrt(mass0 * mass0 + p0 * p0);
-   Double_t E1               = TMath::Sqrt(mass1 * mass1 + p1 * p1);
-   Double_t MotherMass       = TMath::Sqrt((E0 + E1) * (E0 + E1) - (p0 * p0 + 2.0 * daughter0.Vect().Dot(daughter1.Vect()) + p1 * p1));
+   Double_t mass0      = fDaughter[0]->P(useMC).M();
+   Double_t mass1      = fDaughter[1]->P(useMC).M();
+   Double_t p0         = daughter0.Vect().Mag();
+   Double_t p1         = daughter1.Vect().Mag();
+   Double_t E0         = TMath::Sqrt(mass0 * mass0 + p0 * p0);
+   Double_t E1         = TMath::Sqrt(mass1 * mass1 + p1 * p1);
+   Double_t MotherMass = TMath::Sqrt((E0 + E1) * (E0 + E1) - (p0 * p0 + 2.0 * daughter0.Vect().Dot(daughter1.Vect()) + p1 * p1));
    MotherMass = fSum.M();
 
    // Computes components of beta
@@ -205,7 +265,7 @@ void AliRsnMother::PrintInfo(const Option_t * /*option*/) const
 }
 
 //_____________________________________________________________________________
-Bool_t AliRsnMother::CheckPair() const
+Bool_t AliRsnMother::CheckPair(Bool_t checkMC) const
 {
 //
 // Checks that the pair is well initialized:
@@ -218,7 +278,7 @@ Bool_t AliRsnMother::CheckPair() const
       return kFALSE;
    }
 
-   if (fUseMC) {
+   if (checkMC) {
       if (fDaughter[0]->GetRefMC() == 0x0 || fDaughter[1]->GetRefMC() == 0x0) {
          AliError("Required MC info but not all MC refs are available");
          return kFALSE;
@@ -226,43 +286,4 @@ Bool_t AliRsnMother::CheckPair() const
    }
 
    return kTRUE;
-}
-
-//_____________________________________________________________________________
-Bool_t AliRsnMother::MatchesDef(AliRsnPairDef *def)
-{
-//
-// Checks if the daughters, in any order, do match a given decay channel,
-// using the specified identification method, which can be the 'true' one
-// or the 'realistic' one only.
-//
-
-   if (!def) return kFALSE;
-   if (!fDaughter[0]->GetRefMC()) return kFALSE;
-   if (!fDaughter[1]->GetRefMC()) return kFALSE;
-
-   Bool_t decayMatch = kFALSE;
-   Int_t  pdg[2], ref[2];
-   pdg[0] = fDaughter[0]->GetPDG();
-   pdg[1] = fDaughter[1]->GetPDG();
-   ref[0] = TMath::Abs(AliPID::ParticleCode(def->GetPID(0)));
-   ref[1] = TMath::Abs(AliPID::ParticleCode(def->GetPID(1)));
-
-   // check #1:
-   // if first member of pairDef has same sign as first member of this,
-   // daughter[0] perfect PID must match first member of pairDef
-   // daughter[1] perfect PID must march second member of pairDef
-   if (fDaughter[0]->IsSign(def->GetCharge(0)) && fDaughter[1]->IsSign(def->GetCharge(1))) {
-      decayMatch = (pdg[0] == ref[0] && pdg[1] == ref[1]);
-   }
-
-   // check #2:
-   // if first member of pairDef has same sign as second member of this,
-   // daughter[0] perfect PID must match second member of pairDef
-   // daughter[1] perfect PID must march first member of pairDef
-   if (fDaughter[1]->IsSign(def->GetCharge(0)) && fDaughter[0]->IsSign(def->GetCharge(1))) {
-      decayMatch = (pdg[0] == ref[1] && pdg[1] == ref[0]);
-   }
-
-   return (decayMatch && (CommonMother() == def->GetMotherPDG()));
 }

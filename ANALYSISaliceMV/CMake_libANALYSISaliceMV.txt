@@ -3,6 +3,9 @@
 set(SRCS
 AliLogInputHandler.cxx
 AliTenderInputEventHandler.cxx
+AliPIDResponseInputHandler.cxx
+AliCentralityInputHandler.cxx
+AliEmptyInputHandler.cxx
 )
 
 # fill list of header files from list of source files

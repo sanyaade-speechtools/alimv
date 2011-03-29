@@ -10,7 +10,7 @@ AliAnalysisGrid* SetupAnalysisPlugin(TString analysisMode)
    plugin->SetRunMode(analysisMode.Data());  // VERY IMPORTANT - DECRIBED BELOW
 
    // seutp aliroot version
-   plugin->SetAliROOTVersion("v4-21-15-AN");
+   plugin->SetAliROOTVersion("v4-21-18-AN");
 
    // adds Proof setting
    MySetupAnalysisPluginProof(plugin);
@@ -34,11 +34,9 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin)
 // Dataset to be used
 
    // aod
-//     plugin->SetProofDataSet("/PWG2/mvala/LHC10b_000115401_p2_a017#aodTree");
-
-//    plugin->SetProofDataSet("/alice/data/LHC10b_000115322_p2#esdTree");
-//     plugin->SetProofDataSet("/alice/data/LHC10h_000137366_p1#esdTree");
-//    plugin->SetProofDataSet("/alice/data/LHC10b_000115401_p2#esdTree");
+   plugin->SetProofDataSet("/PWG2/mvala/LHC10b_000115401_p2_a017#aodTree");
+//    plugin->SetProofDataSet("/alice/data/LHC10h_000137366_p2#esdTree");
+   plugin->SetProofDataSet("/alice/data/LHC10b_000115401_p2#esdTree");
 //     plugin->SetProofDataSet("/alice/sim/LHC10h9_000137366#esdTree");
 //       plugin->SetProofDataSet("/alice/sim/LHC10a12_104157#esdTree");
 //       plugin->SetProofDataSet("/alice/sim/LHC10g2d_130844#esdTree");
@@ -46,7 +44,7 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin)
 //     plugin->SetProofDataSet("/alice/data/LHC10h_000137161_p1_plusplusplus");
 
 //     plugin->SetProofDataSet("ds.txt");
-   plugin->SetProofDataSet("mysim.txt");
+//    plugin->SetProofDataSet("mysim.txt");
 //     plugin->SetProofDataSet("LHC10b.txt");
 //     plugin->SetProofDataSet("/default/alicaf/LHC10a20_140500");
 
@@ -54,12 +52,12 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin)
    // May need to reset proof. Supported modes: 0-no reset, 1-soft, 2-hard
    plugin->SetProofReset(0);
 // May limit the number of workers per slave. If used with SetNproofWorkers, SetParallel(nproofworkers) will be called after connection
-//   plugin->SetNproofWorkers(1);
+//   plugin->SetNproofWorkers(30);
 //    plugin->SetNproofWorkersPerSlave(1);
 // May request connection to alien upon connection to grid
-   plugin->SetProofConnectGrid(kTRUE);
+//    plugin->SetProofConnectGrid(kTRUE);
 
-//    plugin->SetNproofWorkers(5);
+//    plugin->SetNproofWorkers(10);
 // May use a specific version of root installed in proof
 //     plugin->SetRootVersionForProof("VO_ALICE@ROOT::v5-27-06a-1");
 // May set the aliroot mode. Check http://aaf.cern.ch/node/83
@@ -69,16 +67,19 @@ void MySetupAnalysisPluginProof(AliAnalysisAlien *plugin)
    plugin->SetClearPackages();
 // Plugin test mode works only providing a file containing test file locations
    plugin->SetFileForTestMode("ESD_vala_LHC10a12.txt");
-//    plugin->SetFileForTestMode("ESD_alien_test.txt");
-   plugin->SetFileForTestMode("ESD_alien_test_local.txt");
-   plugin->SetFileForTestMode("ESD_vala_LHC10b_3_files.txt");
+   plugin->SetFileForTestMode("ESD_alien_test.txt");
+//    plugin->SetFileForTestMode("ESD_alien_test_local.txt");
+//    plugin->SetFileForTestMode("ESD_vala_LHC10b_3_files.txt");
 
-   plugin->SetFileForTestMode("VALA_EXT3_ESD_LHC10b.txt");
+//    plugin->SetFileForTestMode("VALA_EXT3_ESD_LHC10b.txt");
 //    plugin->SetFileForTestMode("VALA_EXT3_ESD_MC_LHC10d4.txt");
 //    plugin->SetFileForTestMode("VALA_EXT3_AOD_MC_LHC10d4.txt");
 
-	
-
+   plugin->SetFileForTestMode("VALA_ESD_LHC10b.txt");
+//    plugin->SetFileForTestMode("VALA_ESD_LHC10h.txt");
+//    plugin->SetFileForTestMode("VALA_ESD_MC_LHC10d4.txt");
+//    plugin->SetFileForTestMode("VALA_AOD_MC_LHC10d4.txt");
+//    plugin->SetFileForTestMode("VALA_AOD_40_LHC10h.txt");
 
 //     plugin->SetFileForTestMode("AOD_vala_LHC10b.txt");
 //    plugin->SetFileForTestMode("AOD_vala_LHC10b_zip.txt");
@@ -90,7 +91,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
 {
 
    plugin->SetAPIVersion("V1.1x");
-   plugin->SetROOTVersion("v5-27-06d");
+   plugin->SetROOTVersion("v5-28-00a");
 //    plugin->SetAliROOTVersion("v4-20-13-AN");
    plugin->SetExecutableCommand("aliroot -b -q");
 
@@ -124,6 +125,14 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
 // //     runs = "120829,120825,120824,120823,120822,120821,120820,120758,120750";
 //    plugin->SetSplitMaxInputFileNumber(10);
 
+   plugin->SetGridDataDir("/alice/data/2010/LHC10h");
+   plugin->SetDataPattern("*ESDs/pass2/*ESDs.root"); // real data check reco pass and data base directory
+   plugin->SetRunPrefix("000");   // real data
+   runs = "137366";
+//    runs = "137366, 138200, 139172";
+   plugin->SetSplitMaxInputFileNumber(100);
+
+
    // AOD
 //     runs = "117220";
    TObjArray* array = runs.Tokenize(",");
@@ -150,7 +159,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
 //   plugin->AddDataFile("/alice/data/2008/LHC08c/000057657/raw/Run57657.Merged.RAW.tag.root");
 
 // Define alien work directory where all files will be copied. Relative to alien $HOME.
-   plugin->SetGridWorkingDir("work/rsn/2011-02-16/03_step_100_no_vz");
+   plugin->SetGridWorkingDir("work/rsn/PbPb/0001/");
 // Declare alien output directory. Relative to working directory.
    plugin->SetGridOutputDir("output"); // In this case will be $HOME/work/output
 // Declare the analysis source files names separated by blancs. To be compiled runtime

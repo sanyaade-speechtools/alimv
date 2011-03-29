@@ -1,61 +1,50 @@
-//
-// Class AliRsnPairDef
-//
-// Defines a decay channel for a resonance,
-// resulting in a specified PDG code for the mother,
-// and the particle type for the daughters, defined
-// according to the internal PID format of the package
-//
-// author: A. Pulvirenti (alberto.pulvirenti@ct.infn.it)
-//
-
 #ifndef ALIRSNPAIRDEF_H
 #define ALIRSNPAIRDEF_H
 
-#include "AliPID.h"
-#include "AliRsnDaughter.h"
+/* Copyright(c) 1998-1999, ALICE Experiment at CERN, All rights reserved. *
+ * See cxx source for full Copyright notice                               */
 
-class AliRsnDaughter;
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Resonance decay tree definition.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+#include "AliRsnDaughter.h"
+#include "AliRsnDaughterDef.h"
 
 class AliRsnPairDef : public TObject {
 public:
 
    AliRsnPairDef();
-   AliRsnPairDef(AliPID::EParticleType type1, Char_t sign1, AliPID::EParticleType type2, Char_t sign2, Int_t motherPDG = 0, Double_t motherMass = 0.0);
+   AliRsnPairDef(EPARTYPE type1, Char_t ch1, EPARTYPE type2, Char_t ch2, Int_t motherPDG = 0, Double_t motherMass = 0.0);
+   AliRsnPairDef(AliRsnDaughter::ESpecies type1, Char_t ch1, AliRsnDaughter::ESpecies type2, Char_t ch2, Int_t motherPDG = 0, Double_t motherMass = 0.0);
    AliRsnPairDef(const AliRsnPairDef &copy);
    const AliRsnPairDef& operator= (const AliRsnPairDef &copy);
    virtual ~AliRsnPairDef() { }
 
-   // getters
+   virtual const char*      GetName()       const {return Form("%s_%s", fDef1.GetName(), fDef2.GetName());}
    Int_t                    GetMotherPDG()  const {return fMotherPDG;}
    Double_t                 GetMotherMass() const {return fMotherMass;}
-   Double_t                 GetMass(Int_t i) const {if (i >= 0 && i < 2) return fMass[i]; else return 0.0;}
-   Char_t                   GetCharge(Int_t i) const {if (i >= 0 && i < 2) return fCharge[i]; else return 0;}
-   Short_t                  GetChargeShort(Int_t i) const {if (GetCharge(i) == '+') return 1; else if (GetCharge(i) == '-') return -1; else return 0;}
-   AliPID::EParticleType    GetPID(Int_t i) const {if (i >= 0 && i < 2) return fPID[i]; else return AliPID::kUnknown;}
-   AliRsnDaughter::ERefType GetDaughterType(Int_t i) {if (i >= 0 && i < 2) return fDaughterType[i]; else return AliRsnDaughter::kNoType;}
-   const char*              GetPairName() const;
+   AliRsnDaughterDef&       GetDef1()             {return fDef1;}
+   AliRsnDaughterDef&       GetDef2()             {return fDef2;}
+   AliRsnDaughterDef&       GetDef(Int_t i)       {if (i < 1) return GetDef1(); else return GetDef2();}
 
-   // setters
-   void   SetMotherPDG(Int_t pdg) {fMotherPDG = pdg;}
-   void   SetMotherMass(Double_t mass) {fMotherMass = mass;}
-   Bool_t SetDaughter(Int_t i, AliPID::EParticleType pid, Char_t charge = 0);
-   Bool_t SetDaughters(AliPID::EParticleType type1, Char_t sign1, AliPID::EParticleType type2, Char_t sign2);
+   void SetMotherPDG(Int_t pdg)                 {fMotherPDG = pdg;}
+   void SetMotherMass(Double_t mass)            {fMotherMass = mass;}
+   void SetDef1(AliRsnDaughterDef *def)         {if (def) fDef1 = (*def);}
+   void SetDef2(AliRsnDaughterDef *def)         {if (def) fDef2 = (*def);}
+   void SetDef(Int_t i, AliRsnDaughterDef *def) {if (!def) return; if (i < 1) fDef1 = (*def); else fDef2 = (*def);}
 
-   // pair information methods
-   Bool_t IsLikeSign() const {return (fCharge[0] == fCharge[1]);}
-   Bool_t HasEqualPID() const {return (fPID[0] == fPID[1]);}
+   Bool_t IsLikeSign()  const {return (fDef1.GetChargeC() == fDef2.GetChargeC());}
+   Bool_t HasEqualPID() const {return (fDef1.GetPID() == fDef2.GetPID());}
 
 private:
 
-   // pair parameters
-   Double_t                  fMotherMass;      // nominal mass of true mother
-   Int_t                     fMotherPDG;       // PDG code of true mother (if known)
-
-   Double_t                  fMass[2];         // mass of particles
-   Char_t                    fCharge[2];       // charge of particles
-   AliPID::EParticleType     fPID[2];          // PID of particles
-   AliRsnDaughter::ERefType  fDaughterType[2]; // object type (track/V0)
+   Double_t          fMotherMass;  // nominal mass of true mother
+   Int_t             fMotherPDG;   // PDG code of true mother (if known)
+   AliRsnDaughterDef fDef1;        // definitions for daughter #1 (see class)
+   AliRsnDaughterDef fDef2;        // definitions for daughter #2 (see class)
 
    // ROOT dictionary
    ClassDef(AliRsnPairDef, 1)

@@ -34,14 +34,17 @@ public:
    virtual Bool_t  Notify();
    virtual Bool_t  Notify(const char *path);
 
-   AliTender *GetTender() { return &fTender;}
+   AliTender *GetTender() { return fTender;}
+   void SetTender(AliTender*tender) { fTender = tender;}
 
    void DoInit();
    void DoProcess();
 
 private:
 
-   AliTender fTender;
+   AliTender *fTender;
+
+   void CreateTender(AliTender *tender);
 
    AliTenderInputEventHandler(const AliTenderInputEventHandler& handler);
    AliTenderInputEventHandler &operator=(const AliTenderInputEventHandler &handler);

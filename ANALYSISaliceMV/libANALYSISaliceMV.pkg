@@ -2,7 +2,9 @@
 
 SRCS = AliLogInputHandler.cxx \
 AliTenderInputEventHandler.cxx \
-
+AliPIDResponseInputHandler.cxx \
+AliCentralityInputHandler.cxx \
+AliEmptyInputHandler.cxx
 
 HDRS:= $(SRCS:.cxx=.h) 
 

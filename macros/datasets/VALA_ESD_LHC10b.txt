@@ -1,0 +1,3 @@
+/cern/data/alice/data/2010/LHC10b/000115401/ESDs/pass2/10000115401041.70/root_archive.zip#AliESDs.root
+/cern/data/alice/data/2010/LHC10b/000115401/ESDs/pass2/10000115401041.80/root_archive.zip#AliESDs.root
+/cern/data/alice/data/2010/LHC10b/000115401/ESDs/pass2/10000115401041.90/root_archive.zip#AliESDs.root
