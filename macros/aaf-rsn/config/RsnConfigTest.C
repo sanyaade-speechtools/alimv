@@ -1,3 +1,6 @@
+#ifndef __CINT__
+#include <PWG2resonances/RESONANCES/AliRsnListOutput.h>
+#endif
 Bool_t RsnConfigTest
 (
    AliRsnAnalysisTask *task,
@@ -90,9 +93,10 @@ void AddPairOutput(AliRsnLoopPair *pair)
    AliRsnValueStd *axisPt = new AliRsnValueStd("PT", AliRsnValueStd::kPairPt     , 0.0, 5.0, 0.1  );
      
    // output: 2D histogram of inv. mass vs. pt
-   AliRsnListOutput *outPair = new AliRsnListOutput("pair", AliRsnListOutput::kHistoDefault);
+//    AliRsnListOutput *outPair = new AliRsnListOutput("pair", AliRsnListOutput::kHistoDefault);
+   AliRsnListOutput *outPair = new AliRsnListOutput("pair", AliRsnListOutput::kHistoSparse);
    outPair->AddValue(axisIM);
-//    outPair->AddValue(axisPt);
+   outPair->AddValue(axisPt);
    
    // add outputs to loop
    pair->AddOutput(outPair);

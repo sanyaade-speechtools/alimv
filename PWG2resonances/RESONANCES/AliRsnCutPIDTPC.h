@@ -55,7 +55,7 @@ private:
    AliESDpid      *fESDpid;         //! ESD PID object
    AliAODpidUtil  *fAODpid;         //! AOD PID object
    Double_t        fBB[5];          //  Bethe-Bloch parameters
-
+   
 
    ClassDef(AliRsnCutPIDTPC, 1)
 };

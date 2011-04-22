@@ -25,14 +25,14 @@ public:
    TEntryList*   GetSelected(Int_t i, Char_t charge);
    TEntryList*   GetSelected(Int_t i, Short_t charge);
    void          ScanEvent(AliRsnEvent *ev);
-
+   
    virtual void  Print(Option_t* option = "") const;
 
 private:
 
    TClonesArray fCutSetsN;        // cuts for neutral daughters
    TClonesArray fCutSetsC;        // cuts for charged daughters (usually, the same)
-
+   
    TClonesArray fEntryListsN;     // entry lists for neutrals
    TClonesArray fEntryListsP;     // entry lists for charged (one per sign)
    TClonesArray fEntryListsM;     // entry lists for charged (one per sign)

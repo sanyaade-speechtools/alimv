@@ -33,6 +33,7 @@ ClassImp(AliRsnListOutput)
 //________________________________________________________________________________________
 AliRsnListOutput::AliRsnListOutput(const char *name, AliRsnListOutput::EOut type) :
    TNamed(name, ""),
+   fSkipFailed(kTRUE),
    fType(type),
    fSteps(0),
    fValues(0),
@@ -51,6 +52,7 @@ AliRsnListOutput::AliRsnListOutput(const char *name, AliRsnListOutput::EOut type
 //________________________________________________________________________________________
 AliRsnListOutput::AliRsnListOutput(const AliRsnListOutput &copy) :
    TNamed(copy),
+   fSkipFailed(copy.fSkipFailed),
    fType(copy.fType),
    fSteps(copy.fSteps),
    fValues(copy.fValues),
@@ -78,6 +80,7 @@ const AliRsnListOutput& AliRsnListOutput::operator=(const AliRsnListOutput& copy
 
    TNamed::operator=(copy);
 
+   fSkipFailed = copy.fSkipFailed;
    fType = copy.fType;
    fSteps = copy.fSteps;
    fValues = copy.fValues;
@@ -150,7 +153,7 @@ Bool_t AliRsnListOutput::Init(const char *prefix, TList *list)
       AliInfo(Form("NValues = %d > 3 --> cannot use a normal histogram, need to use a sparse", fNValues));
       fType = kHistoSparse;
    }
-
+   
    // resize the output array
    fArray.Set(fNValues);
 
@@ -166,7 +169,7 @@ Bool_t AliRsnListOutput::Init(const char *prefix, TList *list)
       name += '_';
       name += val->GetName();
    }
-
+   
    // allowed objects
    TObject *object = 0x0;
 
@@ -188,7 +191,7 @@ Bool_t AliRsnListOutput::Init(const char *prefix, TList *list)
       default:
          AliWarning("Wrong type output or initialization failure");
    }
-
+   
    if (object) {
       //AliInfo(Form("[%s]: initializing output '%s' (obj name = '%s') with %d values and format %d [%s]", GetName(), name.Data(), object->GetName(), fNValues, fType, object->ClassName()));
       fList = list;
@@ -220,7 +223,7 @@ TH1* AliRsnListOutput::CreateHistogram(const char *name)
       nbins[i] = GetValue(i)->GetArray().GetSize() - 1;
       array[i] = GetValue(i)->GetArray();
    }
-
+   
    TH1 *hist = 0x0;
 
    // create histogram depending on the number of axes
@@ -266,7 +269,7 @@ THnSparseF* AliRsnListOutput::CreateHistogramSparse(const char *name)
    hist->Sumw2();
 
    // update the various axes using the definitions given in the array of axes here
-   for (Int_t i = 0; i < fNValues; i++) {
+   for (i = 0; i < fNValues; i++) {
       hist->GetAxis(i)->Set(nbins[i], array[i].GetArray());
    }
 
@@ -334,8 +337,8 @@ Bool_t AliRsnListOutput::Fill(TObject *target, Int_t step)
       globalOK = globalOK && val->Eval(target);
       fArray[i] = (Double_t)val->GetComputedValue();
    }
-   if (!globalOK) return kFALSE;
-
+   if (!globalOK && fSkipFailed) return kFALSE;
+   
    // retrieve object
    if (!fList || fIndex < 0) {
       AliError("List not initialized");
@@ -346,7 +349,7 @@ Bool_t AliRsnListOutput::Fill(TObject *target, Int_t step)
       AliError("Null pointer");
       return kFALSE;
    }
-
+   
    // check
    //AliInfo(Form("[%s] Object index, name, type = %d, %s (%s)", GetName(), fIndex, obj->GetName(), obj->ClassName()));
 

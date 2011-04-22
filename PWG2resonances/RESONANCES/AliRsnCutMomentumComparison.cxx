@@ -52,7 +52,7 @@ AliRsnCutMomentumComparison& AliRsnCutMomentumComparison::operator=(const AliRsn
 
    AliRsnCut::operator=(copy);
    fMode = copy.fMode;
-
+   
    return (*this);
 }
 
@@ -71,8 +71,9 @@ Bool_t AliRsnCutMomentumComparison::IsSelected(TObject *object)
    Double_t p2  = fMother->GetDaughter(1)->GetRef()->P();
    Double_t pt1 = fMother->GetDaughter(0)->GetRef()->Pt();
    Double_t pt2 = fMother->GetDaughter(1)->GetRef()->Pt();
-
-   switch (fMode) {
+   
+   switch (fMode)
+   {
       case kFirstLargerP  : return (p1 > p2);
       case kFirstSmallerP : return (p1 < p2);
       case kFirstLargerPt : return (pt1 > pt2);

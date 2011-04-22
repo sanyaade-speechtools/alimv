@@ -26,10 +26,10 @@ public:
    virtual void     UserExec(Option_t *option);
    virtual void     UserExecMix(Option_t*);
    virtual void     Terminate(Option_t *);
-
-   void Add(AliRsnLoop *object);
-   void InitInputHandlers();
-
+   
+   void             AddLoop(AliRsnLoop *object);
+   void             InitInputHandlers();
+   
 private:
 
    TList                      *fOutput;        //  output list

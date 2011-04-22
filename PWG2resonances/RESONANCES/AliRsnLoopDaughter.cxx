@@ -20,6 +20,7 @@ ClassImp(AliRsnLoopDaughter)
 //_____________________________________________________________________________
 AliRsnLoopDaughter::AliRsnLoopDaughter(const char *name, Int_t listID, AliRsnDaughterDef *def) :
    AliRsnLoop(name),
+   fOnlyTrue(kFALSE),
    fListID(listID),
    fDef(def),
    fDaughter()
@@ -32,6 +33,7 @@ AliRsnLoopDaughter::AliRsnLoopDaughter(const char *name, Int_t listID, AliRsnDau
 //_____________________________________________________________________________
 AliRsnLoopDaughter::AliRsnLoopDaughter(const AliRsnLoopDaughter& copy) :
    AliRsnLoop(copy),
+   fOnlyTrue(copy.fOnlyTrue),
    fListID(copy.fListID),
    fDef(copy.fDef),
    fDaughter(copy.fDaughter)
@@ -49,6 +51,7 @@ AliRsnLoopDaughter& AliRsnLoopDaughter::operator=(const AliRsnLoopDaughter& copy
 //
 
    AliRsnLoop::operator=(copy);
+   fOnlyTrue = copy.fOnlyTrue;
    fListID = copy.fListID;
    fDaughter = copy.fDaughter;
    fDef = copy.fDef;
@@ -85,7 +88,7 @@ Bool_t AliRsnLoopDaughter::Init(const char *prefix, TList *list)
 
 //_____________________________________________________________________________
 Int_t AliRsnLoopDaughter::DoLoop
-(AliRsnEvent *evMain, AliRsnDaughterSelector *selMain, AliRsnEvent *evMix, AliRsnDaughterSelector *selMix)
+(AliRsnEvent *evMain, AliRsnDaughterSelector *selMain, AliRsnEvent *, AliRsnDaughterSelector *)
 {
 //
 // Loop function.
@@ -97,7 +100,7 @@ Int_t AliRsnLoopDaughter::DoLoop
 
    Int_t i, il, nadd = 0, nlist = 0;
    TEntryList *list[2] = {0, 0};
-
+   
    if (fDef->IsChargeDefined()) {
       list[0] = selMain->GetSelected(fListID, fDef->GetChargeC());
       list[1] = 0x0;
@@ -113,27 +116,29 @@ Int_t AliRsnLoopDaughter::DoLoop
          nlist = 1;
       }
    }
-
+   
    TObjArrayIter next(&fOutputs);
    AliRsnListOutput *out = 0x0;
-
+   
    for (il = 0; il < nlist; il++) {
       if (!list[il]) {
          AliError(Form("List #%d is null", il));
          continue;
       }
       for (i = 0; i < list[il]->GetN(); i++) {
-         evMain->SetDaughterAbs(fDaughter, (Int_t)list[il]->GetEntry(i));
+         evMain->SetDaughter(fDaughter, (Int_t)list[il]->GetEntry(i));
          // check matching
-         if (!fDef->MatchesDaughter(&fDaughter)) continue;
+         if (fOnlyTrue && !fDef->MatchesPID(&fDaughter)) continue;
+         if (!fDef->MatchesCharge(&fDaughter)) continue;
+         if (!fDef->MatchesRefType(&fDaughter)) continue;
          // fill outputs
          nadd++;
          next.Reset();
-         while ((out = (AliRsnListOutput*)next())) {
+         while ( (out = (AliRsnListOutput*)next()) ) {
             out->Fill(&fDaughter);
          }
       }
    }
-
+   
    return nadd;
 }

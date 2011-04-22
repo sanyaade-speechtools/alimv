@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
 //  Base class used wherever it is needed to check the class type of
-//  an object w.r. to the RSN framework analysis (daughter, mother, event)
+//  an object w.r. to the RSN framework analysis (daughter, mother, event) 
 //  which could be used for cut checking or value computing.
 //  Since most of these operation are implemented into classes that
 //  operate on any of such objects, then this class helps in making sure
@@ -47,7 +47,7 @@ Bool_t AliRsnTarget::TargetOK(TObject *object)
 // 1) check if the object class matches the required target type
 // 2) if (1) is successful, set the built-in pointer data member
 //    in order to point to it, after being casted accordingly
-// 3) if the target is a daughter or a mother, adjust the pointer
+// 3) if the target is a daughter or a mother, adjust the pointer 
 //    to reference event accordingly
 //
 
@@ -62,7 +62,7 @@ Bool_t AliRsnTarget::TargetOK(TObject *object)
       AliError("Passed a NULL object");
       return kFALSE;
    }
-
+   
    // checks matching between argument type and expected object type
    // the passed object is also casted into the appropriate pointer
    // when a daughter or mother is passed and the target type expects
@@ -71,14 +71,17 @@ Bool_t AliRsnTarget::TargetOK(TObject *object)
       fDaughter = static_cast<AliRsnDaughter*>(object);
       fEvent = fDaughter->GetOwnerEvent();
       return kTRUE;
-   } else if (object->IsA() == AliRsnMother::Class() && (fTargetType == kMother || fTargetType == kEvent)) {
+   }
+   else if (object->IsA() == AliRsnMother::Class() && (fTargetType == kMother || fTargetType == kEvent)) {
       fMother = static_cast<AliRsnMother*>(object);
       fEvent = fMother->GetRefEvent();
       return kTRUE;
-   } else if (object->IsA() == AliRsnEvent::Class() && fTargetType == kEvent) {
+   }
+   else if (object->IsA() == AliRsnEvent::Class() && fTargetType == kEvent) {
       fEvent = static_cast<AliRsnEvent*>(object);
       return kTRUE;
-   } else {
+   }
+   else {
       if (object) {
          AliError(Form("[%s] Target mismatch: expected '%s', passed '%s'", GetName(), GetTargetTypeName(), object->ClassName()));
       } else {

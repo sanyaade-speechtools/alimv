@@ -32,10 +32,8 @@ AliRsnCutPIDNSigma::AliRsnCutPIDNSigma
    fSpecies(species),
    fDetector(det),
    fMomMin(0.0),
-   fMomMax(0.0),
-   fRejectOutside(kFALSE),
-   fRejectUnmatched(kFALSE),
-   fPID(0x0)
+   fMomMax(1E20),
+   fRejectUnmatched(kFALSE)
 {
 //
 // Main constructor.
@@ -50,9 +48,7 @@ AliRsnCutPIDNSigma::AliRsnCutPIDNSigma
    fDetector(copy.fDetector),
    fMomMin(copy.fMomMin),
    fMomMax(copy.fMomMax),
-   fRejectOutside(copy.fRejectOutside),
-   fRejectUnmatched(copy.fRejectUnmatched),
-   fPID(copy.fPID)
+   fRejectUnmatched(copy.fRejectUnmatched)
 {
 //
 // Copy constructor.
@@ -72,36 +68,9 @@ AliRsnCutPIDNSigma& AliRsnCutPIDNSigma::operator=(const AliRsnCutPIDNSigma& copy
    fDetector = copy.fDetector;
    fMomMin = copy.fMomMin;
    fMomMax = copy.fMomMax;
-   fRejectOutside = copy.fRejectOutside;
    fRejectUnmatched = copy.fRejectUnmatched;
-   fPID = copy.fPID;
 
    return (*this);
-}
-
-//_________________________________________________________________________________________________
-Bool_t AliRsnCutPIDNSigma::InitResponse()
-{
-//
-// Initialize PID response object
-//
-
-	if (fPID) return kTRUE;
-   AliAnalysisManager   *man = AliAnalysisManager::GetAnalysisManager();
-   AliInputEventHandler *inh = (AliInputEventHandler*)man->GetInputEventHandler();
-   if (!inh) return kFALSE;
-   AliInfo(Form("Object class: %s", inh->ClassName()));
-
-   if (inh->InheritsFrom(AliMultiInputEventHandler::Class())) {
-      AliMultiInputEventHandler *multi = (AliMultiInputEventHandler*)inh;
-      inh = multi->GetFirstInputEventHandler();
-      if (!inh) return kFALSE;
-   }
-   AliInfo(Form("Object class: %s", inh->ClassName()));
-
-   fPID = inh->GetPIDResponse();
-
-   return (fPID != 0x0);
 }
 
 //_________________________________________________________________________________________________
@@ -113,52 +82,48 @@ Bool_t AliRsnCutPIDNSigma::IsSelected(TObject *object)
 
    // coherence check
    if (!TargetOK(object)) return kFALSE;
-
+   
    // check initialization of PID object
-   if (!fPID) {
-      if (!InitResponse()) {
-         AliError("Failed initialization of PID response");
-         return kFALSE;
-      }
-      AliInfo("Initializing PID response");
+   AliPIDResponse *pid = fEvent->GetPIDResponse();
+   if (!pid) {
+      AliFatal("NULL PID response");
+      return kFALSE;
    }
 
    // get reference momentum, for range cut
    Double_t momentum = -1.0;
-   if (!fDaughter->GetRefVtrack()) {
+   if (!fDaughter->Ref2Vtrack()) {
       AliDebugClass(2, "Referenced daughter is not a track");
       return kFALSE;
    }
    if (fDetector == kTPC)
-      momentum = fDaughter->GetRefVtrack()->GetTPCmomentum();
+      momentum = fDaughter->Ref2Vtrack()->GetTPCmomentum();
    else
       momentum = fDaughter->GetRef()->P();
-
+      
    // check momentum range, if required
-   if (fRejectOutside) {
-      if (momentum < fMomMin || momentum > fMomMax) {
-         AliDebugClass(2, Form("Track momentum = %.5f, outside allowed range [%.2f - %.2f]", momentum, fMomMin, fMomMax));
-         return kFALSE;
-      }
+   if (momentum < fMomMin || momentum > fMomMax) {
+      AliDebugClass(2, Form("Track momentum = %.5f, outside allowed range [%.2f - %.2f]", momentum, fMomMin, fMomMax));
+      return kFALSE;
    }
-
+   
    // matching check, if required
    if (fRejectUnmatched) {
       switch (fDetector) {
          case kITS:
-            if (!IsITS()) {
+            if (!IsITS(fDaughter->Ref2Vtrack())) {
                AliDebug(3, "Rejecting track not matched in ITS");
                return kFALSE;
             }
             break;
          case kTPC:
-            if (!IsTPC()) {
+            if (!IsTPC(fDaughter->Ref2Vtrack())) {
                AliDebug(3, "Rejecting track not matched in TPC");
                return kFALSE;
             }
             break;
          case kTOF:
-            if (!IsTOF()) {
+            if (!IsTOF(fDaughter->Ref2Vtrack())) {
                AliDebug(3, "Rejecting track not matched in TOF");
                return kFALSE;
             }
@@ -168,24 +133,24 @@ Bool_t AliRsnCutPIDNSigma::IsSelected(TObject *object)
             return kFALSE;
       }
    }
-
+   
    // check PID
    // the number of sigmas is set as cut value, which is then checked
    // using the basic functions available in AliRsnCut
    switch (fDetector) {
       case kITS:
-         fCutValueD = fPID->NumberOfSigmasITS(fDaughter->GetRef(), fSpecies);
+         fCutValueD = pid->NumberOfSigmasITS(fDaughter->GetRef(), fSpecies);
          break;
       case kTPC:
-         fCutValueD = fPID->NumberOfSigmasTPC(fDaughter->GetRef(), fSpecies);
+         fCutValueD = pid->NumberOfSigmasTPC(fDaughter->GetRef(), fSpecies);
          break;
       case kTOF:
-         fCutValueD = fPID->NumberOfSigmasTOF(fDaughter->GetRef(), fSpecies);
+         fCutValueD = pid->NumberOfSigmasTOF(fDaughter->GetRef(), fSpecies);
          break;
       default:
-         fCutValueD = 1E20;
+         return kFALSE;
    }
-
+   
    return OkRangeD();
 }
 
@@ -196,27 +161,22 @@ void AliRsnCutPIDNSigma::Print(const Option_t *) const
 // Print information on this cut
 //
 
-   Char_t mom[100], det[10], match[100];
-
-   if (fRejectOutside)
-      sprintf(mom, "Tracks are accepted only in the momentum range %.2f --> %.2f", fMomMin, fMomMax);
-   else
-      sprintf(mom, "No check in momentum range");
-
+   Char_t mom[200], det[100], match[200];
+      
    if (fRejectUnmatched)
-      sprintf(match, "Unmatched tracks are rejected");
+      snprintf(match, 200, "Unmatched tracks are rejected");
    else
-      sprintf(match, "No check on track matching");
-
+      snprintf(match, 200, "No check on track matching");
+      
    switch (fDetector) {
-      case kITS: sprintf(det, "ITS"); break;
-      case kTPC: sprintf(det, "TPC"); break;
-      case kTOF: sprintf(det, "TOF"); break;
-      default  : sprintf(det, "undefined");
+      case kITS: snprintf(det, 3, "ITS"); break;
+      case kTPC: snprintf(det, 3, "TPC"); break;
+      case kTOF: snprintf(det, 3, "TOF"); break;
+      default  : snprintf(det, 3, "undefined");
    }
 
    AliInfo(Form("Cut name          : %s", GetName()));
    AliInfo(Form("--> PID detector  : %s", det));
    AliInfo(Form("--> match criteria: %s", match));
-   AliInfo(Form("--> momentum range: %s", mom));
+   AliInfo(Form("--> momentum range: %s", mom));   
 }
