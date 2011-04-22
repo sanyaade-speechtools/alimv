@@ -5,6 +5,8 @@
 #include "AliMCEventHandler.h"
 
 #include "AliEmptyInputHandler.h"
+#include <TH1.h>
+#include <AliESDInputHandler.h>
 ClassImp(AliEmptyInputHandler)
 
 //_____________________________________________________________________________
@@ -108,6 +110,15 @@ Bool_t AliEmptyInputHandler::FinishEvent()
    // FinishEvent() is called for all mix input handlers
    //
    AliDebug(AliLog::kDebug + 5, Form("<-"));
+   
+   TH1F *h = new TH1F("aa","aaa",2,0,1);
+   
+   h->Draw("same");
+   
+   AliESDInputHandler ih;
+   ih.FinishEvent();
+   
+   
    AliDebug(AliLog::kDebug + 5, Form("->"));
    return kTRUE;
 }

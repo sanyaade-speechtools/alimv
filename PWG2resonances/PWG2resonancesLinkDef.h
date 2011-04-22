@@ -11,6 +11,8 @@
 #pragma link C++ class AliRsnValue+;
 #pragma link C++ class AliRsnCut+;
 
+#pragma link C++ class AliRsnValueStd+;
+
 #pragma link C++ class AliRsnCutPrimaryVertex+;
 #pragma link C++ class AliRsnCutTrackQuality+;
 #pragma link C++ class AliRsnCutValue+;
@@ -18,6 +20,7 @@
 #pragma link C++ class AliRsnCutPIDITS+;
 #pragma link C++ class AliRsnCutPIDTPC+;
 #pragma link C++ class AliRsnCutPIDTOF+;
+#pragma link C++ class AliRsnCutPIDNSigma+;
 #pragma link C++ class AliRsnCutMomentumComparison+;
 
 #pragma link C++ class AliRsnCutSet+;
@@ -31,6 +34,7 @@
 #pragma link C++ class AliRsnLoopPair+;
 #pragma link C++ class AliRsnLoopEvent+;
 #pragma link C++ class AliRsnLoopEff+;
+#pragma link C++ class AliRsnLoopEffPair+;
 
 #pragma link C++ class AliRsnDaughterSelector+;
 #pragma link C++ class AliRsnInputHandler+;
