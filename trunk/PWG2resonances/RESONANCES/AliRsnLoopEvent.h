@@ -14,7 +14,7 @@ public:
    AliRsnLoopEvent(const AliRsnLoopEvent &copy);
    AliRsnLoopEvent& operator=(const AliRsnLoopEvent&);
    ~AliRsnLoopEvent();
-
+   
    virtual void       Print(Option_t *opt = "") const;
    virtual Bool_t     Init(const char *prefix, TList *list);
    virtual Int_t      DoLoop(AliRsnEvent *main, AliRsnDaughterSelector *smain = 0, AliRsnEvent *mix = 0, AliRsnDaughterSelector *smix = 0);

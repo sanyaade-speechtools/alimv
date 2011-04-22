@@ -1,3 +1,4 @@
+#include <Riostream.h>
 #include "AliLog.h"
 
 #include "AliRsnEvent.h"
@@ -11,7 +12,8 @@ ClassImp(AliRsnInputHandler)
 //_____________________________________________________________________________
 AliRsnInputHandler::AliRsnInputHandler(const char *name) :
    AliInputEventHandler(name, name),
-   fRsnEvent(0)
+   fRsnEvent(0),
+   fRsnSelector()
 {
 //
 // Default constructor.
@@ -91,12 +93,14 @@ Bool_t AliRsnInputHandler::BeginEvent(Long64_t entry)
          if (ih) {
             if (!fRsnEvent) fRsnEvent = new AliRsnEvent();
             fRsnEvent->SetRef(ih->GetEvent());
+            fRsnEvent->SetPIDResponse(ih->GetPIDResponse());
             if (fRsnEvent->GetRefESD()) {
                AliMCEventHandler *mcH =  multiIH->GetFirstMCEventHandler();
                if (mcH) fRsnEvent->SetRefMC(mcH->MCEvent());
             } else if (fRsnEvent->GetRefAOD()) {
-               // TODO AOD MC
-//                fRsnEvent->SetRefMC(mcH->MCEvent());
+               AliAODEvent *aod = fRsnEvent->GetRefAOD();
+               TClonesArray *listAOD = (TClonesArray*)(aod->GetList()->FindObject(AliAODMCParticle::StdBranchName()));
+               if (listAOD) fRsnEvent->SetRefMC(fRsnEvent->GetRefAOD());
             }
             if (fParentHandler->ParentHandler()) tmp = "MIX";
             // applying pid cuts

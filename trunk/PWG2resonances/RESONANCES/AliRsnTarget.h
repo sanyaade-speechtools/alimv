@@ -3,7 +3,7 @@
 
 /* Copyright(c) 1998-1999, ALICE Experiment at CERN, All rights reserved. *
  * See cxx source for full Copyright notice                               */
-
+ 
 ////////////////////////////////////////////////////////////////////////////////
 //
 //  General class for cut/computation target objects (daughter/pair/event).
@@ -36,12 +36,12 @@ public:
    Bool_t           IsAllNull()                       {return (!fDaughter && !fMother && !fEvent);}
    Bool_t           IsTarget(ETargetType targetType)  {return (fTargetType == targetType);}
    Bool_t           TargetOK(TObject *object);
-
+   
    void             SetTargetType(ETargetType type)   {fTargetType = type;}
    ETargetType      GetTargetType() const             {return fTargetType;}
    Char_t           GetTargetTypeChar() const;
    const char*      GetTargetTypeName() const;
-
+   
    AliRsnDaughter*  GetTargetDaughter()               {return fDaughter;}
    AliRsnMother*    GetTargetMother()                 {return fMother;}
    AliRsnEvent*     GetTargetEvent()                  {return fEvent;}

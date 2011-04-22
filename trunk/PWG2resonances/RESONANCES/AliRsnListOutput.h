@@ -35,13 +35,15 @@ public:
    const AliRsnListOutput& operator=(const AliRsnListOutput &copy);
    virtual ~AliRsnListOutput();
 
-   EOut            GetType()            {return  fType;}
-   Int_t           GetSteps()           {return  fSteps;}
-   TObjArray*      GetValues()          {return &fValues;}
-   Int_t           GetNValues()         {return (fNValues = fValues.GetEntries());}
-   AliRsnValue*    GetValue(Int_t i)    {return (AliRsnValue*)fValues[i];}
-   void            SetType(EOut type)   {fType = type;}
-   void            SetSteps(Int_t n)    {fSteps = n;}
+   EOut            GetType()               {return  fType;}
+   Int_t           GetSteps()              {return  fSteps;}
+   TObjArray*      GetValues()             {return &fValues;}
+   Int_t           GetNValues()            {return (fNValues = fValues.GetEntries());}
+   AliRsnValue*    GetValue(Int_t i)       {return (AliRsnValue*)fValues[i];}
+   Int_t           GetIndex()              {return  fIndex;}
+   void            SetType(EOut type)      {fType = type;}
+   void            SetSteps(Int_t n)       {fSteps = n;}
+   void            SetSkipFailed(Bool_t y) {fSkipFailed = y;}
 
    void            AddValue(AliRsnValue *value);
 
@@ -55,13 +57,14 @@ private:
    THnSparseF*     CreateHistogramSparse(const char *name);
    AliCFContainer* CreateCFContainer(const char *name);
 
+   Bool_t           fSkipFailed;    //  tell to skip fills when one computation fails
    EOut             fType;          //  output format among allowed ones
    Int_t            fSteps;         //  number of steps (only for container)
    TObjArray        fValues;        //  container for all related values
    Int_t            fNValues;       //! number of values (internal use)
    TList           *fList;          //! list containing the output
    Int_t            fIndex;         //  index of object in the list
-
+   
    TArrayD          fArray;         //! temp array of computed values
 
    ClassDef(AliRsnListOutput, 1)    //  AliRsnListOutput class

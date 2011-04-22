@@ -30,13 +30,13 @@ public:
    AliRsnLoop(const AliRsnLoop &copy);
    AliRsnLoop& operator=(const AliRsnLoop&);
    ~AliRsnLoop();
-
+   
    void           SetMixed(Bool_t yn = kTRUE)     {fIsMixed = yn;}
    void           SetEventCuts(AliRsnCutSet *set) {fEventCuts = set;}
    Bool_t         IsMixed() const                 {return fIsMixed;}
    AliRsnCutSet*  GetEventCuts()                  {return fEventCuts;}
    Bool_t         OkEvent(AliRsnEvent *rsn);
-
+   
    virtual void   AddOutput(TObject *output);
    virtual void   Print(Option_t *option = "") const;
    virtual Bool_t Init(const char *prefix, TList *list);

@@ -3,7 +3,7 @@
 
 /* Copyright(c) 1998-1999, ALICE Experiment at CERN, All rights reserved. *
  * See cxx source for full Copyright notice                               */
-
+ 
 ////////////////////////////////////////////////////////////////////////////////
 //
 //  Resonance decay tree definition.
@@ -23,18 +23,18 @@ public:
    const AliRsnPairDef& operator= (const AliRsnPairDef &copy);
    virtual ~AliRsnPairDef() { }
 
-   virtual const char*      GetName()       const {return Form("%s_%s", fDef1.GetName(), fDef2.GetName());}
+   virtual const char*	    GetName()       const {return Form("%s_%s", fDef1.GetName(), fDef2.GetName());}
    Int_t                    GetMotherPDG()  const {return fMotherPDG;}
    Double_t                 GetMotherMass() const {return fMotherMass;}
    AliRsnDaughterDef&       GetDef1()             {return fDef1;}
    AliRsnDaughterDef&       GetDef2()             {return fDef2;}
-   AliRsnDaughterDef&       GetDef(Int_t i)       {if (i < 1) return GetDef1(); else return GetDef2();}
+   AliRsnDaughterDef&       GetDef(Int_t i)       {if (i<1) return GetDef1(); else return GetDef2();}
 
    void SetMotherPDG(Int_t pdg)                 {fMotherPDG = pdg;}
    void SetMotherMass(Double_t mass)            {fMotherMass = mass;}
    void SetDef1(AliRsnDaughterDef *def)         {if (def) fDef1 = (*def);}
    void SetDef2(AliRsnDaughterDef *def)         {if (def) fDef2 = (*def);}
-   void SetDef(Int_t i, AliRsnDaughterDef *def) {if (!def) return; if (i < 1) fDef1 = (*def); else fDef2 = (*def);}
+   void SetDef(Int_t i, AliRsnDaughterDef *def) {if (!def) return; if (i<1) fDef1 = (*def); else fDef2 = (*def);}
 
    Bool_t IsLikeSign()  const {return (fDef1.GetChargeC() == fDef2.GetChargeC());}
    Bool_t HasEqualPID() const {return (fDef1.GetPID() == fDef2.GetPID());}

@@ -130,8 +130,8 @@ void AddAMRsn(TString analysisSource = "proof", TString analysisMode = "test", T
 
       if (useRsnInputHandler) {
          // add Rsn input handler (it has to be after ESD,MC,Tender input handler, but before Mixing)
-         gROOT->LoadMacro("AddRsnInputHandler.C");
-         AddRsnInputHandler(multiInputHandler,useMC);
+         gROOT->LoadMacro("AddRsnInputHandlerMV.C");
+	 AddRsnInputHandlerMV(multiInputHandler,useMC);
       }
 
       if (useMixing) {

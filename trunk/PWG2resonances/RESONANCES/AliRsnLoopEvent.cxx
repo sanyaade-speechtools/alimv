@@ -74,7 +74,7 @@ Bool_t AliRsnLoopEvent::Init(const char *prefix, TList *list)
 
 //_____________________________________________________________________________
 Int_t AliRsnLoopEvent::DoLoop
-(AliRsnEvent *evMain, AliRsnDaughterSelector *selMain, AliRsnEvent *evMix, AliRsnDaughterSelector *selMix)
+(AliRsnEvent *evMain, AliRsnDaughterSelector *, AliRsnEvent *, AliRsnDaughterSelector *)
 {
 //
 // Loop function.
@@ -84,13 +84,13 @@ Int_t AliRsnLoopEvent::DoLoop
 
    TObjArrayIter next(&fOutputs);
    AliRsnListOutput *out = 0x0;
-
+   
    // check cuts
    if (!OkEvent(evMain)) return 0;
-
-   while ((out = (AliRsnListOutput*)next())) {
+   
+   while ( (out = (AliRsnListOutput*)next()) ) {
       out->Fill(evMain);
    }
-
+   
    return 1;
 }

@@ -18,7 +18,9 @@ ClassImp(AliRsnAnalysisTask)
 AliRsnAnalysisTask::AliRsnAnalysisTask() :
    AliAnalysisTaskSE(),
    fOutput(0),
-   fRsnObjects(0)
+   fRsnObjects(0),
+   fInputEHMain(0),
+   fInputEHMix(0)
 {
 //
 // Dummy constructor ALWAYS needed for I/O.
@@ -29,7 +31,9 @@ AliRsnAnalysisTask::AliRsnAnalysisTask() :
 AliRsnAnalysisTask::AliRsnAnalysisTask(const char *name) :
    AliAnalysisTaskSE(name),
    fOutput(0),
-   fRsnObjects(0)
+   fRsnObjects(0),
+   fInputEHMain(0),
+   fInputEHMix(0)
 {
 //
 // Default constructor.
@@ -45,7 +49,9 @@ AliRsnAnalysisTask::AliRsnAnalysisTask(const char *name) :
 AliRsnAnalysisTask::AliRsnAnalysisTask(const AliRsnAnalysisTask& copy) :
    AliAnalysisTaskSE(copy),
    fOutput(0),
-   fRsnObjects(copy.fRsnObjects)
+   fRsnObjects(copy.fRsnObjects),
+   fInputEHMain(copy.fInputEHMain),
+   fInputEHMix(copy.fInputEHMix)
 {
 //
 // Copy constructor.
@@ -64,7 +70,9 @@ AliRsnAnalysisTask& AliRsnAnalysisTask::operator=(const AliRsnAnalysisTask& copy
 //
    AliAnalysisTaskSE::operator=(copy);
    fRsnObjects = copy.fRsnObjects;
-
+   fInputEHMain = copy.fInputEHMain;
+   fInputEHMix = copy.fInputEHMix;
+   
    return (*this);
 }
 
@@ -72,7 +80,7 @@ AliRsnAnalysisTask& AliRsnAnalysisTask::operator=(const AliRsnAnalysisTask& copy
 AliRsnAnalysisTask::~AliRsnAnalysisTask()
 {
 //
-// Destructor.
+// Destructor. 
 // Clean-up the output list, but not the histograms that are put inside
 // (the list is owner and will clean-up these histograms). Protect in PROOF case.
 //
@@ -83,7 +91,7 @@ AliRsnAnalysisTask::~AliRsnAnalysisTask()
 }
 
 //__________________________________________________________________________________________________
-void AliRsnAnalysisTask::Add(AliRsnLoop *obj)
+void AliRsnAnalysisTask::AddLoop(AliRsnLoop *obj)
 {
 //
 // Add new computation object
@@ -106,11 +114,11 @@ void AliRsnAnalysisTask::UserCreateOutputObjects()
    // create list and set it as owner of its content (MANDATORY)
    fOutput = new TList();
    fOutput->SetOwner();
-
+   
    // loop on computators and initialize all their outputs
    TObjArrayIter next(&fRsnObjects);
    AliRsnLoop *obj = 0x0;
-   while ((obj = (AliRsnLoop*)next())) {
+   while ( (obj = (AliRsnLoop*)next()) ) {
       obj->Init(GetName(), fOutput);
    }
 
@@ -127,19 +135,31 @@ void AliRsnAnalysisTask::UserExec(Option_t *)
 // function of all AliRsnLoop instances stored here.
 //
 
-   Int_t idRsnHandler = 1;
-   if (dynamic_cast<AliMCEventHandler*>(fInputEHMain->GetFirstMCEventHandler())) idRsnHandler++;
+   AliRsnEvent *evMain = 0x0;
+   AliRsnInputHandler *rsnIH = 0x0;
 
-   AliRsnInputHandler *rsnIH = dynamic_cast<AliRsnInputHandler*>(fInputEHMain->InputEventHandler(idRsnHandler));
-   AliRsnEvent *evMain = rsnIH->GetRsnEvent();
+   if (fInputEHMain) {
+      TObjArrayIter next(fInputEHMain->InputEventHandlers());
+      TObject *obj = 0x0;
+      while ( (obj = next()) ) {
+         if (obj->IsA() == AliRsnInputHandler::Class()) {
+            rsnIH = (AliRsnInputHandler*)obj;
+            //AliInfo(Form("Found object '%s' which is RSN input handler", obj->GetName()));
+            evMain = rsnIH->GetRsnEvent();
+            break;
+         }
+      }
+   }
+   
+   if (!evMain) return;
 
    TObjArrayIter next(&fRsnObjects);
    AliRsnLoop *obj = 0x0;
-   while ((obj = (AliRsnLoop*)next())) {
+   while ( (obj = (AliRsnLoop*)next()) ) {
       if (obj->IsMixed()) continue;
       obj->DoLoop(evMain, rsnIH->GetSelector());
    }
-
+   
    PostData(1, fOutput);
 }
 
@@ -152,25 +172,44 @@ void AliRsnAnalysisTask::UserExecMix(Option_t*)
 // and executes the 'DoLoop' function of all AliRsnLoop instances stored here.
 //
 
+   AliRsnEvent *evMain = 0x0;
+   AliRsnEvent *evMix  = 0x0;
+   Int_t        id     = -1;
+   AliRsnInputHandler *rsnIH = 0x0, *rsnMixIH = 0x0;
+
+   if (fInputEHMain) {
+      TObjArrayIter next(fInputEHMain->InputEventHandlers());
+      TObject *obj = 0x0;
+      while ( (obj = next()) ) {
+         if (obj->IsA() == AliRsnInputHandler::Class()) {
+            rsnIH = (AliRsnInputHandler*)obj;
+            //AliInfo(Form("Found object '%s' which is RSN input handler", obj->GetName()));
+            evMain = rsnIH->GetRsnEvent();
+            id = fInputEHMain->InputEventHandlers()->IndexOf(obj);
+            break;
+         }
+      }
+   }
+   
+   if (!evMain) return;
+
    // gets first input handler form mixing buffer
    AliMultiInputEventHandler *ihMultiMix = dynamic_cast<AliMultiInputEventHandler*>(fInputEHMix->InputEventHandler(0));
+   if (ihMultiMix) {
+      rsnMixIH = dynamic_cast<AliRsnInputHandler*>(ihMultiMix->InputEventHandler(id));
+      if (rsnMixIH) {
+         evMix = rsnMixIH->GetRsnEvent();
+         if (!evMix) return;
 
-   Int_t idRsnHandler = 1;
-   if (dynamic_cast<AliMCEventHandler*>(fInputEHMain->GetFirstMCEventHandler())) idRsnHandler++;
-
-   AliRsnInputHandler *rsnIH = dynamic_cast<AliRsnInputHandler*>(fInputEHMain->InputEventHandler(idRsnHandler));
-   AliRsnInputHandler *rsnMixIH = dynamic_cast<AliRsnInputHandler*>(ihMultiMix->InputEventHandler(idRsnHandler));
-
-   AliRsnEvent *evMain = rsnIH->GetRsnEvent();
-   AliRsnEvent *evMix = rsnMixIH->GetRsnEvent();
-
-   TObjArrayIter next(&fRsnObjects);
-   AliRsnLoop *obj = 0x0;
-   while ((obj = (AliRsnLoop*)next())) {
-      if (!obj->IsMixed()) continue;
-      obj->DoLoop(evMain, rsnIH->GetSelector(), evMix, rsnMixIH->GetSelector());
+         TObjArrayIter next(&fRsnObjects);
+         AliRsnLoop *obj = 0x0;
+         while ( (obj = (AliRsnLoop*)next()) ) {
+            if (!obj->IsMixed()) continue;
+            obj->DoLoop(evMain, rsnIH->GetSelector(), evMix, rsnMixIH->GetSelector());
+         }
+      }
    }
-
+   
    PostData(1, fOutput);
 }
 
