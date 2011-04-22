@@ -12,13 +12,13 @@
 #include <AliPhysicsSelection.h>
 #include <PWG2resonancesDevel/AliRsnInputHandler.h>
 #endif
-void AddAMRsnNew(TString analysisSource = "proof", TString analysisMode = "test", TString opts = "")
+void AddAMRsn(TString analysisSource = "proof", TString analysisMode = "test", TString opts = "")
 {
 
    Bool_t useMC = kFALSE;
 //    useMC = kTRUE;
    TString format = "esd";
-   format = "aod";
+//    format = "aod";
    format.ToLower();
 
    Bool_t useMultiHandler = kTRUE;
@@ -100,6 +100,12 @@ void AddAMRsnNew(TString analysisSource = "proof", TString analysisMode = "test"
 
    Bool_t useRsnInputHandler = kTRUE;
 //    useRsnInputHandler = kFALSE;
+	
+   Bool_t usePIDResponse = kTRUE;
+   usePIDResponse = kFALSE;
+
+   Bool_t useCentrality = kTRUE;
+   useCentrality = kFALSE;
 
    if (useMultiHandler)  {
 
@@ -109,11 +115,23 @@ void AddAMRsnNew(TString analysisSource = "proof", TString analysisMode = "test"
          gROOT->LoadMacro("AddTenderHandler.C");
          AddTenderHandler(multiInputHandler);
       }
+      
+      if (usePIDResponse) {
+         // add PID Response Handler
+         gROOT->LoadMacro("AddPIDResponseInputHandler.C");
+         AddPIDResponseInputHandler(multiInputHandler);
+      }
+      if (useCentrality) {
+         // add Centrality Handler
+         gROOT->LoadMacro("AddCentralityInputHandler.C");
+         AddCentralityInputHandler(multiInputHandler);
+      }
+
 
       if (useRsnInputHandler) {
          // add Rsn input handler (it has to be after ESD,MC,Tender input handler, but before Mixing)
          gROOT->LoadMacro("AddRsnInputHandler.C");
-         AddRsnInputHandler(multiInputHandler);
+         AddRsnInputHandler(multiInputHandler,useMC);
       }
 
       if (useMixing) {
@@ -136,7 +154,7 @@ void AddAMRsnNew(TString analysisSource = "proof", TString analysisMode = "test"
          esdInputHandler->SetEventSelection(multiIH->GetEventSelection());
    }
    // load and run AddTask macro
-   gROOT->LoadMacro("AddRsnTaskNewAll.C");
-   AddRsnTaskNewAll(format, useMC);
+   gROOT->LoadMacro("AddRsnTaskAll.C");
+   AddRsnTaskAll(format, useMC);
 
 }
