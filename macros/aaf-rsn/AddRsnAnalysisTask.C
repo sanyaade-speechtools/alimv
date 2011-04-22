@@ -11,12 +11,12 @@ AliAnalysisTask* AddRsnAnalysisTask(TString format = "esd", Bool_t useMC = kFALS
    // initialize task with all available slots, even if not all of them will be used:
    AliRsnAnalysisTask *task = new AliRsnAnalysisTask("RSN_MV");
 
-   gROOT->LoadMacro("RsnConfigTest.C");
-   RsnConfigTest(task,useMC);
-
-   
 //    gROOT->LoadMacro("RsnConfigTest.C");
 //    RsnConfigTest(task,useMC);
+
+   
+   gROOT->LoadMacro("RsnConfigPhiTPC.C");
+   RsnConfigPhiTPC(task,useMC,kFALSE,kFALSE,0);
    
    // add the task to manager
    mgr->AddTask(task);

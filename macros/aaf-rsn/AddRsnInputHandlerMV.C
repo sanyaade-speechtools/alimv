@@ -9,14 +9,14 @@
 #include <PWG2resonances/RESONANCES/AliRsnDaughterSelector.h>//|
 #endif//|
 
-void AddRsnInputHandler(AliMultiInputEventHandler *multiInputHandler,Bool_t useMC=kFALSE)
+void AddRsnInputHandlerMV(AliMultiInputEventHandler *multiInputHandler,Bool_t useMC=kFALSE)
 {
    if (multiInputHandler) {
 
-//    gROOT->LoadMacro("AddCutsToRsnInputHandler.C");
-//    AddCutsToRsnInputHandler(multiInputHandler, useMC);
+     gROOT->LoadMacro("AddRsnInputHandlerPhi2010.C");
+     AddRsnInputHandler(useMC,multiInputHandler);
 
-	AddRsnInputHandlerBPID(kFALSE, multiInputHandler);
+// 	AddRsnInputHandlerBPID(kFALSE, multiInputHandler);
 
    }
 }

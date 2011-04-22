@@ -63,10 +63,6 @@ function CopyFilesFromManagerMacro() {
 			fi
 		fi
 	done 
-
-	echo "Copying all rsn config files ..."
-	cp -f $MY_SOURCE_DIR/macros/aaf-rsn/config/*.C $MY_WORK_DIR/
-# 	cp -f $MY_SOURCE_DIR/macros/aaf-rsn/Quality* $MY_WORK_DIR/
 }
 
 # function GenerateManagerMacro() {
