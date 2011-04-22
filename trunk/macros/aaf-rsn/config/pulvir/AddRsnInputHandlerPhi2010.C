@@ -16,7 +16,7 @@ void AddRsnInputHandler(Bool_t isMC, AliMultiInputEventHandler *multi)
    //  Define single cuts
    //---------------------------------------------
    
-   AliRsnCutPhi2010 *cut = new AliRsnCutPhi2010("cut");
+   AliRsnCutKaonForPhi2010 *cut = new AliRsnCutKaonForPhi2010("cut");
       
    //---------------------------------------------
    //  Combine cuts

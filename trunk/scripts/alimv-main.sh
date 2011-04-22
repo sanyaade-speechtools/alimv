@@ -80,6 +80,11 @@ $MY_SOURCE_DIR/scripts/alimv-generate-from-run-alice.sh $MY_WORK_DIR/runALICE.C
 cp $MY_SOURCE_DIR/macros/datasets/* . &>/dev/null
 cp $MY_SOURCE_DIR/pars/* . &>/dev/null
 
+echo "Copying all rsn config files ..."
+cp -f $MY_SOURCE_DIR/macros/aaf-rsn/config/mvala/*.C $MY_WORK_DIR/
+cp -f $MY_SOURCE_DIR/macros/aaf-rsn/config/pulvir/*.C $MY_WORK_DIR/
+# 	cp -f $MY_SOURCE_DIR/macros/aaf-rsn/Quality* $MY_WORK_DIR/
+
 alien-token-info
 if [ "$?" != "0" ]; then
   alien-token-init
