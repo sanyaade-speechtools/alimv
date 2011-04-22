@@ -27,9 +27,9 @@ Int_t runALICE(TString analysisSource = "grid", TString analysisMode = "terminat
 //    fNEventsSkip = 350;
 
 
-   RunAnalysisManager("AddAMExampleTasks", analysisSource.Data(), analysisMode.Data(), "");
+//    RunAnalysisManager("AddAMExampleTasks", analysisSource.Data(), analysisMode.Data(), "");
 //    RunAnalysisManager("AddAMEvilTask", analysisSource.Data(), analysisMode.Data(), "");
-//    RunAnalysisManager("AddAMRsnNew", analysisSource.Data(), analysisMode.Data(), "");
+   RunAnalysisManager("AddAMRsn", analysisSource.Data(), analysisMode.Data(), "");
 //    RunAnalysisManager("AddAnalysisManagerMixRsnPar", analysisSource.Data(), analysisMode.Data(), "");
 
 //

@@ -10,7 +10,7 @@ AliAnalysisGrid* SetupAnalysisPlugin(TString analysisMode)
    plugin->SetRunMode(analysisMode.Data());  // VERY IMPORTANT - DECRIBED BELOW
 
    // seutp aliroot version
-   plugin->SetAliROOTVersion("v4-21-18-AN");
+   plugin->SetAliROOTVersion("v4-21-21-AN");
 
    // adds Proof setting
    MySetupAnalysisPluginProof(plugin);
@@ -91,7 +91,7 @@ void MySetupAnalysisPluginAliEn(AliAnalysisAlien *plugin)
 {
 
    plugin->SetAPIVersion("V1.1x");
-   plugin->SetROOTVersion("v5-28-00a");
+   plugin->SetROOTVersion("v5-28-00c");
 //    plugin->SetAliROOTVersion("v4-20-13-AN");
    plugin->SetExecutableCommand("aliroot -b -q");
 
