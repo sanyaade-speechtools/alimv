@@ -86,6 +86,7 @@ Bool_t AliRsnCutPIDNSigma::InitResponse()
 // Initialize PID response object
 //
 
+	if (fPID) return kTRUE;
    AliAnalysisManager   *man = AliAnalysisManager::GetAnalysisManager();
    AliInputEventHandler *inh = (AliInputEventHandler*)man->GetInputEventHandler();
    if (!inh) return kFALSE;

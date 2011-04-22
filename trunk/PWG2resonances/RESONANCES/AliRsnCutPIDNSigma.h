@@ -19,7 +19,8 @@ public:
       kTPC,
       kTOF
    };
-
+	
+	AliRsnCutPIDNSigma() : AliRsnCut() {;};
    AliRsnCutPIDNSigma(const char *name, AliPID::EParticleType species, EDetector det, Double_t nsigma = 3.0);
    AliRsnCutPIDNSigma(const AliRsnCutPIDNSigma& copy);
    AliRsnCutPIDNSigma& operator=(const AliRsnCutPIDNSigma& copy);
